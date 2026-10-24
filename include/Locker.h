@@ -1,3 +1,4 @@
+// Altered source: non-throwing lock release; see MODIFICATIONS.
 /******************************************************************************
  * Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
  *
@@ -34,6 +35,7 @@
 
 #include "Macro.h"
 #include "Uncopyable.h"
+#include <cstdio>
 
 /**
  * @brief 読み書きロックの設定を集めたクラス．
@@ -61,15 +63,16 @@ public:
         MEMORY_BARRIER;
     };
 
-    ~Locker()
+    ~Locker() noexcept
     {
-        if (is_locked_ != NULL) {
-            *is_locked_ = false;
+        const apr_status_t status = apr_global_mutex_unlock(mutex_);
+        if (status != APR_SUCCESS) {
+            // Never throw while unwinding; retain the flag if the mutex may still be held.
+            std::fprintf(stderr, "mod_uploader: mutex unlock failed (APR status %d)\n",
+                         static_cast<int>(status));
+            return;
         }
-
-        if (apr_global_mutex_unlock(mutex_) != APR_SUCCESS) {
-            THROW(MESSAGE_MUTEX_UNLOCK_FAILED);
-        }
+        if (is_locked_ != NULL) *is_locked_ = false;
     };
 
     apr_global_mutex_t *mutex_;

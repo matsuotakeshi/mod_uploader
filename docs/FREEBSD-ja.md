@@ -99,7 +99,7 @@ Apache POSTには、ブラウザCookieに結び付いた、有効期間2時間�
 
 ### セキュリティ更新のFreeBSD検証
 
-FreeBSD 15.1 amd64 / Clang 19.1.7 / Apache 2.4.69、THUMBNAIL無効で実行しました。今回のパッケージは `ap24-mod_uploader-3.2.0_3.pkg` です。上記の `_2` の記録は初回移植時の履歴として保持しています。
+FreeBSD 15.1 amd64 / Clang 19.1.7 / Apache 2.4.69、THUMBNAIL無効で実行しました。保存形式4導入時のパッケージは `ap24-mod_uploader-3.2.0_3.pkg` です。上記の `_2` の記録は初回移植時の履歴として保持しています。
 
 | 検査 | 結果 | 証拠 |
 |---|---|---|
@@ -125,8 +125,38 @@ FreeBSD 15.1 amd64 / Clang 19.1.7 / Apache 2.4.69、THUMBNAIL無効で実行し�
 - バックアップには旧平文パスワードが残ります。0700の外側ディレクトリで保護し、公開しないでください。
 - パッケージの本番インストール/アンインストール、poudriere、他ABI、THUMBNAIL有効、巨大データセット、電源断の実機注入、全ブラウザ、全面的なセキュリティ監査は未検証です。
 - HTTPS、管理者認証・接続制限、認証試行・リクエスト量の制限、保存領域の非公開設定は引き続き必要です。トークンは認証の代用ではありません。
-- コンパイルには既存のLockerデストラクター等の警告が残っています。隠さずログへ収録しています。
+- リビジョン3のログには既存のLockerデストラクターの警告があります。リビジョン4で非送出の後処理へ修正しました。その他の既存警告はビルドログに記録しています。
 - CGI/standalone/Apache 1.xのPOSTは保護方式に未対応のため拒否します。Flashはサポート対象外です。
+
+## 追加セキュリティ修正（Portリビジョン4）
+
+保存形式は4のままです。既にリビジョン3で移行済みならパスワードの再変換は不要です。更新前にバックアップし、Apacheを完全停止して新モジュール・設定を適用してください。管理画面の利用には専用Apache認証の追加設定が必要です。
+
+管理画面はApacheが認証済みの利用者のみ許可します。`Require local`だけの場合は、実際のlocalhost接続でも管理操作を403で拒否します。Port設定例は管理画面を既定で閉鎖します。専用の認証ファイルとHTTPS等の管理経路が必要です。管理画面・管理取得・管理削除・設定情報表示の全てを対象にしました。
+
+パスワード照合と投稿時のハッシュ作成は、同一IPあたり60秒の固定窓で10リクエスト、同じ保存領域の全ワーカーで同時2リクエストまでです。成功も数え、超過時はHTTP 429とRetry-Afterを返します。GET/空入力で高コストの照合を行いません。状態は固定サイズのファイルに保存し、プロセス間・スレッド間で共有します。異なるIPのハッシュ衝突は枠を共有する保守的な方式です。転送ヘッダーは独自には信用しません。詳細とプロキシ構成上の注意は[運用手順](SECURITY-MIGRATION-ja.md)を参照してください。
+
+`Locker`のデストラクタは非送出とし、APR解除失敗時は状態コードを標準エラーへ記録します。例外処理中の二重例外を避け、失敗時はロック中のフラグを保持します。実際のOS/APR障害を回復する機能ではありません。
+
+FreeBSD 15.1 amd64 / Clang 19.1.7 / Apache 2.4.69 / OpenSSL 3.5.6、THUMBNAIL無効で追加検証しました。本番Apache・本番データは変更していません。パッケージは`ap24-mod_uploader-3.2.0_4.pkg`です。
+
+| 検証 | 結果 | 記録 |
+| --- | --- | --- |
+| Portのクリーンビルド・stage | 成功 | [ビルド](validation/security-hardening/stage.log) |
+| check-plist / stage-qa / package | 全て成功 | [一覧](validation/security-hardening/check-plist.log)、[QA](validation/security-hardening/stage-qa.log)、[package](validation/security-hardening/package.log) |
+| 既存のネイティブ試験＋新規スロット/回数試験 | 成功、追加20チェック | [ネイティブ](validation/security-hardening/native.log) |
+| Lockerの実クラスを用いたAPRエラー注入 | 6チェック成功 | [Locker](validation/security-hardening/locker.log) |
+| ハンドラ例外処理（httpd代替） | 5チェック成功 | [ハンドラ](validation/security-hardening/handler.log) |
+| 旧データ移行・バックアップ・中断復旧 | 38チェック成功 | [移行](validation/security-hardening/migration.log) |
+| 実Apacheの既存HTTP試験・旧モジュールへの復旧 | 44チェック成功 | [HTTP](validation/security-hardening/http.log) |
+| 実TLSの既存HTTPS試験 | 6チェック成功 | [HTTPS](validation/security-hardening/https.log) |
+| 実プロキシ・管理者認証・試行回数・同時枠・再起動 | 41チェック成功 | [追加HTTP](validation/security-hardening/hardening-http.log) |
+
+追加HTTPでは、管理経路へのGET/削除POST、設定情報、管理ダウンロード、エンコードされたパス、偽装利用者ヘッダーを未認証で拒否することを確認しました。専用Basic認証の失敗・成功と、認証後も削除にCSRFが必要なことを確認しました。公開プロキシ側での独立した遮断も確認しました。
+
+試行制限は、別Cookie・別CSRFトークン・偽装転送IPでも同じ接続元枠を消費すること、正しいパスワード・削除・パスワード付き投稿にも上限が働くこと、429時に投稿一時ファイルが残らないこと、再起動後の上限維持を確認しました。並行HTTP要求と、実ファイルロックで全同時枠を占有した場合の拒否・解放後の取得成功を確認しました。ネイティブ試験では固定時刻注入による窓境界・時計逆行と、別プロセス・スレッドの共有およびSIGKILL後の枠解放を確認しています。
+
+未検証: 本番導入・既存本番プロキシの設定、管理者認証システムの全組合せ、実際のAPR解除障害、実時計変更・OS電源断、他ABI、THUMBNAIL有効、巨大データ、poudriere、全ブラウザ。管理者Basic認証そのものの試行制限や分散アクセス・通信量制限は公開側で別途設定してください。固定窓境界では短時間に最大20回となり得ます。IP枠を共有するプロキシ/NATやハッシュ衝突では正当な利用者も制限され得ます。OS/APR解除障害の試験は戻り値の注入であり、実障害の発生・回復を確認したものではありません。
 
 ## 参照
 

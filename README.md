@@ -47,3 +47,5 @@ checks. See [the migration and rollback guide](docs/SECURITY-MIGRATION-ja.md).
 No production data is automatically migrated by installing or loading this module.
 
 Validation logs are checked in under `docs/validation/`.
+
+管理画面はApacheでの独立した認証が必須です。Portの初期設定では閉鎖しています。IP別のパスワード処理回数と、プロセス間の同時実行数も制限します。設定・制限値は[セキュリティと移行手順](docs/SECURITY-MIGRATION-ja.md)を参照してください。

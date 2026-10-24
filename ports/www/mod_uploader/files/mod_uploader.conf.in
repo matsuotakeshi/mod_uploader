@@ -23,8 +23,10 @@ LoadModule uploader_module %%PREFIX%%/%%APACHEMODDIR%%/mod_uploader.so
     UploaderAdminViewTemplate "%%DATADIR%%/tmpl/admin.htm"
     UploaderErrorViewTemplate "%%DATADIR%%/tmpl/error.htm"
 </Location>
+# Administration is disabled until explicitly configured with Apache authentication.
+# See SECURITY-MIGRATION-ja.md for AuthType Basic + Require valid-user over HTTPS.
 <Location /up/admin>
-    Require local
+    Require all denied
 </Location>
 <Location /up/mail>
     Require local

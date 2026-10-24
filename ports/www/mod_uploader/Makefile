@@ -1,6 +1,6 @@
 PORTNAME=	mod_uploader
 PORTVERSION=	3.2.0
-PORTREVISION=	3
+PORTREVISION=	4
 CATEGORIES=	www
 PKGNAMEPREFIX=	${APACHE_PKGNAMEPREFIX}
 
@@ -47,6 +47,7 @@ pre-patch:
 		${WRKSRC}/configure \
 		${WRKSRC}/configure.ac \
 		${WRKSRC}/include/ApacheResponse.h \
+		${WRKSRC}/include/Locker.h \
 		${WRKSRC}/include/MultipartMessageParser.h.in \
 		${WRKSRC}/include/MultipartMessageParserBuffer.h \
 		${WRKSRC}/include/UploadItem.h \

@@ -166,6 +166,45 @@
  #else
          return r->connection->remote_addr;
  #endif
+--- a/include/Locker.h
++++ b/include/Locker.h
+@@ -1,3 +1,4 @@
++// Altered source: non-throwing lock release; see MODIFICATIONS.
+ /******************************************************************************
+  * Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
+  *
+@@ -34,6 +35,7 @@
+ 
+ #include "Macro.h"
+ #include "Uncopyable.h"
++#include <cstdio>
+ 
+ /**
+  * @brief 読み書きロックの設定を集めたクラス．
+@@ -61,15 +63,16 @@
+         MEMORY_BARRIER;
+     };
+ 
+-    ~Locker()
++    ~Locker() noexcept
+     {
+-        if (is_locked_ != NULL) {
+-            *is_locked_ = false;
++        const apr_status_t status = apr_global_mutex_unlock(mutex_);
++        if (status != APR_SUCCESS) {
++            // Never throw while unwinding; retain the flag if the mutex may still be held.
++            std::fprintf(stderr, "mod_uploader: mutex unlock failed (APR status %d)\n",
++                         static_cast<int>(status));
++            return;
+         }
+-
+-        if (apr_global_mutex_unlock(mutex_) != APR_SUCCESS) {
+-            THROW(MESSAGE_MUTEX_UNLOCK_FAILED);
+-        }
++        if (is_locked_ != NULL) *is_locked_ = false;
+     };
+ 
+     apr_global_mutex_t *mutex_;
 --- a/include/MultipartMessageParser.h.in
 +++ b/include/MultipartMessageParser.h.in
 @@ -1,3 +1,4 @@
@@ -1215,7 +1254,7 @@
  /******************************************************************************
   * Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
   *
-@@ -35,9 +36,14 @@
+@@ -35,9 +36,15 @@
  #include "apr_strings.h"
  
  #include "uploader_handler.h"
@@ -1224,13 +1263,14 @@
  
  #include "RequestResponseImpl.h"
 +#include "PasswordHash.h"
++#include "AuthenticationThrottle.h"
 +#if defined(UPLOADER_TYPE_APACHE) && AP_SERVER_MAJORVERSION_NUMBER >= 2
 +#include "ApacheSecurity.h"
 +#endif
  
  #include "UploadItem.h"
  #include "UploadItemIO.h"
-@@ -117,6 +123,30 @@
+@@ -117,6 +124,41 @@
  }
  
  template<class Response>
@@ -1258,10 +1298,21 @@
 +}
 +
 +template<class Response>
++static int authentication_busy(typename Response::Handle *r, unsigned retry) {
++#if defined(UPLOADER_TYPE_APACHE) && AP_SERVER_MAJORVERSION_NUMBER >= 2
++    apr_table_set(r->err_headers_out, "Retry-After", apr_psprintf(r->pool, "%u", retry));
++    apr_table_setn(r->err_headers_out, "Cache-Control", "no-store");
++#else
++    (void)r;(void)retry;
++#endif
++    return 429;
++}
++
++template<class Response>
  static int redirect(typename Response::Handle *r, typename Response::Writer& o,
                      const char *url)
  {
-@@ -176,6 +206,7 @@
+@@ -176,6 +218,7 @@
          TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
  
          var_creator.create(BASE_URL_VAR_NAME, config->base_url);
@@ -1269,7 +1320,7 @@
          var_creator.create(ERROR_MESSAGE_VAR_NAME, message);
  
          TemplateExecutor<typename Response::Writer> executor(r->pool, o);
-@@ -266,6 +297,7 @@
+@@ -266,6 +309,7 @@
          TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
  
          var_creator.create(BASE_URL_VAR_NAME, config->base_url);
@@ -1277,7 +1328,7 @@
          var_creator.create(COMMAND_VAR_NAME, INDEX_COMMAND);
  
          var_creator.create
-@@ -346,6 +378,7 @@
+@@ -346,6 +390,7 @@
          TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
  
          var_creator.create(BASE_URL_VAR_NAME, config->base_url);
@@ -1285,7 +1336,7 @@
          var_creator.create
              (COMMAND_VAR_NAME,
               apr_pstrcat(r->pool, SORT_COMMAND, sort_type, NULL));
-@@ -401,6 +434,7 @@
+@@ -401,6 +446,7 @@
          TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
  
          var_creator.create(BASE_URL_VAR_NAME, config->base_url);
@@ -1293,7 +1344,7 @@
  
          var_creator.create
              (ITEM_VAR_NAME,
-@@ -571,6 +605,7 @@
+@@ -571,6 +617,7 @@
          TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
  
          var_creator.create(BASE_URL_VAR_NAME, config->base_url);
@@ -1301,7 +1352,21 @@
  
          var_creator.create
              (THUMBNAIL_LIST_VAR_NAME,
-@@ -671,6 +706,7 @@
+@@ -603,6 +650,13 @@
+                        const char *download_pass, const char *comment,
+                        const char *code_pat, apr_size_t *item_id)
+ {
++    *item_id = 0;
++    AuthenticationThrottle hashing(config->data_dir_path, Response::get_remote_ip(r),
++                                   *remove_pass || *download_pass);
++    if (!hashing.allowed()) {
++        apr_file_remove(file_temp_path, r->pool);
++        return authentication_busy<Response>(r, hashing.retry_after());
++    }
+     *item_id = config->get_item_manager()->add
+         (r->pool, file_name, file_mime, file_size, file_digest,
+          file_temp_path, remove_pass, download_pass, comment,
+@@ -671,6 +725,7 @@
      try {
          content_array = parser.parse(Response::get_content_type(r),
                                       Response::get_content_size(r));
@@ -1309,7 +1374,16 @@
          progress->end_time = apr_time_now();
      } catch(const char *message) {
          progress->end_time = apr_time_now();
-@@ -781,6 +817,7 @@
+@@ -692,7 +747,7 @@
+              remove_pass, download_pass, comment, code_pat, &item_id);
+ 
+         progress->item_id = item_id;
+-        progress->is_succeeded  = true;
++        progress->is_succeeded  = (status == OK);
+ 
+         return status;
+     } catch(const char *message) {
+@@ -781,6 +836,7 @@
           PST_MAX_ITEM_COUNT);
  
      content_array = parser.parse();
@@ -1317,7 +1391,7 @@
  
      file_temp_path = NULL;
      try {
-@@ -825,6 +862,7 @@
+@@ -825,6 +881,7 @@
          TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
  
          var_creator.create(BASE_URL_VAR_NAME, config->base_url);
@@ -1325,7 +1399,7 @@
  
          var_creator.create
              (ITEM_VAR_NAME,
-@@ -846,7 +884,9 @@
+@@ -846,7 +903,9 @@
  static int download_set_header(typename Response::Handle *r, UploadItem *uitem,
                                 apr_file_t *item_file)
  {
@@ -1336,7 +1410,7 @@
  
  #ifdef UPLOADER_TYPE_APACHE
  #if AP_SERVER_MAJORVERSION_NUMBER != 1
-@@ -917,7 +957,7 @@
+@@ -917,7 +976,7 @@
      }
  
      Response::set_expires(r, apr_time_now() +  apr_time_from_sec(VIW_EXPIRES));
@@ -1345,7 +1419,7 @@
  
  #if defined(USE_GZIP) && defined(UPLOADER_TYPE_APACHE)
      if (uitem->is_gzipped()) {
-@@ -1033,6 +1073,7 @@
+@@ -1033,6 +1092,7 @@
  
              content_array = parser.parse(Response::get_content_type(r),
                                           Response::get_content_size(r));
@@ -1353,17 +1427,24 @@
  
              download_pass = get_download_password<typename Response::Reader>
                  (r->pool, content_array);
-@@ -1047,8 +1088,7 @@
+@@ -1046,9 +1106,13 @@
+ 
          // DL pass のチェック
          if (!is_admin_mode) {
-             if ((strlen(uitem->get_download_pass()) != 0) &&
+-            if ((strlen(uitem->get_download_pass()) != 0) &&
 -                (strncmp(uitem->get_download_pass(), download_pass,
 -                         strlen(uitem->get_download_pass())) != 0)) {
-+                (!PasswordHash::verify(uitem->get_download_pass(), download_pass))) {
++            bool matches = strlen(uitem->get_download_pass()) == 0;
++            if (!matches && *download_pass) {
++                AuthenticationThrottle attempt(config->data_dir_path, Response::get_remote_ip(r));
++                if (!attempt.allowed()) return authentication_busy<Response>(r, attempt.retry_after());
++                matches = PasswordHash::verify(uitem->get_download_pass(), download_pass);
++            }
++            if (!matches) {
                  if (strlen(download_pass) != 0) {
                      THROW(MESSAGE_DOWNLOAD_PASS_MISMATCH);
                  }
-@@ -1124,6 +1164,7 @@
+@@ -1124,6 +1188,7 @@
  
          content_array = parser.parse(Response::get_content_type(r),
                                       Response::get_content_size(r));
@@ -1371,17 +1452,46 @@
  
          get_remove_param<typename Response::Reader>
              (r->pool, content_array, &item_id, &remove_pass);
-@@ -1135,8 +1176,7 @@
+@@ -1131,12 +1196,15 @@
+         uitem = config->get_item_manager()->get_item(r->pool, item_id);
+ 
+         if (!is_admin_mode) {
++            AuthenticationThrottle attempt(config->data_dir_path, Response::get_remote_ip(r),
++                                          *uitem->get_remove_pass() && *remove_pass);
++            if (!attempt.allowed()) return authentication_busy<Response>(r, attempt.retry_after());
+             if (
  #ifndef EMPTY_PASSWORD
                  (strlen(uitem->get_remove_pass()) == 0) ||
  #endif
 -                (strncmp(remove_pass, uitem->get_remove_pass(),
 -                         strlen(uitem->get_remove_pass())) != 0)) {
-+                (!PasswordHash::verify(uitem->get_remove_pass(), remove_pass))) {
++                ((*uitem->get_remove_pass() && !*remove_pass) ||
++                 !PasswordHash::verify(uitem->get_remove_pass(), remove_pass))) {
                  THROW(MESSAGE_REMOVE_PASS_MISMATCH);
              }
          }
-@@ -1269,6 +1309,7 @@
+@@ -1228,12 +1296,15 @@
+     apr_size_t page_no;
+     apr_size_t page_count;
+ 
++    // Apache must have authenticated the user; neither localhost nor proxy headers suffice.
++#if defined(UPLOADER_TYPE_APACHE) && AP_SERVER_MAJORVERSION_NUMBER >= 2
++    if (!r->user || !*r->user || !r->ap_auth_type || !*r->ap_auth_type) return HTTP_FORBIDDEN;
++#else
++    return HTTP_FORBIDDEN;
++#endif
++
+     Response::set_content_type(r, PAGE_CONTENT_TYPE);
+-    Response::header_end(r);
+-
+-    if (Response::is_head_method(r)) {
+-        return OK;
+-    }
++    if (Response::is_head_method(r)) return OK;
+ 
+     // コマンド
+     admin_arg = arg;
+@@ -1269,6 +1340,7 @@
          TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
  
          var_creator.create(BASE_URL_VAR_NAME, config->base_url);
@@ -1389,7 +1499,7 @@
  
          var_creator.create
              (ITEM_LIST_VAR_NAME,
-@@ -1303,6 +1344,22 @@
+@@ -1303,6 +1375,22 @@
  {
      const char *command;
      const char *request_uri;
@@ -1846,6 +1956,88 @@
 +}
 +#endif
 --- /dev/null
++++ b/include/AuthenticationThrottle.h
+@@ -0,0 +1,79 @@
++// SPDX-License-Identifier: Zlib
++#ifndef UPLOADER_AUTHENTICATION_THROTTLE_H
++#define UPLOADER_AUTHENTICATION_THROTTLE_H
++#include <sys/file.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++#include <unistd.h>
++#include <openssl/sha.h>
++#include <cstdint>
++#include <ctime>
++#include <cerrno>
++#include <string>
++
++// Fixed-size persistent state and kernel-held slots shared by all httpd workers.
++// Hash bucket collisions conservatively share an IP budget; memory/disk use is bounded.
++class AuthenticationThrottle {
++public:
++    static const unsigned LIMIT = 10, WINDOW = 60, CONCURRENT = 2, BUCKETS = 4096;
++    AuthenticationThrottle(const char *directory, const char *ip, bool needed = true,
++                           uint64_t now = static_cast<uint64_t>(std::time(NULL)))
++        : slot_(-1), allowed_(!needed), retry_(1) {
++        if (!needed) return;
++        if (!ip || !*ip) return;
++        const std::string prefix = std::string(directory) + "/.auth-";
++        for (unsigned i = 0; i < CONCURRENT; ++i) {
++            int fd = safe_open(prefix + "slot-" + char('0' + i));
++            if (fd < 0) return;
++            if (flock(fd, LOCK_EX | LOCK_NB) == 0) { slot_ = fd; break; }
++            close(fd);
++        }
++        if (slot_ < 0) return;
++        int state = safe_open(prefix + "attempts");
++        if (state < 0) return;
++        if (flock(state, LOCK_EX | LOCK_NB) != 0) { close(state); return; }
++        struct stat st;
++        const off_t size = static_cast<off_t>(BUCKETS * sizeof(Bucket));
++        bool good = fstat(state, &st) == 0;
++        if (good && st.st_size == 0) good = ftruncate(state, size) == 0;
++        else if (good) good = st.st_size == size;
++        unsigned char digest[SHA256_DIGEST_LENGTH];
++        SHA256(reinterpret_cast<const unsigned char *>(ip), std::char_traits<char>::length(ip), digest);
++        const off_t offset = ((static_cast<unsigned>(digest[0]) << 8 | digest[1]) % BUCKETS) * sizeof(Bucket);
++        Bucket bucket = {0, 0};
++        if (good) good = pread(state, &bucket, sizeof(bucket), offset) == sizeof(bucket);
++        if (good && bucket.count <= LIMIT && now != UINT64_MAX) {
++            if (bucket.start == 0 || (now >= bucket.start && now - bucket.start >= WINDOW)) {
++                bucket.start = now; bucket.count = 0;
++            }
++            if (now >= bucket.start && bucket.count < LIMIT) {
++                ++bucket.count;
++                allowed_ = pwrite(state, &bucket, sizeof(bucket), offset) == sizeof(bucket);
++            } else {
++                retry_ = now < bucket.start ? WINDOW : static_cast<unsigned>(WINDOW - (now - bucket.start));
++            }
++        }
++        // No passwords, raw IP addresses or tokens are written to state files.
++        close(state);
++        if (!allowed_) { close(slot_); slot_ = -1; }
++    }
++    ~AuthenticationThrottle() noexcept { if (slot_ >= 0) close(slot_); }
++    bool allowed() const { return allowed_; }
++    unsigned retry_after() const { return retry_; }
++private:
++    struct Bucket { uint64_t start, count; };
++    static int safe_open(const std::string& path) {
++        int fd = open(path.c_str(), O_RDWR | O_CREAT | O_NOFOLLOW | O_CLOEXEC | O_NONBLOCK, 0600);
++        if (fd < 0) return -1;
++        struct stat st;
++        if (fstat(fd, &st) != 0 || !S_ISREG(st.st_mode) || st.st_uid != geteuid() ||
++            (st.st_mode & 077) != 0 || st.st_nlink != 1) { close(fd); return -1; }
++        return fd;
++    }
++    AuthenticationThrottle(const AuthenticationThrottle&) = delete;
++    AuthenticationThrottle& operator=(const AuthenticationThrottle&) = delete;
++    int slot_;
++    bool allowed_;
++    unsigned retry_;
++};
++#endif
+--- /dev/null
 +++ b/util/password_tool.cpp
 @@ -0,0 +1,93 @@
 +// SPDX-License-Identifier: Zlib
@@ -2084,7 +2276,7 @@
 +if __name__=='__main__':main()
 --- /dev/null
 +++ b/docs/SECURITY-MIGRATION-ja.md
-@@ -0,0 +1,99 @@
+@@ -0,0 +1,136 @@
 +# パスワード保存形式4への安全な移行とCSRF対策
 +
 +対象: このForkのFreeBSD / Apache 2.4版。既存の稼働データへ自動適用する機能ではありません。
@@ -2092,7 +2284,7 @@
 +## 変更内容
 +
 +- 現用メタデータのパスワードは、OpenSSLのPBKDF2-HMAC-SHA256、600,000回、ランダム16バイトsalt、32バイト出力で保存します。saltと回数を含む文字列を128バイトの欄に保存します。
-+- 保存形式は`4.0.0`です。プログラムの系統はmod_uploader 3.2.0の改修版で、Portのリビジョンは3です。
++- 保存形式は`4.0.0`です。プログラムの系統はmod_uploader 3.2.0の改修版で、Portのリビジョンは4です。
 +- 旧形式2/3の16バイト平文欄は、新サーバーでは読み込まず起動時に移行を要求します。無断の自動書換え・平文へのフォールバックはありません。
 +- 入力パスワードの上限は127バイトです。文字コードの変換や正規化をせず、従来と同じ入力バイト列をハッシュ化します。既存パスワードの再設定は不要です。
 +- 暗号化ではなく検証用ハッシュです。旧版へ戻すにはバックアップを戻してください。
@@ -2184,9 +2376,46 @@
 +- https://docs.openssl.org/3.0/man3/PKCS5_PBKDF2_HMAC/
 +- https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html
 +- https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html
++
++
++## 管理画面の認証（Portリビジョン4以降）
++
++管理画面・管理ダウンロード・管理削除・設定情報表示は、Apacheが認証した利用者を必須にします。`Require local`だけでは403となります。`Authorization`や`X-Remote-User`などのヘッダーを送るだけでは許可されません。Portの設定例は管理画面を`Require all denied`で閉じています。利用する場合は、公開側プロキシでも`/up/admin`以下を遮断し、別の管理経路で以下を設定してください。
++
++```apache
++<Location /up/admin>
++    AuthType Basic
++    AuthName "Uploader administration"
++    AuthBasicProvider file
++    AuthUserFile "/usr/local/etc/apache24/uploader-admin.htpasswd"
++    <RequireAll>
++        Require local
++        Require valid-user
++    </RequireAll>
++</Location>
++```
++
++Apacheの`auth_basic`、`authn_core`、`authn_file`、`authz_user`が必要です。`htpasswd -cB /usr/local/etc/apache24/uploader-admin.htpasswd 管理者名`で専用の認証ファイルを作成します。パスワードは引数に書かず対話入力し、ファイルはApache実行ユーザーだけが読める所有者・権限にしてください。既存ファイルへの利用者追加では`-c`を外します。管理者用の専用認証ファイルを使い、一般利用者の認証と共用しないでください。Basic認証はHTTPSまたはSSHトンネル経由で利用してください。管理者も削除POSTにはCSRFトークンが必要です。
++
++## パスワード処理の制限（Portリビジョン4以降）
++
++- ダウンロード・削除のパスワード照合と、パスワード付き新規投稿のハッシュ作成を、同じデータディレクトリの全Apacheワーカーで共有して制限します。
++- 同一IPは60秒の固定窓あたり10リクエストまで。成功した照合と投稿も数え、CookieやCSRFトークンを作り直しても枠は増えません。窓の切替前後には最大20回の短時間バーストがあり得ます。
++- 同時に実行するパスワード処理は全体で2リクエストまで。超過時は待たずにHTTP 429と`Retry-After`を返します。1投稿で最大2個のハッシュを順番に作る場合も1枠です。
++- パスワード入力画面のGETや空入力では、照合用の高コスト計算を行いません。一般ファイルの取得や認証済み管理操作にも高コスト照合はありません。
++- 状態はデータディレクトリの`.auth-attempts`（65,536バイト）と`.auth-slot-0`、`.auth-slot-1`で共有します。IPは4,096個のハッシュ枠に割り当て、衝突したIPは保守的に枠を共用します。パスワードや生のIPは記録しません。再起動後も回数を保持し、プロセス終了時はカーネルが同時実行枠を解放します。
++- 書込み失敗、不正な所有者・権限・リンク・サイズ等でも処理を許可せず429を返します。発生が続く場合はエラーログとデータディレクトリの状態を調べてください。稼働中に状態ファイルを消すと制限を分断するため削除しないでください。
++- Apache 2.4の`useragent_ip`を用います。転送ヘッダーをモジュール独自には信用しません。プロキシ配下で実IPが設定されていない場合は、プロキシIPで枠を共用します。`mod_remoteip`を使う場合は`RemoteIPHeader`と信頼するプロキシ範囲を限定し、バックエンドへの外部直接接続を遮断してください。
++- この制限は分散総当たり、管理者Basic認証自体の試行、大量のアップロード通信量を完全には防ぎません。公開側のアクセス・リクエスト数・本文サイズ制限も維持してください。
++
++根拠となるApache公式資料: [認証と認可](https://httpd.apache.org/docs/2.4/howto/auth.html)、[mod_remoteip](https://httpd.apache.org/docs/2.4/en/mod/mod_remoteip.html)。
++
++## ロック解除エラー
++
++`Locker`のデストラクタは`noexcept`とし、APRのロック解除に失敗した場合は標準エラー（Apache起動構成によりErrorLog）へ状態コードを記録します。例外処理中も別の例外を投げません。失敗時は「ロック中」のフラグを維持します。OS/APR側のロック障害そのものを回復する機能ではないため、ログに出た場合は原因調査と必要に応じたサービスの復旧が必要です。
 --- /dev/null
 +++ b/MODIFICATIONS
-@@ -0,0 +1,25 @@
+@@ -0,0 +1,27 @@
 +mod_uploader 3.2.0 - altered FreeBSD / Apache 2.4 version
 +
 +Original software: Tetsuya Kimata.
@@ -2212,9 +2441,11 @@
 +Security update: version-4 hashed password metadata, offline verified backups,
 +storage exclusion, and expiring session-bound signed CSRF tokens.
 +See docs/SECURITY-MIGRATION-ja.md before replacing an existing installation.
++
++Port revision 4: require Apache-authenticated administration; bound per-IP password attempts and cross-process concurrent hashing; make Locker cleanup non-throwing with error reporting. See SECURITY-MIGRATION-ja.md.
 --- /dev/null
 +++ b/README.md
-@@ -0,0 +1,49 @@
+@@ -0,0 +1,51 @@
 +# mod_uploader 3.2.0: altered FreeBSD / Apache 2.4 version
 +
 +Original software by Tetsuya Kimata: https://github.com/kimata/mod_uploader
@@ -2264,3 +2495,5 @@
 +No production data is automatically migrated by installing or loading this module.
 +
 +Validation logs are checked in under `docs/validation/`.
++
++管理画面はApacheでの独立した認証が必須です。Portの初期設定では閉鎖しています。IP別のパスワード処理回数と、プロセス間の同時実行数も制限します。設定・制限値は[セキュリティと移行手順](docs/SECURITY-MIGRATION-ja.md)を参照してください。

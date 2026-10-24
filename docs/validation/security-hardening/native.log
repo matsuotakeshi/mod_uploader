@@ -1,0 +1,6 @@
+safety: 80012 checks passed
+buffer: 7 checks passed
+reader: 7 checks passed (mock APR/Apache)
+origin: 16 checks passed
+security: 21 checks passed
+throttle: 20 checks passed (persistent IP budget, threads, processes, crash release, unsafe state)

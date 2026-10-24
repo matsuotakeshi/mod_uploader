@@ -23,3 +23,5 @@ FreeBSD Ports packaging or complete HTTP functionality.
 Security update: version-4 hashed password metadata, offline verified backups,
 storage exclusion, and expiring session-bound signed CSRF tokens.
 See docs/SECURITY-MIGRATION-ja.md before replacing an existing installation.
+
+Port revision 4: require Apache-authenticated administration; bound per-IP password attempts and cross-process concurrent hashing; make Locker cleanup non-throwing with error reporting. See SECURITY-MIGRATION-ja.md.

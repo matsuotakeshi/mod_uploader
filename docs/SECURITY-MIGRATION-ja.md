@@ -5,7 +5,7 @@
 ## 変更内容
 
 - 現用メタデータのパスワードは、OpenSSLのPBKDF2-HMAC-SHA256、600,000回、ランダム16バイトsalt、32バイト出力で保存します。saltと回数を含む文字列を128バイトの欄に保存します。
-- 保存形式は`4.0.0`です。プログラムの系統はmod_uploader 3.2.0の改修版で、Portのリビジョンは3です。
+- 保存形式は`4.0.0`です。プログラムの系統はmod_uploader 3.2.0の改修版で、Portのリビジョンは4です。
 - 旧形式2/3の16バイト平文欄は、新サーバーでは読み込まず起動時に移行を要求します。無断の自動書換え・平文へのフォールバックはありません。
 - 入力パスワードの上限は127バイトです。文字コードの変換や正規化をせず、従来と同じ入力バイト列をハッシュ化します。既存パスワードの再設定は不要です。
 - 暗号化ではなく検証用ハッシュです。旧版へ戻すにはバックアップを戻してください。
@@ -97,3 +97,40 @@ HTTPテストは専用の一時保存領域と127.0.0.1の空きポートで別A
 - https://docs.openssl.org/3.0/man3/PKCS5_PBKDF2_HMAC/
 - https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html
 - https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html
+
+
+## 管理画面の認証（Portリビジョン4以降）
+
+管理画面・管理ダウンロード・管理削除・設定情報表示は、Apacheが認証した利用者を必須にします。`Require local`だけでは403となります。`Authorization`や`X-Remote-User`などのヘッダーを送るだけでは許可されません。Portの設定例は管理画面を`Require all denied`で閉じています。利用する場合は、公開側プロキシでも`/up/admin`以下を遮断し、別の管理経路で以下を設定してください。
+
+```apache
+<Location /up/admin>
+    AuthType Basic
+    AuthName "Uploader administration"
+    AuthBasicProvider file
+    AuthUserFile "/usr/local/etc/apache24/uploader-admin.htpasswd"
+    <RequireAll>
+        Require local
+        Require valid-user
+    </RequireAll>
+</Location>
+```
+
+Apacheの`auth_basic`、`authn_core`、`authn_file`、`authz_user`が必要です。`htpasswd -cB /usr/local/etc/apache24/uploader-admin.htpasswd 管理者名`で専用の認証ファイルを作成します。パスワードは引数に書かず対話入力し、ファイルはApache実行ユーザーだけが読める所有者・権限にしてください。既存ファイルへの利用者追加では`-c`を外します。管理者用の専用認証ファイルを使い、一般利用者の認証と共用しないでください。Basic認証はHTTPSまたはSSHトンネル経由で利用してください。管理者も削除POSTにはCSRFトークンが必要です。
+
+## パスワード処理の制限（Portリビジョン4以降）
+
+- ダウンロード・削除のパスワード照合と、パスワード付き新規投稿のハッシュ作成を、同じデータディレクトリの全Apacheワーカーで共有して制限します。
+- 同一IPは60秒の固定窓あたり10リクエストまで。成功した照合と投稿も数え、CookieやCSRFトークンを作り直しても枠は増えません。窓の切替前後には最大20回の短時間バーストがあり得ます。
+- 同時に実行するパスワード処理は全体で2リクエストまで。超過時は待たずにHTTP 429と`Retry-After`を返します。1投稿で最大2個のハッシュを順番に作る場合も1枠です。
+- パスワード入力画面のGETや空入力では、照合用の高コスト計算を行いません。一般ファイルの取得や認証済み管理操作にも高コスト照合はありません。
+- 状態はデータディレクトリの`.auth-attempts`（65,536バイト）と`.auth-slot-0`、`.auth-slot-1`で共有します。IPは4,096個のハッシュ枠に割り当て、衝突したIPは保守的に枠を共用します。パスワードや生のIPは記録しません。再起動後も回数を保持し、プロセス終了時はカーネルが同時実行枠を解放します。
+- 書込み失敗、不正な所有者・権限・リンク・サイズ等でも処理を許可せず429を返します。発生が続く場合はエラーログとデータディレクトリの状態を調べてください。稼働中に状態ファイルを消すと制限を分断するため削除しないでください。
+- Apache 2.4の`useragent_ip`を用います。転送ヘッダーをモジュール独自には信用しません。プロキシ配下で実IPが設定されていない場合は、プロキシIPで枠を共用します。`mod_remoteip`を使う場合は`RemoteIPHeader`と信頼するプロキシ範囲を限定し、バックエンドへの外部直接接続を遮断してください。
+- この制限は分散総当たり、管理者Basic認証自体の試行、大量のアップロード通信量を完全には防ぎません。公開側のアクセス・リクエスト数・本文サイズ制限も維持してください。
+
+根拠となるApache公式資料: [認証と認可](https://httpd.apache.org/docs/2.4/howto/auth.html)、[mod_remoteip](https://httpd.apache.org/docs/2.4/en/mod/mod_remoteip.html)。
+
+## ロック解除エラー
+
+`Locker`のデストラクタは`noexcept`とし、APRのロック解除に失敗した場合は標準エラー（Apache起動構成によりErrorLog）へ状態コードを記録します。例外処理中も別の例外を投げません。失敗時は「ロック中」のフラグを維持します。OS/APR側のロック障害そのものを回復する機能ではないため、ログに出た場合は原因調査と必要に応じたサービスの復旧が必要です。

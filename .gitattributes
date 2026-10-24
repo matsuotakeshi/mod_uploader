@@ -5,3 +5,4 @@ docs/validation/*.log -whitespace
 
 util/*.py text eol=lf
 docs/validation/security-format4/*.log -whitespace
+docs/validation/security-hardening/*.log -whitespace

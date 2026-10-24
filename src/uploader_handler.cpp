@@ -41,6 +41,7 @@
 
 #include "RequestResponseImpl.h"
 #include "PasswordHash.h"
+#include "AuthenticationThrottle.h"
 #if defined(UPLOADER_TYPE_APACHE) && AP_SERVER_MAJORVERSION_NUMBER >= 2
 #include "ApacheSecurity.h"
 #endif
@@ -144,6 +145,17 @@ static bool check_csrf(typename Response::Handle *r,apr_array_header_t *array) {
 #else
     (void)r;(void)array;return false;
 #endif
+}
+
+template<class Response>
+static int authentication_busy(typename Response::Handle *r, unsigned retry) {
+#if defined(UPLOADER_TYPE_APACHE) && AP_SERVER_MAJORVERSION_NUMBER >= 2
+    apr_table_set(r->err_headers_out, "Retry-After", apr_psprintf(r->pool, "%u", retry));
+    apr_table_setn(r->err_headers_out, "Cache-Control", "no-store");
+#else
+    (void)r;(void)retry;
+#endif
+    return 429;
 }
 
 template<class Response>
@@ -638,6 +650,13 @@ static int upload_impl(typename Response::Handle *r, UploaderConfig *config,
                        const char *download_pass, const char *comment,
                        const char *code_pat, apr_size_t *item_id)
 {
+    *item_id = 0;
+    AuthenticationThrottle hashing(config->data_dir_path, Response::get_remote_ip(r),
+                                   *remove_pass || *download_pass);
+    if (!hashing.allowed()) {
+        apr_file_remove(file_temp_path, r->pool);
+        return authentication_busy<Response>(r, hashing.retry_after());
+    }
     *item_id = config->get_item_manager()->add
         (r->pool, file_name, file_mime, file_size, file_digest,
          file_temp_path, remove_pass, download_pass, comment,
@@ -728,7 +747,7 @@ static int upload(typename Response::Handle *r, UploaderConfig *config,
              remove_pass, download_pass, comment, code_pat, &item_id);
 
         progress->item_id = item_id;
-        progress->is_succeeded  = true;
+        progress->is_succeeded  = (status == OK);
 
         return status;
     } catch(const char *message) {
@@ -1087,8 +1106,13 @@ static int download(typename Response::Handle *r, UploaderConfig *config,
 
         // DL pass のチェック
         if (!is_admin_mode) {
-            if ((strlen(uitem->get_download_pass()) != 0) &&
-                (!PasswordHash::verify(uitem->get_download_pass(), download_pass))) {
+            bool matches = strlen(uitem->get_download_pass()) == 0;
+            if (!matches && *download_pass) {
+                AuthenticationThrottle attempt(config->data_dir_path, Response::get_remote_ip(r));
+                if (!attempt.allowed()) return authentication_busy<Response>(r, attempt.retry_after());
+                matches = PasswordHash::verify(uitem->get_download_pass(), download_pass);
+            }
+            if (!matches) {
                 if (strlen(download_pass) != 0) {
                     THROW(MESSAGE_DOWNLOAD_PASS_MISMATCH);
                 }
@@ -1172,11 +1196,15 @@ static int remove(typename Response::Handle *r, UploaderConfig *config,
         uitem = config->get_item_manager()->get_item(r->pool, item_id);
 
         if (!is_admin_mode) {
+            AuthenticationThrottle attempt(config->data_dir_path, Response::get_remote_ip(r),
+                                          *uitem->get_remove_pass() && *remove_pass);
+            if (!attempt.allowed()) return authentication_busy<Response>(r, attempt.retry_after());
             if (
 #ifndef EMPTY_PASSWORD
                 (strlen(uitem->get_remove_pass()) == 0) ||
 #endif
-                (!PasswordHash::verify(uitem->get_remove_pass(), remove_pass))) {
+                ((*uitem->get_remove_pass() && !*remove_pass) ||
+                 !PasswordHash::verify(uitem->get_remove_pass(), remove_pass))) {
                 THROW(MESSAGE_REMOVE_PASS_MISMATCH);
             }
         }
@@ -1268,12 +1296,15 @@ static int admin(typename Response::Handle *r, UploaderConfig *config,
     apr_size_t page_no;
     apr_size_t page_count;
 
-    Response::set_content_type(r, PAGE_CONTENT_TYPE);
-    Response::header_end(r);
+    // Apache must have authenticated the user; neither localhost nor proxy headers suffice.
+#if defined(UPLOADER_TYPE_APACHE) && AP_SERVER_MAJORVERSION_NUMBER >= 2
+    if (!r->user || !*r->user || !r->ap_auth_type || !*r->ap_auth_type) return HTTP_FORBIDDEN;
+#else
+    return HTTP_FORBIDDEN;
+#endif
 
-    if (Response::is_head_method(r)) {
-        return OK;
-    }
+    Response::set_content_type(r, PAGE_CONTENT_TYPE);
+    if (Response::is_head_method(r)) return OK;
 
     // コマンド
     admin_arg = arg;

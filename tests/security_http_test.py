@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Zlib
 """Real httpd on loopback, isolated storage, no production configuration changes."""
+import base64
 import concurrent.futures
 import argparse, hashlib, hmac, http.client, json, os, pwd, re, shutil, socket, ssl, subprocess, tempfile, time
 from pathlib import Path
@@ -11,14 +12,14 @@ def run(*args,input=None,code=0):
     return p
 
 class Server:
-    def __init__(self,root,build,port):
+    def __init__(self,root,build,port,admin_auth=True):
         self.root=root;self.port=port;self.conf=root/'httpd.conf';self.proc=None
         mods=Path('/usr/local/libexec/apache24');base='http://127.0.0.1:'+str(port)+'/up'
         (root/'www').mkdir(exist_ok=True)
         text='DocumentRoot \"'+str(root/'www')+'\"\n'
         text+='ServerRoot "'+str(root)+'"\nPidFile "'+str(root/'httpd.pid')+'"\n'
         text+='Listen 127.0.0.1:'+str(port)+'\nServerName 127.0.0.1\nErrorLog "'+str(root/'error.log')+'"\nLogLevel info\n'
-        for name in ['mpm_event','unixd','authz_core','authz_host']:text+='LoadModule '+name+'_module "'+str(mods/('mod_'+name+'.so'))+'"\n'
+        for name in ['mpm_event','unixd','authz_core','authz_host','auth_basic','authn_core','authn_file','authz_user']:text+='LoadModule '+name+'_module "'+str(mods/('mod_'+name+'.so'))+'"\n'
         text+='LoadModule uploader_module "'+str(build/'src/mod_uploader.so')+'"\n'
         text+='User '+pwd.getpwuid(os.geteuid()).pw_name+'\nGroup #'+str(os.getegid())+'\n'
         text+='<Location /up>\nSetHandler uploader\nRequire all granted\nUploaderBaseUrl "'+base+'"\n'
@@ -26,7 +27,14 @@ class Server:
         text+='UploaderTotalFileSizeLimit 10485760\nUploaderTotalFileNumberLimit 100\nUploaderFileSizeLimit 1048576\nUploaderPerPageItemNumber 30\n'
         for key,name in [('Index','index'),('Info','info'),('Progress','progress'),('Download','download'),('Thumbnail','thumbnail'),('Admin','admin'),('Error','error')]:
             text+='Uploader'+key+'ViewTemplate "'+str(build/'tmpl/en'/(name+'.htm'))+'"\n'
-        text+='</Location>\n<Location /up/admin>\nRequire local\n</Location>\n<Location /up/mail>\nRequire local\n</Location>\n'
+        text+='</Location>\n<Location /up/admin>\n'
+        if admin_auth:
+            auth=root/'admin.htpasswd'
+            auth.write_bytes(run('/usr/local/bin/htpasswd','-niB','-C','5','review',input=b'fixture-admin-pass\n').stdout)
+            os.chmod(auth,0o600)
+            text+='AuthType Basic\nAuthName "Uploader administration"\nAuthBasicProvider file\nAuthUserFile "'+str(auth)+'"\nRequire valid-user\n'
+        else:text+='Require local\n'
+        text+='</Location>\n<Location /up/mail>\nRequire local\n</Location>\n'
         self.conf.write_text(text)
     def start(self,success=True):
         self.log=(self.root/'process.log').open('ab')
@@ -48,9 +56,10 @@ class Server:
 
 class Client:
     def __init__(self,port,tls_context=None):
-        self.port=port;self.cookie='';self.token='';self.tls_context=tls_context;self.origin=('https://' if tls_context else 'http://')+'127.0.0.1:'+str(port)
+        self.port=port;self.admin_credentials=None;self.cookie='';self.token='';self.tls_context=tls_context;self.origin=('https://' if tls_context else 'http://')+'127.0.0.1:'+str(port)
     def request(self,path,fields=None,headers=None,cookie=None):
         h={} if headers is None else dict(headers)
+        if path.startswith('/up/admin') and self.admin_credentials:h.setdefault('Authorization',self.admin_credentials)
         if cookie is None:cookie=self.cookie
         if cookie:h['Cookie']=cookie
         body=None;method='GET'
@@ -98,7 +107,7 @@ def main():
         assert len(set(cookies))==12;checks+=1
         live_cmd=list(cmd);live_cmd[live_cmd.index('--backup-dir')+1]=root/'live-backup'
         run(*live_cmd,code=1);assert not (root/'live-backup').exists();checks+=1
-        a=Client(port);headers,page=a.index();assert 'no-store' in headers['Cache-Control'];checks+=1
+        a=Client(port);a.admin_credentials='Basic '+base64.b64encode(b'review:fixture-admin-pass').decode();headers,page=a.index();assert 'no-store' in headers['Cache-Control'];checks+=1
         cookie_header=headers.get('Set-Cookie','');assert 'HttpOnly' in cookie_header and 'SameSite=Strict' in cookie_header;checks+=1
         assert (root/'data/.csrf-key').stat().st_mode&0o777==0o600;checks+=1
         for form_path in ['/up/admin/','/up/download/1.txt']:
