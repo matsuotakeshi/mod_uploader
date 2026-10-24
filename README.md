@@ -8,9 +8,9 @@ release. Copyright and zlib license notices are retained in [COPYING](COPYING).
 See [MODIFICATIONS](MODIFICATIONS) for attribution and modification notice.
 
 The user reported successful operation on their FreeBSD / Apache setup
-following the build correction. Exact OS/compiler/server versions and
-feature-by-feature test results were not supplied. Ports packaging,
-poudriere, concurrency and complete HTTP acceptance tests remain unverified.
+following the build correction. The Port has now built and passed stage, check-plist, stage-qa and package
+on FreeBSD 15.1 amd64 / Clang 19.1.7 / Apache 2.4.69 (THUMBNAIL off).
+Package installation, poudriere, concurrency and full HTTP tests remain unverified.
 
 ## Build
 
@@ -40,5 +40,9 @@ Tests substitute APR/httpd interfaces where stated; they are not full
 module integration tests. See [the Japanese migration report](docs/FREEBSD-ja.md)
 for changes, security limitations, FreeBSD verification steps and layout details.
 In particular, downloads now use attachments, password storage remains in
-the legacy format, and CSRF checks are partial. Thumbnail decoding requires
+the legacy format. Apache POST now requires a matching Origin or Referer;
+requests with neither header are rejected. This is not authentication and
+a token-based CSRF design remains a future improvement. Thumbnail decoding requires
 an appropriate ImageMagick resource/coder policy.
+
+Validation logs are checked in under `docs/validation/`.

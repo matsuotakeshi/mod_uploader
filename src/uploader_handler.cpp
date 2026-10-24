@@ -36,6 +36,7 @@
 #include "apr_strings.h"
 
 #include "uploader_handler.h"
+#include "RequestOrigin.h"
 #include "uploader_util.h"
 
 #include "RequestResponseImpl.h"
@@ -1309,18 +1310,9 @@ int uploader_command_handler(typename Response::Handle *r, UploaderConfig *confi
     if (Response::is_post_method(r)) {
         const char *site = apr_table_get(r->headers_in, "Sec-Fetch-Site");
         const char *origin = apr_table_get(r->headers_in, "Origin");
-        if (site != NULL && strcmp(site, "cross-site") == 0)
+        const char *referer = apr_table_get(r->headers_in, "Referer");
+        if (!RequestOrigin::allowed(config->base_url, origin, referer, site))
             return HTTP_FORBIDDEN;
-        if (origin != NULL) {
-            const char *scheme = strstr(config->base_url, "://");
-            if (scheme == NULL) return HTTP_FORBIDDEN;
-            const char *end = strchr(scheme+3, '/');
-            apr_size_t length = end ? static_cast<apr_size_t>(end-config->base_url)
-                                   : strlen(config->base_url);
-            if (strlen(origin) != length ||
-                memcmp(origin, config->base_url, length) != 0)
-                return HTTP_FORBIDDEN;
-        }
     }
 #endif
 

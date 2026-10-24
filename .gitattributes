@@ -1,1 +1,4 @@
+ports/** text eol=lf
 ports/**/files/patch-* -text -whitespace
+tests/** text eol=lf
+docs/validation/*.log -whitespace

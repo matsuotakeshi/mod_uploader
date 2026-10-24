@@ -1,12 +1,12 @@
 PORTNAME=	mod_uploader
 PORTVERSION=	3.2.0
-PORTREVISION=	1
+PORTREVISION=	2
 CATEGORIES=	www
 PKGNAMEPREFIX=	${APACHE_PKGNAMEPREFIX}
 
-MAINTAINER=	ports@FreeBSD.org
+MAINTAINER=	takeshi@ysni.org
 COMMENT=	Apache file uploader with FreeBSD compatibility and security patches
-WWW=		https://github.com/kimata/mod_uploader
+WWW=		https://github.com/matsuotakeshi/mod_uploader
 
 LICENSE=	ZLIB
 LICENSE_FILE=	${WRKSRC}/COPYING

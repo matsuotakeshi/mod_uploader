@@ -1,0 +1,3 @@
+check-plist EXIT=0
+stage-qa EXIT=0
+package EXIT=0

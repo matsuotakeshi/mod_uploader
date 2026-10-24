@@ -935,7 +935,15 @@
  /******************************************************************************
   * Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
   *
-@@ -846,7 +847,9 @@
+@@ -35,6 +36,7 @@
+ #include "apr_strings.h"
+ 
+ #include "uploader_handler.h"
++#include "RequestOrigin.h"
+ #include "uploader_util.h"
+ 
+ #include "RequestResponseImpl.h"
+@@ -846,7 +848,9 @@
  static int download_set_header(typename Response::Handle *r, UploadItem *uitem,
                                 apr_file_t *item_file)
  {
@@ -946,7 +954,7 @@
  
  #ifdef UPLOADER_TYPE_APACHE
  #if AP_SERVER_MAJORVERSION_NUMBER != 1
-@@ -917,7 +920,7 @@
+@@ -917,7 +921,7 @@
      }
  
      Response::set_expires(r, apr_time_now() +  apr_time_from_sec(VIW_EXPIRES));
@@ -955,7 +963,7 @@
  
  #if defined(USE_GZIP) && defined(UPLOADER_TYPE_APACHE)
      if (uitem->is_gzipped()) {
-@@ -1047,8 +1050,7 @@
+@@ -1047,8 +1051,7 @@
          // DL pass のチェック
          if (!is_admin_mode) {
              if ((strlen(uitem->get_download_pass()) != 0) &&
@@ -965,7 +973,7 @@
                  if (strlen(download_pass) != 0) {
                      THROW(MESSAGE_DOWNLOAD_PASS_MISMATCH);
                  }
-@@ -1135,8 +1137,7 @@
+@@ -1135,8 +1138,7 @@
  #ifndef EMPTY_PASSWORD
                  (strlen(uitem->get_remove_pass()) == 0) ||
  #endif
@@ -975,7 +983,7 @@
                  THROW(MESSAGE_REMOVE_PASS_MISMATCH);
              }
          }
-@@ -1303,6 +1304,25 @@
+@@ -1303,6 +1305,16 @@
  {
      const char *command;
      const char *request_uri;
@@ -984,18 +992,9 @@
 +    if (Response::is_post_method(r)) {
 +        const char *site = apr_table_get(r->headers_in, "Sec-Fetch-Site");
 +        const char *origin = apr_table_get(r->headers_in, "Origin");
-+        if (site != NULL && strcmp(site, "cross-site") == 0)
++        const char *referer = apr_table_get(r->headers_in, "Referer");
++        if (!RequestOrigin::allowed(config->base_url, origin, referer, site))
 +            return HTTP_FORBIDDEN;
-+        if (origin != NULL) {
-+            const char *scheme = strstr(config->base_url, "://");
-+            if (scheme == NULL) return HTTP_FORBIDDEN;
-+            const char *end = strchr(scheme+3, '/');
-+            apr_size_t length = end ? static_cast<apr_size_t>(end-config->base_url)
-+                                   : strlen(config->base_url);
-+            if (strlen(origin) != length ||
-+                memcmp(origin, config->base_url, length) != 0)
-+                return HTTP_FORBIDDEN;
-+        }
 +    }
 +#endif
  
@@ -1027,6 +1026,50 @@
 +}
 +#endif
 --- /dev/null
++++ b/include/RequestOrigin.h
+@@ -0,0 +1,41 @@
++// SPDX-License-Identifier: Zlib
++// Altered mod_uploader: require a verifiable browser source on Apache POST.
++#ifndef REQUEST_ORIGIN_H
++#define REQUEST_ORIGIN_H
++#include <cstddef>
++#include <cstring>
++namespace RequestOrigin {
++inline unsigned char lower(unsigned char c) {
++    return c >= 'A' && c <= 'Z' ? static_cast<unsigned char>(c + ('a'-'A')) : c;
++}
++inline std::size_t length(const char *url) {
++    if (url == NULL) return 0;
++    std::size_t scheme = 0;
++    if (std::strncmp(url, "https://", 8) == 0) scheme = 8;
++    else if (std::strncmp(url, "http://", 7) == 0) scheme = 7;
++    else return 0;
++    std::size_t end = scheme;
++    while (url[end] && url[end] != '/' && url[end] != '?' && url[end] != '#') {
++        const unsigned char c = static_cast<unsigned char>(url[end]);
++        if (c <= 32 || c >= 127 || c == '@' || c == '\\') return 0;
++        ++end;
++    }
++    return end == scheme ? 0 : end;
++}
++inline bool matches(const char *base, const char *source, bool referer) {
++    const std::size_t a = length(base), b = length(source);
++    if (a == 0 || a != b || (!referer && source[b] != 0)) return false;
++    for (std::size_t i = 0; i < a; ++i)
++        if (lower(static_cast<unsigned char>(base[i])) !=
++            lower(static_cast<unsigned char>(source[i]))) return false;
++    return true;
++}
++inline bool allowed(const char *base, const char *origin,
++                    const char *referer, const char *fetch_site) {
++    if (fetch_site != NULL && std::strcmp(fetch_site, "cross-site") == 0) return false;
++    // An invalid Origin must never fall back to a permissive Referer.
++    if (origin != NULL) return matches(base, origin, false);
++    return referer != NULL && matches(base, referer, true);
++}
++}
++#endif
+--- /dev/null
 +++ b/MODIFICATIONS
 @@ -0,0 +1,21 @@
 +mod_uploader 3.2.0 - altered FreeBSD / Apache 2.4 version
@@ -1052,7 +1095,7 @@
 +FreeBSD Ports packaging or complete HTTP functionality.
 --- /dev/null
 +++ b/README.md
-@@ -0,0 +1,44 @@
+@@ -0,0 +1,48 @@
 +# mod_uploader 3.2.0: altered FreeBSD / Apache 2.4 version
 +
 +Original software by Tetsuya Kimata: https://github.com/kimata/mod_uploader
@@ -1095,5 +1138,9 @@
 +module integration tests. See [the Japanese migration report](docs/FREEBSD-ja.md)
 +for changes, security limitations, FreeBSD verification steps and layout details.
 +In particular, downloads now use attachments, password storage remains in
-+the legacy format, and CSRF checks are partial. Thumbnail decoding requires
++the legacy format. Apache POST now requires a matching Origin or Referer;
++requests with neither header are rejected. This is not authentication and
++a token-based CSRF design remains a future improvement. Thumbnail decoding requires
 +an appropriate ImageMagick resource/coder policy.
++
++Validation logs are checked in under `docs/validation/`.

@@ -1,0 +1,15 @@
+FreeBSD 15.1-RELEASE
+FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)
+Server version: Apache/2.4.69 (FreeBSD)
+Server built:   unknown
+apr-1.7.6.1.6.3
+gmake-4.4.1
+libtool-2.6.2
+perl5-5.42.2
+safety: 80012 checks passed
+buffer: 7 checks passed
+reader: 7 checks passed (mock APR/Apache)
+origin: 16 checks passed
+NATIVE_EXIT=0
+handler: 5 assertions passed (mock httpd; not a module build)
+HANDLER_EXIT=0
