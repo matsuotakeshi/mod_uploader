@@ -1,0 +1,15 @@
+[
+{ type: install
+  message: <<EOM
+Application operation was reported by the user; this Port packaging
+has not been validated on FreeBSD.
+Use an isolated test jail before deployment. The module is not enabled
+by installation. Review %%ETCDIR%%/mod_uploader.conf.sample, set the public
+UploaderBaseUrl, and only then include a copy from Apache configuration.
+Storage is outside DocumentRoot. Do not publish it through an Alias.
+Downloads are attachments. Thumbnails are optional and need ImageMagick
+resource/coder policy. Keep admin/mail restricted to trusted clients.
+Read the accompanying migration report for outstanding security work.
+EOM
+}
+]

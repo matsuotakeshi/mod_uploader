@@ -1,0 +1,1 @@
+ports/**/files/patch-* -text -whitespace

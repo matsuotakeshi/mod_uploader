@@ -1,3 +1,4 @@
+// Altered source version for FreeBSD / Apache 2.4; see MODIFICATIONS.
 /******************************************************************************
  * Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
  *
@@ -113,13 +114,18 @@ apr_array_header_t *RFC1867Parser<R, W>::parse(const char *content_type,
     M::boundary_ = get_boundary(content_type);
     M::boundary_len_ = strlen(M::boundary_);
     M::barrier_len_ = M::boundary_len_ + strlen(M::CR_LF) +
-        strlen(M::BOUNDARY_PREFIX);
+        strlen(M::BOUNDARY_PREFIX) + 2;
 
     if (M::fill() == 0) {
         THROW(MESSAGE_RFC1867_CONTENT_SIZE_ZERO);
     }
 
-    start = M::skip_line(M::buffer_.get_data()) - strlen(M::CR_LF);
+    if (M::buffer_.get_size() < M::boundary_len_ + 4 ||
+        memcmp(M::buffer_.get_data(), "--", 2) != 0 ||
+        memcmp(M::buffer_.get_data()+2, M::boundary_, M::boundary_len_) != 0 ||
+        memcmp(M::buffer_.get_data()+2+M::boundary_len_, "\r\n", 2) != 0)
+        THROW(MESSAGE_RFC1867_FORMAT_INVALID);
+    start = M::buffer_.get_data() + 2 + M::boundary_len_;
     M::buffer_.erase(start - M::buffer_.get_data());
 
     while (!M::is_end()) {
@@ -155,6 +161,9 @@ void RFC1867Parser<R, W>::get_content(content_t *content)
     }
 
     start = M::buffer_.get_data();
+    const char *header_end = M::skip_header(start);
+    if (memchr(start, 0, header_end-start) != NULL)
+        THROW(MESSAGE_RFC1867_FORMAT_INVALID);
     start += strlen(M::CR_LF);
 
     line_end = M::skip_line(start);
@@ -211,12 +220,16 @@ const char *RFC1867Parser<R, W>::get_boundary(const char *content_type)
         THROW(MESSAGE_RFC1867_CONTENT_TYPE_INVALID);
     }
 
-    if (strlen(boundary) <= strlen(M::BOUNDARY_PREFIX)) {
+    if (strlen(boundary) == 0) {
         THROW(MESSAGE_RFC1867_CONTENT_TYPE_INVALID);
-    } else if (strlen(boundary) > (M::READ_BLOCK_SIZE/2)) {
+    } else if (strlen(boundary) > 70) {
         THROW(MESSAGE_RFC1867_CONTENT_TYPE_INVALID);
     }
 
+    for (const char *p = boundary; *p; ++p) {
+        if (static_cast<unsigned char>(*p) < 32 || *p == 127)
+            THROW(MESSAGE_RFC1867_CONTENT_TYPE_INVALID);
+    }
     return boundary;
 }
 

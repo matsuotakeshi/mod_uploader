@@ -1,3 +1,4 @@
+// Altered source version for FreeBSD / Apache 2.4; see MODIFICATIONS.
 /******************************************************************************
  * Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
  *
@@ -348,6 +349,9 @@ static int uploader_handler(request_rec *r)
         logger.error(__FILE__, __LINE__, &r_wrapper, "Exception: %s", message);
 
         return HTTP_INTERNAL_SERVER_ERROR;
+    } catch (...) {
+        // Altered port: never unwind C++ allocation/library exceptions through httpd.
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
 }
 
@@ -362,7 +366,7 @@ static int uploader_handler(request_rec *r)
 {
     UploaderConfig *config;
 
-    if (strcmp(r->handler, HANDLER_NAME)) {
+    if (r->handler == NULL || strcmp(r->handler, HANDLER_NAME)) {
         return DECLINED;
     }
 
@@ -386,6 +390,9 @@ static int uploader_handler(request_rec *r)
     } catch(const char *message) {
         logger.error(__FILE__, __LINE__, r, "Exception: %s", message);
 
+        return HTTP_INTERNAL_SERVER_ERROR;
+    } catch (...) {
+        // Altered port: never unwind C++ allocation/library exceptions through httpd.
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 }

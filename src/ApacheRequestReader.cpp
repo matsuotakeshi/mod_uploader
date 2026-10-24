@@ -1,3 +1,4 @@
+// Altered source version for FreeBSD / Apache 2.4; see MODIFICATIONS.
 /******************************************************************************
  * Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
  *
@@ -100,6 +101,7 @@ void ApacheRequestReader::read(char *buffer, apr_size_t size, apr_size_t *read_s
     // apr_brigade_flatten 使うように書き直した方が良いかも
 
     const char *read_data;
+    apr_status_t status;
 
     *read_size = 0;
 
@@ -107,33 +109,37 @@ void ApacheRequestReader::read(char *buffer, apr_size_t size, apr_size_t *read_s
         return;
     }
 
-    if (UNLIKELY(bucket_ == NULL)) {
-        get_brigade();
-    } else if (UNLIKELY(bucket_ == APR_BRIGADE_SENTINEL(brigade_))) {
-        apr_brigade_cleanup(brigade_);
-        get_brigade();
-    }
-
-    if (UNLIKELY(APR_BUCKET_IS_EOS(bucket_))) {
-        is_eos_ = true;
-        return;
-    }
-    if (APR_BUCKET_IS_METADATA(bucket_)) {
+    // Altered port: filters may return arbitrary bucket sizes and metadata.
+    if (size == 0) return;
+    for (;;) {
+        if (bucket_ == NULL || bucket_ == APR_BRIGADE_SENTINEL(brigade_)) {
+            apr_brigade_cleanup(brigade_);
+            get_brigade();
+            if (APR_BRIGADE_EMPTY(brigade_)) THROW(MESSAGE_POST_READ_FAILED);
+        }
+        if (APR_BUCKET_IS_EOS(bucket_)) {
+            is_eos_ = true;
+            return;
+        }
+        if (APR_BUCKET_IS_METADATA(bucket_)) {
+            bucket_ = APR_BUCKET_NEXT(bucket_);
+            continue;
+        }
+        status = apr_bucket_read(bucket_, &read_data, read_size, APR_BLOCK_READ);
+        if (status != APR_SUCCESS) THROW(MESSAGE_POST_READ_FAILED);
+        if (*read_size == 0) {
+            bucket_ = APR_BUCKET_NEXT(bucket_);
+            continue;
+        }
+        if (*read_size > size) {
+            if (apr_bucket_split(bucket_, size) != APR_SUCCESS)
+                THROW(MESSAGE_POST_READ_FAILED);
+            *read_size = size;
+        }
+        memcpy(buffer, read_data, *read_size);
+        update(*read_size);
         bucket_ = APR_BUCKET_NEXT(bucket_);
-        return read(buffer, size, read_size);
-    }
-
-    apr_bucket_read(bucket_, &read_data, read_size, APR_BLOCK_READ);
-    memcpy(buffer, read_data, *read_size);
-
-    update(*read_size);
-
-    bucket_ = APR_BUCKET_NEXT(bucket_);
-
-    // リクエストしたサイズよりも大幅に小さいサイズしか read できなかっ
-    // た場合は少し待つ
-    if (*read_size < (size/READ_SLEEP_FACTOR)) {
-        apr_sleep(READ_SLEEP_USEC);
+        break;
     }
 
     return;

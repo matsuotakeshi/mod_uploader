@@ -1,3 +1,4 @@
+// Altered source version for FreeBSD / Apache 2.4; see MODIFICATIONS.
 /******************************************************************************
  * Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
  *
@@ -144,7 +145,7 @@ public:
     static const char *get_remote_ip(Handle *r)
     {
 #ifdef AP_SERVER_VERSION_2_4_OR_HIGHER
-        return r->connection->client_ip;
+        return r->useragent_ip;
 #else
         return r->connection->remote_ip;
 #endif
@@ -165,7 +166,7 @@ public:
         return remote_addr;
 #else
 #ifdef AP_SERVER_VERSION_2_4_OR_HIGHER
-        return r->connection->client_addr;
+        return r->useragent_addr;
 #else
         return r->connection->remote_addr;
 #endif

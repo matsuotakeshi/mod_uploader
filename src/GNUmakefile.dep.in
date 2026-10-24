@@ -1,3 +1,4 @@
+# Altered source version for FreeBSD / Apache 2.4; see MODIFICATIONS.
 ###############################################################################
 # Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
 #
@@ -205,18 +206,18 @@ endif
 	$(CXX) $(DEF_OPT)DEBUG_$* $(DEFS) $(NOLINK_OPT) $(INCLUDES) $(CXXFLAGS) $(OUT_OPT)$@ $<
 %.app$(EXE_EXT): %.$(OBJ_EXT) $(PCH_OBJ)
 	@echo -e "$(CR_LB)Generating $(CR_LR)$@$(CR_ED)"
-	$(LINK) $(LDFLAGS) $(LIBS) $(sort $^) $(LOUT_OPT)$@
+	$(LINK) $(LDFLAGS) $(sort $^) $(LOUT_OPT)$@ $(LIBS)
 ifeq ($(NO_DEBUG),)
 %.test$(EXE_EXT): DEFS += $(DEF_OPT)DEBUG $(DEF_OPT)APR_POOL_DEBUG=1
 endif
 %.test$(EXE_EXT): %.test$(EXE_EXT).$(OBJ_EXT) \
 	Auxiliary.$(OBJ_EXT) SourceInfo.$(OBJ_EXT) $(PCH_OBJ)
 	@echo -e "$(CR_LB)Generating $(CR_LR)$@$(CR_ED)"
-	$(LINK) $(LDFLAGS) $(LIBS) $(sort $^) $(LOUT_OPT)$@
+	$(LINK) $(LDFLAGS) $(sort $^) $(LOUT_OPT)$@ $(LIBS)
 Auxiliary.test$(EXE_EXT): %.test$(EXE_EXT): %.test$(EXE_EXT).$(OBJ_EXT) \
 	SourceInfo.$(OBJ_EXT) $(PCH_OBJ)
 	@echo -e "$(CR_LB)Generating $(CR_LR)$@$(CR_ED)"
-	$(LINK) $(LDFLAGS) $(LIBS) $(sort $^) $(LOUT_OPT)$@
+	$(LINK) $(LDFLAGS) $(sort $^) $(LOUT_OPT)$@ $(LIBS)
 
 # Local Variables:
 # mode: makefile

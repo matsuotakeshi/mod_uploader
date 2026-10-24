@@ -1,0 +1,35 @@
+%%DATADIR%%/COPYING
+%%DATADIR%%/MODIFICATIONS
+%%APACHEMODDIR%%/mod_uploader.so
+@sample %%ETCDIR%%/mod_uploader.conf.sample
+%%DATADIR%%/tmpl/admin.htm
+%%DATADIR%%/tmpl/download.htm
+%%DATADIR%%/tmpl/error.htm
+%%DATADIR%%/tmpl/index.htm
+%%DATADIR%%/tmpl/index_swf.htm
+%%DATADIR%%/tmpl/info.htm
+%%DATADIR%%/tmpl/progress.htm
+%%DATADIR%%/tmpl/thumbnail.htm
+%%DATADIR%%/tmpl/en/admin.htm
+%%DATADIR%%/tmpl/en/download.htm
+%%DATADIR%%/tmpl/en/error.htm
+%%DATADIR%%/tmpl/en/index.htm
+%%DATADIR%%/tmpl/en/info.htm
+%%DATADIR%%/tmpl/en/progress.htm
+%%DATADIR%%/tmpl/en/thumbnail.htm
+%%DATADIR%%/css/default.css
+%%DATADIR%%/img/bar_back.png
+%%DATADIR%%/img/bar_fore.png
+%%DATADIR%%/img/favicon.ico
+%%DATADIR%%/img/icon_download.png
+%%DATADIR%%/img/icon_error.png
+%%DATADIR%%/img/icon_feed.png
+%%DATADIR%%/img/icon_valid_css.png
+%%DATADIR%%/img/icon_valid_xhtml.png
+%%DATADIR%%/img/title.png
+%%DATADIR%%/js/progress.js
+@dir(www,www,0700) /var/db/mod_uploader
+@dir(www,www,0700) /var/db/mod_uploader/data
+@dir(www,www,0700) /var/db/mod_uploader/file
+@dir(www,www,0700) /var/db/mod_uploader/thumb
+@dir(www,www,0700) /var/db/mod_uploader/temp

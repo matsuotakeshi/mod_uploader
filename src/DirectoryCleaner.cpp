@@ -1,3 +1,4 @@
+// Altered source version for FreeBSD / Apache 2.4; see MODIFICATIONS.
 /******************************************************************************
  * Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
  *
@@ -64,7 +65,9 @@ void DirectoryCleaner::clean_old_files(apr_pool_t *pool,
         while (apr_dir_read(&info,
                             APR_FINFO_NAME|APR_FINFO_TYPE|APR_FINFO_MTIME,
                             dir) == APR_SUCCESS) {
-            if ((info.name[0] == '.') || (info.filetype != APR_REG)) {
+            if (strncmp(info.name, "post." PACKAGE_NAME ".temp.",
+                        sizeof("post." PACKAGE_NAME ".temp.")-1) != 0 ||
+                (info.filetype != APR_REG)) {
                 continue;
             }
 

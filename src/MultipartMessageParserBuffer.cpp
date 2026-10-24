@@ -1,3 +1,4 @@
+// Altered source version for FreeBSD / Apache 2.4; see MODIFICATIONS.
 /******************************************************************************
  * Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
  *
@@ -36,6 +37,7 @@ const apr_size_t MultipartMessageParserBuffer::DEFAULT_SIZE  = 1024;
  *****************************************************************************/
 MultipartMessageParserBuffer::MultipartMessageParserBuffer(apr_size_t size)
   : buffer_(NULL),
+    buffer_size_(0),
     size_(0)
 {
     reserve(size);
@@ -50,32 +52,15 @@ MultipartMessageParserBuffer::~MultipartMessageParserBuffer()
 
 void MultipartMessageParserBuffer::reserve(apr_size_t size)
 {
-    char *swap;
-
-#ifdef DEBUG
-    if (size < size_) {
+    if (size < size_ || size == static_cast<apr_size_t>(-1)) {
         THROW(MESSAGE_BUG_FOUND);
     }
-#endif
-
-    if (size == 0) {
-        return;
-    }
-
-    if (buffer_ == NULL) {
-        MALLOC(buffer_, char *, sizeof(char), size);
-    } else {
-        swap = buffer_;
-
-        try {
-            MALLOC(buffer_, char *, sizeof(char), size);
-            memcpy(buffer_, swap, size_);
-            free(swap);
-        } catch(const char *) {
-            free(swap);
-            throw;
-        }
-    }
+    char *swap;
+    MALLOC(swap, char *, sizeof(char), size + 1);
+    if (buffer_ != NULL) memcpy(swap, buffer_, size_);
+    swap[size_] = '\0';
+    free(buffer_);
+    buffer_ = swap;
     buffer_size_ = size;
 }
 

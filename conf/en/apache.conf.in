@@ -1,3 +1,4 @@
+# Altered source version for FreeBSD / Apache 2.4; see MODIFICATIONS.
 ###############################################################################
 # Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
 #
@@ -88,16 +89,11 @@ LoadModule uploader_module  @PWD@/src/mod_uploader.so
 </Location>
 
 <Location /up/mail>
-    Order                   Deny,Allow
-    Deny                    From All
-    Allow                   From 127.0.0.1
+    Require local
 </Location>
 
 <Location /up/admin>
-    Order                   Deny,Allow
-    Deny                    From All
-    Allow                   From 127.0.0.1
-    Allow                   From 192.168.2. # for LAN
+    Require local
 </Location>
 
 Alias /up_img   "@PWD@/img"

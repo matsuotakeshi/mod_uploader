@@ -1,3 +1,4 @@
+// Altered source version for FreeBSD / Apache 2.4; see MODIFICATIONS.
 /******************************************************************************
  * Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
  *
@@ -651,7 +652,7 @@ void run_analyze(apr_pool_t *pool, const char *tmpl_file_path,
     show_test_name("anlyze");
 
     lexer = TemplateLexer::get_instance(pool, tmpl_file_path);
-    auto_ptr<TemplateLexer> lexer_ap(lexer);
+    unique_ptr<TemplateLexer> lexer_ap(lexer);
 
     lexer->analyze();
     if (dump_level > 2) {

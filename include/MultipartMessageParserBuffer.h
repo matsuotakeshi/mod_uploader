@@ -1,3 +1,4 @@
+// Altered source version for FreeBSD / Apache 2.4; see MODIFICATIONS.
 /******************************************************************************
  * Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
  *
@@ -50,11 +51,9 @@ public:
     void reserve(apr_size_t size);
     char *get_data() const
     {
-#ifdef DEBUG
         if (buffer_ == NULL) {
             THROW(MESSAGE_BUG_FOUND);
         }
-#endif
         return buffer_;
     };
     char *get_data_end() const
@@ -63,20 +62,16 @@ public:
     };
     void add_size(apr_size_t size)
     {
-#ifdef DEBUG
-        if ((get_size() + size) > buffer_size_) {
+        if (size > buffer_size_ - get_size()) {
             THROW(MESSAGE_BUG_FOUND);
         }
-#endif
         set_size(get_size() + size);
     };
     void set_size(apr_size_t size)
     {
-#ifdef DEBUG
         if (size > buffer_size_) {
             THROW(MESSAGE_BUG_FOUND);
         }
-#endif
         size_ = size;
         *(buffer_+size_) = '\0';
     };
@@ -86,19 +81,18 @@ public:
     };
     void erase(apr_size_t size)
     {
-#ifdef DEBUG
         if (size > size_) {
             THROW(MESSAGE_BUG_FOUND);
         } else if (buffer_ == NULL) {
             THROW(MESSAGE_BUG_FOUND);
         }
-#endif
         if (size == 0) {
             return;
         }
 
         size_ -= size;
         memmove(buffer_, buffer_+size, size_);
+        buffer_[size_] = '\0';
     }
 
 private:

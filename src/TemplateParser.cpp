@@ -1,3 +1,4 @@
+// Altered source version for FreeBSD / Apache 2.4; see MODIFICATIONS.
 /******************************************************************************
  * Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
  *
@@ -148,7 +149,7 @@ const TemplateParser::node_t *TemplateParser::parse(apr_pool_t *pool,
     void *node_memory;
 
     lexer = TemplateLexer::get_instance(pool, file_path);
-    auto_ptr<TemplateLexer> lexer_ap(lexer);
+    unique_ptr<TemplateLexer> lexer_ap(lexer);
 
     APR_PALLOC(node_memory, void *, pool,
                TemplateParser::calc_node_memory_size(lexer->get_token_array()));
@@ -1165,7 +1166,7 @@ void run_parse(apr_pool_t *pool, const char *tmpl_file_path,
     show_test_name("parse");
 
     lexer = TemplateLexer::get_instance(pool, tmpl_file_path);
-    auto_ptr<TemplateLexer> lexer_ap(lexer);
+    unique_ptr<TemplateLexer> lexer_ap(lexer);
 
     APR_PALLOC(node_memory, void *, pool,
                TemplateParser::calc_node_memory_size(lexer->get_token_array()));

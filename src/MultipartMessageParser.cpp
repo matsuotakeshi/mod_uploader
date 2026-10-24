@@ -1,3 +1,4 @@
+// Altered source version for FreeBSD / Apache 2.4; see MODIFICATIONS.
 /******************************************************************************
  * Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
  *
@@ -30,6 +31,8 @@
 #endif
 
 #include "MultipartMessageParser.h"
+#include "UploadSafety.h"
+#include <string>
 #include "TemporaryFile.h"
 #include "Auxiliary.h"
 #include "Message.h"
@@ -127,7 +130,7 @@ MultipartMessageParser<R, W>::get_content(apr_array_header_t *content_array,
 
     contents = AS_CONTENT(AVOID_ALIGN_WARN content_array->elts);
     for (int i = 0; i < content_array->nelts; i++) {
-        if (strncmp((contents + i)->name, name, strlen(name)) == 0) {
+        if (strcmp((contents + i)->name, name) == 0) {
             return contents + i;
         }
     }
@@ -198,84 +201,27 @@ void MultipartMessageParser<R, W>::dump_content_array(apr_array_header_t *conten
 template<class R, class W>
 void MultipartMessageParser<R, W>::get_text_content(content_t *content)
 {
-    char *text;
-    char *old_text;
-    apr_size_t text_length;
-    const char *end;
-    apr_size_t read_size;
-    apr_size_t tail_size;
-
-    TRACE_FUNC;
-
     content->type = TEXT;
-
-    text = NULL;
-    text_length = 0;
-
-    end = AS_CONST_CHAR(memmem(buffer_.get_data(), buffer_.get_size(),
-                               boundary_, boundary_len_));
-
-    if (end != NULL) {
-        content->text = apr_pstrmemdup(pool_,
-                                       buffer_.get_data(),
-                                       end - buffer_.get_data() -
-                                       strlen(CR_LF) -
-                                       strlen(BOUNDARY_PREFIX));
-        end += boundary_len_;
-        buffer_.erase(end - buffer_.get_data());
-
-        return;
-    }
-
-    try {
-        MALLOC(text, char *, sizeof(char), buffer_.get_size()); // 多めに確保
-        write_text(&text, &text_length, buffer_, barrier_len_);
-
-        // このループは通常数回で抜けるはず
-        while (UNLIKELY(true)) {
-            if (text_length > max_text_size_) {
-                DUMP_INPUT_AND_THROW(MESSAGE_RFC2822_TEXT_SIZE_TOO_LARGE);
-            }
-
-            read_size = read();
-
-            end = AS_CONST_CHAR(memmem(buffer_.get_data(),
-                                       buffer_.get_size(), boundary_,
-                                       boundary_len_));
-            if (end != NULL) { // バッファ中にバウンダリが見つかった
-                break;
-            } else if (read_size == 0) { // バウンダリが見つからないまま入力終了
-                DUMP_INPUT_AND_THROW(MESSAGE_RFC2822_FORMAT_INVALID);
-            }
-
-            old_text = text;
-            REALLOC(text, char *, sizeof(char),
-                    text_length + buffer_.get_size());
-            write_text(&text, &text_length, buffer_, barrier_len_);
+    std::string text;
+    for (;;) {
+        const char *end = UploadSafety::boundary(buffer_.get_data(),
+                            buffer_.get_size(), boundary_, boundary_len_);
+        if (end != NULL) {
+            apr_size_t tail = end - buffer_.get_data() - 4;
+            if (!UploadSafety::allowed(text.size(), tail, max_text_size_))
+                THROW(MESSAGE_RFC2822_TEXT_SIZE_TOO_LARGE);
+            text.append(buffer_.get_data(), tail);
+            content->text = apr_pstrmemdup(pool_, text.data(), text.size());
+            buffer_.erase(end - buffer_.get_data() + boundary_len_);
+            return;
         }
-
-        old_text = text;
-        tail_size = end -
-            strlen(CR_LF) - strlen(BOUNDARY_PREFIX) -
-            buffer_.get_data();
-
-        APR_PALLOC(text, char *, pool_, text_length + tail_size + 1);
-
-        memcpy(text, old_text, text_length);
-        memcpy(text + text_length, buffer_.get_data(), tail_size);
-        *(text + text_length + tail_size) = '\0';
-
-        end += boundary_len_;
-        buffer_.erase(end - buffer_.get_data());
-
-        free(old_text);
-
-        content->text = text;
-    } catch(const char *) {
-        if (text != NULL) {
-            free(text);
-        }
-        throw;
+        apr_size_t count = buffer_.get_size() > barrier_len_
+                          ? buffer_.get_size()-barrier_len_ : 0;
+        if (!UploadSafety::allowed(text.size(), count, max_text_size_))
+            THROW(MESSAGE_RFC2822_TEXT_SIZE_TOO_LARGE);
+        text.append(buffer_.get_data(), count);
+        buffer_.erase(count);
+        if (fill() == 0) THROW(MESSAGE_RFC1867_FORMAT_INVALID);
     }
 }
 
@@ -295,12 +241,16 @@ void MultipartMessageParser<R, W>::get_file_content(content_t *content)
                                         "/", FILE_NAME_TEMPLATE, NULL),
                             false);
     temp_file.open(FileWriterClass::OPEN_FLAG);
+    cleanup_file_t *cleanup = static_cast<cleanup_file_t *>(
+        apr_palloc(pool_, sizeof(cleanup_file_t)));
+    cleanup->path = temp_file.get_temp_path();
+    cleanup->pool = pool_;
+    apr_pool_cleanup_register(pool_, cleanup, cleanup_file, apr_pool_cleanup_null);
 
     FileWriterClass writer(pool_, temp_file.get_handle(), file_offset_);
     MessageDigest5 digest;
 
-    end = AS_CONST_CHAR(memmem(buffer_.get_data(), buffer_.get_size(),
-                               boundary_, boundary_len_));
+    end = UploadSafety::boundary(buffer_.get_data(), buffer_.get_size(), boundary_, boundary_len_);
 
     if (end == NULL) { // まだバッファ中にバウンダリがない
         while (true) {
@@ -318,9 +268,7 @@ void MultipartMessageParser<R, W>::get_file_content(content_t *content)
             write_file(writer, digest, buffer_, write_size);
 
             read_size = fill();
-            end = AS_CONST_CHAR(memmem(buffer_.get_data(),
-                                       buffer_.get_size(), boundary_,
-                                       boundary_len_));
+            end = UploadSafety::boundary(buffer_.get_data(), buffer_.get_size(), boundary_, boundary_len_);
             if (UNLIKELY(end != NULL)) { // バッファ中にバウンダリが見つかった
                 break;
             } else if (UNLIKELY(read_size == 0)) { // バウンダリが見つからないまま入力終了
@@ -401,11 +349,14 @@ const char *MultipartMessageParser<R, W>::get_param(const char *input_start,
 
     TRACE_FUNC;
 
-    while (isspace(*input_start & 0xff) || (*input_start == DELIMITER)) {
+    while (input_start < input_end &&
+           (isspace(*input_start & 0xff) || (*input_start == DELIMITER))) {
         input_start++;
     }
 
-    if (!start_with(input_start, name)) {
+    if (input_start >= input_end ||
+        static_cast<apr_size_t>(input_end-input_start) <= strlen(name) ||
+        memcmp(input_start, name, strlen(name)) != 0) {
         *value = NULL;
 
         return NULL;
@@ -418,6 +369,7 @@ const char *MultipartMessageParser<R, W>::get_param(const char *input_start,
         return NULL;
     }
 
+    if (input_start >= input_end) THROW(MESSAGE_RFC1867_FORMAT_INVALID);
     if (*input_start == QUOTE) {
         input_start++;
         end = strnchr(input_start, input_end-input_start, QUOTE);
@@ -430,7 +382,7 @@ const char *MultipartMessageParser<R, W>::get_param(const char *input_start,
         end++;
     } else {
         end = input_start + 1;
-        while ((end < input_end) && !isspace(*end & 0xff)) {
+        while ((end < input_end) && *end != DELIMITER && !isspace(*end & 0xff)) {
             end++;
         }
         *value = static_cast<const char *>(apr_pstrmemdup(pool_, input_start,
@@ -512,9 +464,13 @@ void MultipartMessageParser<R, W>::write_file(FileWriterClass& writer,
 
     TRACE_FUNC;
 
+    if (writer.get_write_size() > max_file_size_ ||
+        size > max_file_size_ - writer.get_write_size())
+        THROW(MESSAGE_RFC1867_FILE_SIZE_TOO_LARGE);
     write_size = size;
 
     writer.write(buffer.get_data(), &write_size);
+    if (write_size != size) THROW(MESSAGE_POST_READ_FAILED);
     digest.update(AS_BYTE(buffer.get_data()), write_size);
     buffer.erase(size);
 }

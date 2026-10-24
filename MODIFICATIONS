@@ -1,0 +1,21 @@
+mod_uploader 3.2.0 - altered FreeBSD / Apache 2.4 version
+
+Original software: Tetsuya Kimata.
+Upstream: https://github.com/kimata/mod_uploader
+Baseline commit: 31632a29138b18b7adbf533416a0ec660f1b07ac
+
+This is an altered source version, not an official upstream release.
+It contains FreeBSD/Clang build adjustments, Apache 2.4 request handling
+changes, multipart and upload security fixes, regression tests and a
+FreeBSD Port candidate. See README.md and docs/FREEBSD-ja.md.
+
+The original copyright and license notices are retained. The modifications
+and new source files in this work are distributed under the zlib license
+in COPYING. Authors of the original work are not represented as authors
+of these modifications. Other existing file-specific notices still apply.
+
+Validation: the user reported that mod_uploader worked on their FreeBSD /
+Apache setup after the catch-handler correction. Exact system versions
+and individual feature results were not supplied. Local C++ regression
+tests use Windows/G++ and simulated APR/httpd APIs; they do not certify
+FreeBSD Ports packaging or complete HTTP functionality.

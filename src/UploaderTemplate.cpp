@@ -1,3 +1,4 @@
+// Altered source version for FreeBSD / Apache 2.4; see MODIFICATIONS.
 /******************************************************************************
  * Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
  *
@@ -84,7 +85,7 @@ void UploaderTemplate::load()
     tmpl_pool = new TemporaryPool(pool_);
 
     lexer = Lexer::get_instance(tmpl_pool->get(), file_path_);
-    auto_ptr<Lexer> lexer_ap(lexer);
+    unique_ptr<Lexer> lexer_ap(lexer);
 
     node_shm = create_shm
         (tmpl_pool->get(),

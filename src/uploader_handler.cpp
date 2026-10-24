@@ -1,3 +1,4 @@
+// Altered source version for FreeBSD / Apache 2.4; see MODIFICATIONS.
 /******************************************************************************
  * Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
  *
@@ -846,7 +847,9 @@ template<class Response>
 static int download_set_header(typename Response::Handle *r, UploadItem *uitem,
                                apr_file_t *item_file)
 {
-    Response::set_content_type(r, uitem->get_file_mime(), true);
+    Response::set_content_type(r, "application/octet-stream");
+    Response::set_header(r, "X-Content-Type-Options", "nosniff");
+    Response::set_header(r, "Content-Security-Policy", "sandbox");
 
 #ifdef UPLOADER_TYPE_APACHE
 #if AP_SERVER_MAJORVERSION_NUMBER != 1
@@ -917,7 +920,7 @@ static int download_impl(typename Response::Handle *r, UploaderConfig *config,
     }
 
     Response::set_expires(r, apr_time_now() +  apr_time_from_sec(VIW_EXPIRES));
-    Response::set_content_disposition(r, mode);
+    Response::set_content_disposition(r, "attachment");
 
 #if defined(USE_GZIP) && defined(UPLOADER_TYPE_APACHE)
     if (uitem->is_gzipped()) {
@@ -1047,8 +1050,7 @@ static int download(typename Response::Handle *r, UploaderConfig *config,
         // DL pass のチェック
         if (!is_admin_mode) {
             if ((strlen(uitem->get_download_pass()) != 0) &&
-                (strncmp(uitem->get_download_pass(), download_pass,
-                         strlen(uitem->get_download_pass())) != 0)) {
+                (strcmp(uitem->get_download_pass(), download_pass) != 0)) {
                 if (strlen(download_pass) != 0) {
                     THROW(MESSAGE_DOWNLOAD_PASS_MISMATCH);
                 }
@@ -1135,8 +1137,7 @@ static int remove(typename Response::Handle *r, UploaderConfig *config,
 #ifndef EMPTY_PASSWORD
                 (strlen(uitem->get_remove_pass()) == 0) ||
 #endif
-                (strncmp(remove_pass, uitem->get_remove_pass(),
-                         strlen(uitem->get_remove_pass())) != 0)) {
+                (strcmp(remove_pass, uitem->get_remove_pass()) != 0)) {
                 THROW(MESSAGE_REMOVE_PASS_MISMATCH);
             }
         }
@@ -1303,6 +1304,25 @@ int uploader_command_handler(typename Response::Handle *r, UploaderConfig *confi
 {
     const char *command;
     const char *request_uri;
+
+#if defined(UPLOADER_TYPE_APACHE) && AP_SERVER_MAJORVERSION_NUMBER >= 2
+    if (Response::is_post_method(r)) {
+        const char *site = apr_table_get(r->headers_in, "Sec-Fetch-Site");
+        const char *origin = apr_table_get(r->headers_in, "Origin");
+        if (site != NULL && strcmp(site, "cross-site") == 0)
+            return HTTP_FORBIDDEN;
+        if (origin != NULL) {
+            const char *scheme = strstr(config->base_url, "://");
+            if (scheme == NULL) return HTTP_FORBIDDEN;
+            const char *end = strchr(scheme+3, '/');
+            apr_size_t length = end ? static_cast<apr_size_t>(end-config->base_url)
+                                   : strlen(config->base_url);
+            if (strlen(origin) != length ||
+                memcmp(origin, config->base_url, length) != 0)
+                return HTTP_FORBIDDEN;
+        }
+    }
+#endif
 
     if (UNLIKELY(strlen(arg) > HDL_MAX_PATH_INFO_SIZE)) {
         THROW(MESSAGE_HANDLER_PATH_INFO_TOO_LONG);

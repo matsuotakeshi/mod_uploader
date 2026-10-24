@@ -1,3 +1,4 @@
+// Altered source version for FreeBSD / Apache 2.4; see MODIFICATIONS.
 /******************************************************************************
  * Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
  *
@@ -63,7 +64,7 @@ UploaderConfig *StandConfigReader::read(apr_pool_t *pool,
     APR_PCALLOC(config, UploaderConfig *, pool, sizeof(UploaderConfig));
     new(config) UploaderConfig(pool);
 
-    std::auto_ptr<ConfigReader::config_map>
+    std::unique_ptr<ConfigReader::config_map>
         cmap(ConfigReader::read(pool, conf_file_path));
     for (ConfigReader::config_map::const_iterator i = cmap.get()->begin();
          i != cmap.get()->end(); i++) {

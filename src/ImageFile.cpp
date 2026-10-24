@@ -1,3 +1,4 @@
+// Altered source version for FreeBSD / Apache 2.4; see MODIFICATIONS.
 /******************************************************************************
  * Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
  *
@@ -72,7 +73,7 @@ ImageFile::ImageFile(apr_pool_t *pool, const char *file_path)
         image_ = new Magick::Image(Magick::Blob(file_map->mm, file_map->size));
     } catch(exception &e) {
         // File の資源は APR のプールが管理しているので問題ない
-        throw e.what();
+        throw apr_pstrdup(pool_, e.what());
     }
 }
 
@@ -95,7 +96,7 @@ void ImageFile::create_thumbnail(const char *file_path,
 
         thumbnail.write(file_path);
     } catch(exception &e) {
-        throw e.what();
+        throw apr_pstrdup(pool_, e.what());
     }
 }
 

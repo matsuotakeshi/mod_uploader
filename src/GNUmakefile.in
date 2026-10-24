@@ -1,3 +1,4 @@
+# Altered source version for FreeBSD / Apache 2.4; see MODIFICATIONS.
 ###############################################################################
 # Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
 #
@@ -27,7 +28,7 @@
 
 ###############################################################################
 # 基本設定
-SHELL=/bin/bash
+SHELL=/bin/sh
 
 top_builddir:= ..
 
@@ -71,20 +72,20 @@ LIBTOOL     := @LIBTOOL@
 HEADERDIR   := ../include
 # -isystem は -MMD で余計な依存関係を生成させないため．ただし，Apache
 # のヘッダーは Mac OSX Tiger で不都合が出たので指定しない．
-INCLUDES    := -I$(HEADERDIR) \
+INCLUDES    := @CPPFLAGS@ -I$(HEADERDIR) \
 	-I $(shell @APXS@ -q INCLUDEDIR) \
 	$(shell @MCONF@ --cppflags) \
 	-isystem $(shell @APRCONF@ --includedir)
 
-CFLAGS      := -O3 -MMD \
+CFLAGS      := @CFLAGS@ -MMD \
 	-Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith \
 	-Wcast-align -Wno-unused-parameter -fno-rtti -pipe \
 	$(shell @APRCONF@ --cflags)
-CXXFLAGS    = $(CFLAGS)
-LDFLAGS     := -Wall \
+CXXFLAGS    = $(CFLAGS) @CXXFLAGS@ -std=c++11
+LDFLAGS     := @LDFLAGS@ -Wall \
 	$(shell @APRCONF@ --ldflags) $(shell @MCONF@ --ldflags)
 LIBS        := -lm $(shell @APRCONF@ --link-ld --libs ) \
-	$(shell @MCONF@ --libs) -lstdc++ @LIB_ICONV@
+	$(shell @MCONF@ --libs) @LIB_ICONV@
 
 ifneq ($(findstring freebsd,@target_os@),)
 # iconv 用
@@ -130,7 +131,7 @@ override CC := $(LIBTOOL) --silent --mode=compile --tag=CC $(CC_ORIG) -prefer-pi
 override CXX:= $(LIBTOOL) --silent --mode=compile --tag=CXX $(CXX_ORIG) -prefer-pic
 LINK        := $(LIBTOOL) --silent --mode=link --tag=CXX $(CXX_ORIG)
 CFLAGS      += -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion \
-	-Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -fforce-addr
+	-Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer
 DEBUG_OPT   += -ggdb
 ifeq ($(firstword $(sort $(shell $(CC_ORIG) -dumpversion) 3.9.9)),3.9.9)
 # GCC 4.0 以上の場合
@@ -178,7 +179,7 @@ endif
 
 $(HEADERDIR)/Environment.h.gch: CFLAGS := $(filter-out -Werror, $(CFLAGS)) -fPIC
 $(HEADERDIR)/Environment.h.gch: $(wildcard $(HEADERDIR)/*.h)
-.pre-compile: $(HEADERDIR)/Environment.h.gch
+.pre-compile: $(HEADERDIR)/MessageJA.h
 	@touch $@
 
 $(HEADERDIR)/MessageJA.h: $(HEADERDIR)/MessageJA.h.in
@@ -228,7 +229,7 @@ ifneq ($(findstring g++,$(CXX_ORIG)),)
 		$(LOUT_OPT)$(subst .so,.la,$@) $(sort $(subst .$(OBJ_EXT),.lo,$^))
 	@cp -f .libs/$@ .
 else
-	$(LINK) -fPIC -shared $(LDFLAGS) $(LIBS) $(LOUT_OPT)$@ $(sort $^)
+	$(LINK) -fPIC -shared $(LDFLAGS) $(LOUT_OPT)$@ $(sort $^) $(LIBS)
 endif
 %.s: CFLAGS += -g
 

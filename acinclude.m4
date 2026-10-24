@@ -1,3 +1,4 @@
+# Altered source version for FreeBSD / Apache 2.4; see MODIFICATIONS.
 ###############################################################################
 # Copyright (C) 2006 Tetsuya Kimata <kimata@acapulco.dyndns.org>
 #
@@ -83,10 +84,12 @@ if test "$LIBTOOL" = no; then
         AC_PATH_PROG(LIBTOOL, libtool, no, /sw/bin:/usr/bin:/usr/local/bin)
     fi 
 fi
-if [ ! test -x $LIBTOOL ]; then
+if test ! -x "$LIBTOOL"; then
     AC_MSG_ERROR([libtool is required. Try --with-libtool option.])
 fi 
 ])
+
+AC_SUBST(LIBTOOL)
 
 AC_DEFUN([AC_CHECK_APXS], [
 AC_ARG_WITH(apxs,
@@ -196,6 +199,8 @@ if test ! -x $APRCONF; then
 fi 
 ])
 
+AC_SUBST(APRCONF)
+
 AC_DEFUN([AC_CHECK_LIGHTTPD], [
 AC_ARG_WITH(lighttpd,
         [  --with-lighttpd=LIGHTTPD Set path to lighttpd program],
@@ -216,6 +221,8 @@ if test ! -x $MCONF; then
     AC_MSG_ERROR([Magick++-config is required. Try --with-mconf option.])
 fi 
 ])
+
+AC_SUBST(MCONF)
 
 AC_DEFUN([AC_CHECK_ICONV_2ND_ARG_TYPE], [
 AC_MSG_CHECKING([for type of iconv 2nd argument])

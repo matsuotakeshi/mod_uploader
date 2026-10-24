@@ -1,3 +1,4 @@
+// Altered source version for FreeBSD / Apache 2.4; see MODIFICATIONS.
 /******************************************************************************
  * Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
  *
@@ -118,9 +119,10 @@ void PostDataChecker::validate_file_name(apr_pool_t *pool,
 
     // 良い方法じゃないけど...
     for (const char *name = *file_name; *name != '\0'; name++) {
-        if ((*name == '<') || (*name == '>') || (*name == '"') ||
+        if ((*name == '&') || (*name == '<') || (*name == '>') || (*name == '"') ||
             (*name == '\'') || (*name == '\r') || (*name == '\n') ||
-            (*name == '\\')) {
+            (*name == '\\') || (*name == '/') ||
+            static_cast<unsigned char>(*name) < 32 || *name == 127) {
             THROW(MESSAGE_POST_FILE_NAME_INVALID);
         }
     }
@@ -130,7 +132,7 @@ void PostDataChecker::validate_file_mime(apr_pool_t *pool,
                                          const char *file_mime)
 {
     for (const char *mime = file_mime; *mime != '\0'; mime++) {
-        if (isalnum(*mime) || (*mime == '-') || (*mime == '+') ||
+        if (isalnum(static_cast<unsigned char>(*mime)) || (*mime == '-') || (*mime == '+') ||
             (*mime == '.') || (*mime == '/') || (*mime == ';') ||
             (*mime == '=') || (*mime == ' ')) {
             continue;

@@ -1,3 +1,4 @@
+// Altered source version for FreeBSD / Apache 2.4; see MODIFICATIONS.
  /******************************************************************************
  * Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
  *
@@ -189,7 +190,7 @@ void run_read(apr_pool_t *pool, const char *conf_file_path)
 {
     show_test_name("read");
 
-    auto_ptr<ConfigReader::config_map>
+    unique_ptr<ConfigReader::config_map>
         cmap(ConfigReader::read(pool, conf_file_path));
     for (ConfigReader::config_map::const_iterator i = cmap.get()->begin();
          i != cmap.get()->end(); i++) {

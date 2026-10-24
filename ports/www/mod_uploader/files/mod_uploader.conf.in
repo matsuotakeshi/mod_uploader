@@ -1,0 +1,43 @@
+# Altered mod_uploader 3.2.0: isolated/local test configuration.
+# NOT automatically enabled. Review before adding an Include to httpd.conf.
+LoadModule uploader_module %%PREFIX%%/%%APACHEMODDIR%%/mod_uploader.so
+
+<Location /up>
+    SetHandler uploader
+    Require local
+    LimitRequestBody 11534336
+    UploaderBaseUrl "http://localhost/up"
+    UploaderDataDirectory "/var/db/mod_uploader/data"
+    UploaderFileDirectory "/var/db/mod_uploader/file"
+    UploaderThumbDirectory "/var/db/mod_uploader/thumb"
+    UploaderTempDirectory "/var/db/mod_uploader/temp"
+    UploaderTotalFileSizeLimit 1073741824
+    UploaderTotalFileNumberLimit 1000
+    UploaderFileSizeLimit 10485760
+    UploaderPerPageItemNumber 30
+    UploaderIndexViewTemplate "%%DATADIR%%/tmpl/index.htm"
+    UploaderInfoViewTemplate "%%DATADIR%%/tmpl/info.htm"
+    UploaderProgressViewTemplate "%%DATADIR%%/tmpl/progress.htm"
+    UploaderDownloadViewTemplate "%%DATADIR%%/tmpl/download.htm"
+    UploaderThumbnailViewTemplate "%%DATADIR%%/tmpl/thumbnail.htm"
+    UploaderAdminViewTemplate "%%DATADIR%%/tmpl/admin.htm"
+    UploaderErrorViewTemplate "%%DATADIR%%/tmpl/error.htm"
+</Location>
+<Location /up/admin>
+    Require local
+</Location>
+<Location /up/mail>
+    Require local
+</Location>
+Alias /up_css "%%DATADIR%%/css"
+Alias /up_js "%%DATADIR%%/js"
+Alias /up_img "%%DATADIR%%/img"
+<Directory "%%DATADIR%%">
+    AllowOverride None
+    Options -Indexes -ExecCGI -Includes
+    Require all granted
+</Directory>
+<Directory "/var/db/mod_uploader">
+    AllowOverride None
+    Require all denied
+</Directory>

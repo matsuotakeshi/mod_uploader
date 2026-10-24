@@ -1,4 +1,5 @@
-c###############################################################################
+# Altered source version for FreeBSD / Apache 2.4; see MODIFICATIONS.
+###############################################################################
 # Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
 #
 # All rights reserved.
@@ -28,6 +29,7 @@ c###############################################################################
 ###############################################################################
 # 実行環境の設定
 AC_PREREQ(2.59)
+m4_include([acinclude.m4])
 
 ###############################################################################
 # パッケージ
@@ -37,7 +39,7 @@ AC_REVISION($Revision$)
 
 AC_CONFIG_AUX_DIR(build)
 
-PACKAGE_CODE=`echo $PACKAGE_NAME-$PACKAGE_VERSION | md5sum | cut -b -12 | tr '[a-f]' '[A-F]'`
+PACKAGE_CODE=`echo $PACKAGE_NAME-$PACKAGE_VERSION | cksum | cut -d ' ' -f 1`
 AC_SUBST(PACKAGE_CODE)
 
 ###############################################################################
