@@ -307,6 +307,7 @@
     <td class="ip_address"><a href="http://whois.ansi.co.jp/?key=${item.ip_address}">${item.ip_address}</a></td>
     <td class="remove">
      <form method="post" enctype="multipart/form-data" action="${BASE_URL}/admin/remove/">
+      <input type="hidden" name="csrf_token" value="${CSRF_TOKEN}" />
       <input type="hidden" name="remove_pass" value="" />
       <input type="hidden" name="id" value="${item.id}" />
       <input type="submit" name="submit" value="Remove" />

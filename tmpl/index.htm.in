@@ -88,6 +88,7 @@
   </div>
 
   <form method="post" enctype="multipart/form-data" action="${BASE_URL}/upload/" id="upload">
+      <input type="hidden" name="csrf_token" value="${CSRF_TOKEN}" />
    <div>
     <table>
      <tr>
@@ -99,9 +100,9 @@
       <td>
        <input type="text" name="comment" value="" size="50" maxlength="256" id="upload_comment" />
        <label for="download_pass" accesskey="D">DL pass:</label>
-       <input type="password" name="download_pass" value="" size="8" maxlength="8" id="download_pass" />
+       <input type="password" name="download_pass" value="" size="8" maxlength="127" id="download_pass" />
        <label for="remove_pass" accesskey="R">RM pass:</label>
-       <input type="password" name="remove_pass" value="" size="8" maxlength="8" id="remove_pass" />
+       <input type="password" name="remove_pass" value="" size="8" maxlength="127" id="remove_pass" />
        <input type="hidden" name="code_pat" value="京" />
        <input type="submit" name="submit" value="送信" class="submit" id="upload_submit" />
       </td>
@@ -197,13 +198,14 @@
   </div>
 
   <form method="post" enctype="multipart/form-data" action="${BASE_URL}/remove/" id="remove">
+      <input type="hidden" name="csrf_token" value="${CSRF_TOKEN}" />
    <div>
     <table>
      <tr>
       <td><label for="rm_file" accesskey="F">file:</label></td>
       <td><input type="text" name="name" value="" size="30" id="rm_file" /></td>
       <td><label for="rm_remove_pass" accesskey="P">pass:</label></td>
-      <td><input type="password" name="remove_pass" value="" size="8" maxlength="8" id="rm_remove_pass" /></td>
+      <td><input type="password" name="remove_pass" value="" size="8" maxlength="127" id="rm_remove_pass" /></td>
       <td><input type="submit" name="submit" value="削除" class="submit" /></td>
       <td><input type="hidden" name="id" value="" /></td>
      </tr>

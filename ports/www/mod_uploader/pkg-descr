@@ -1,6 +1,8 @@
 mod_uploader is an Apache C++ file uploader with Japanese and English
 screens, upload progress, download passwords, deletion, RSS, and optional
-thumbnails. This altered 3.2.0 port targets FreeBSD and Apache 2.4.
+thumbnails. This altered version targets FreeBSD and Apache 2.4, with
+versioned password hashes, an offline backup-first migration tool, and
+session-bound signed CSRF tokens.
 
-The user reported successful operation on FreeBSD/Apache. This Port
-candidate still requires packaging, staging, poudriere and full HTTP tests.
+See the fork's migration report for tested configurations, rollback steps
+and remaining deployment/security limitations.

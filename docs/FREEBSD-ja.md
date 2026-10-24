@@ -6,7 +6,7 @@
 
 FreeBSD 15.1-RELEASE / amd64、Clang 19.1.7、Apache 2.4.69の環境で、Portからのモジュールビルド、stage、check-plist、stage-qa、packageを実行し、すべて終了コード0でした。THUMBNAILは無効です。利用者からは以前の版について実際に動作したとの報告があります。
 
-今回の検証では、作成したパッケージのインストール、既存Apacheの再起動、ブラウザでの全機能試験は行っていません。ビルド・パッケージ作成の成功を、HTTP動作やインターネット公開時の安全性の保証とは扱いません。
+既存Apacheの再起動や本番パッケージのインストール、ブラウザでの全機能試験は行っていません。後述のセキュリティ更新では、別プロセスのApacheを127.0.0.1で起動してHTTP/HTTPSを検証しました。ビルド・パッケージ作成の成功を、HTTP動作やインターネット公開時の安全性の保証とは扱いません。
 
 | 項目 | 結果 | 証拠 |
 |---|---|---|
@@ -61,6 +61,8 @@ POSTのOriginとRefererは認証の代用ではありません。非ブラウザ
 2. GitHub distfile名にPORTVERSIONが含まれるのに、distinfoが省略していました。実際にPortsが要求する名称へ修正しました。アーカイブのSHA-256とサイズは実取得データで一致しました。
 3. MAINTAINER、WWW、報告書内のパスと検証記録の参照を修正しました。
 
+初回移植のログにあるリビジョン2と、後述するセキュリティ更新のリビジョン3は区別してください。
+
 Portの場所は一貫して `ports/www/mod_uploader/` です。Portは固定した上流アーカイブと同梱パッチを使います。改修版Forkの移動するブランチを直接ビルド対象にはしていません。
 
 ## 再現手順
@@ -87,18 +89,44 @@ python3 tests/handler_test.py
 
 回帰テストでは、境界照合とorigin照合は実ヘルパー、バッファは実バッファ実装を使います。受信処理とハンドラーは実関数を使いますが、httpd/APRのAPIは模擬です。モジュールをビルドした事実とは別に、HTTPでの統合確認が必要です。
 
-## 残課題とインターネット公開条件
+## パスワード移行・CSRF対策の実装と検証
 
-**パスワードの平文保存は未解決です。インターネット公開可能との判定はしていません。**
+現行メタデータの平文パスワードを廃止し、保存形式4.0.0に更新しました。PBKDF2-HMAC-SHA256（600,000回、16バイトランダムsalt）を使用します。旧形式2/3は新版の起動時に拒否し、停止中にバックアップを検証してから専用ツールで変換します。稼働中の新版との排他、途中中断時の起動防止マーカー、原本バックアップからの復旧を実装しています。
 
-現在の固定長パスワードフィールドにハッシュ値を単純に書き込むと、切り詰めや既存データ破損を招きます。Argon2id等の保存方式、バージョン付きメタデータ、バックアップ、移行・復旧、旧形式の扱い、認証試行制限を含む設計・実装・試験が必要です。今回、既存の保存形式を黙って変更してはいません。
+Apache POSTには、ブラウザCookieに結び付いた、有効期間2時間のHMAC-SHA256署名付きCSRFトークンが必要です。Origin/Referer検査も維持します。通常・管理フォームと、スクリプト用X-CSRF-Tokenに対応します。HTTPSでは__Host CookieとSecure/HttpOnly/SameSite=Strictを使用します。
 
-- POSTの送信元検査は強化しましたが、トークン式のCSRF対策は未実装です。
-- 外部公開する前にHTTPS、認証、接続・試行制限、admin/mailの制限を設定し、保存領域をDocumentRootやAliasで直接公開しないでください。設定例は引き続きRequire localです。
-- パッケージのインストール／アンインストール、poudriere、非標準PREFIX・他のFreeBSD版・THUMBNAIL有効は未検証です。
-- 既存Apacheへのロード、Origin/Referer検査を含むHTTP操作、アップロードと取得物のSHA-256一致、HEAD/Range/RSS、並行処理、graceful restart、ディスク満杯、旧データ移行は今回未検証です。
-- コンパイルにはLockerデストラクターからのthrow、関数ポインターcast等の既存警告が残っています。ログに保持し、隠していません。
-- 画像デコーダのcoder/delegate/resource policy、破損・巨大画像、CGI、standalone、gzip、全ルートの包括的セキュリティ監査は未完了です。
+**既存インストールへ上書きする前に、[移行・旧版復旧手順](SECURITY-MIGRATION-ja.md)を読んでください。** 本番データへ自動適用する更新ではありません。今回の検証も専用の試験データで行い、稼働Apacheや本番保存領域を変更していません。
+
+### セキュリティ更新のFreeBSD検証
+
+FreeBSD 15.1 amd64 / Clang 19.1.7 / Apache 2.4.69、THUMBNAIL無効で実行しました。今回のパッケージは `ap24-mod_uploader-3.2.0_3.pkg` です。上記の `_2` の記録は初回移植時の履歴として保持しています。
+
+| 検査 | 結果 | 証拠 |
+|---|---|---|
+| 新形式と移行ツールのPortビルド・stage | 成功 | [stage](validation/security-format4/stage-final.log) |
+| check-plist / stage-qa / package | すべて終了0 | [一覧](validation/security-format4/security-results.log) |
+| パッケージ情報・SHA-256 | 確認 | [package-info](validation/security-format4/security-package-info.log) |
+| ネイティブ回帰・暗号ヘルパー | 成功、暗号21チェックを含む | [native](validation/security-format4/security-native.log) |
+| 旧形式2/3の移行、バックアップ、失敗、中断、復旧 | 38チェック成功 | [migration](validation/security-format4/migration-final.log) |
+| パッケージが使うPython 3.11での同じ移行試験 | 38チェック成功 | [Python 3.11](validation/security-format4/migration-python311.log) |
+| 実HTTP、パスワード認証、投稿・削除、CSRF、再起動、旧モジュールへの復旧 | 44チェック成功 | [HTTP](validation/security-format4/http-security-final.log) |
+| 実HTTPS、試験証明書の検証、__Host Cookie、トークン付きPOST | 6チェック成功 | [HTTPS](validation/security-format4/https-security-final.log) |
+| 検証ソースの一致 | 15ファイルと製品パッチをSHA-256で照合 | [ソースハッシュ](validation/security-format4/security-source-hashes.log) |
+
+移行試験では独立したPython PBKDF2計算で結果を照合し、空パスワード、同じデータの再実行、バックアップ先の上書き拒否、破損・リンクの拒否、最初の置換直後に注入した中断とバックアップ復旧を確認しました。
+
+実HTTPでは、旧形式を新版が拒否すること、新版稼働中の移行拒否、12クライアントの同時セッション作成、トークン不在・改ざん・期限切れ・将来時刻・別セッション・重複Cookie/トークン、不正Origin、不正ヘッダートークンを確認しました。旧パスワードの完全一致、新規投稿がハッシュ保存されること、通常/管理の削除、取得物の内容一致、複数タブ、再起動後のトークン継続も確認しました。バックアップを別ディレクトリへ復元し、旧モジュールで取得できることを確認しています。
+
+検証中に見つかった、削除パスワード項目が欠落した要求でNULLを参照する既存処理も修正し、実HTTPで拒否応答を確認しました。
+
+### 残る確認範囲
+
+- 実際の本番データの移行は行っていません。旧版には新版の排他ロックがないため、旧版を完全停止する作業は利用者が必要です。
+- バックアップには旧平文パスワードが残ります。0700の外側ディレクトリで保護し、公開しないでください。
+- パッケージの本番インストール/アンインストール、poudriere、他ABI、THUMBNAIL有効、巨大データセット、電源断の実機注入、全ブラウザ、全面的なセキュリティ監査は未検証です。
+- HTTPS、管理者認証・接続制限、認証試行・リクエスト量の制限、保存領域の非公開設定は引き続き必要です。トークンは認証の代用ではありません。
+- コンパイルには既存のLockerデストラクター等の警告が残っています。隠さずログへ収録しています。
+- CGI/standalone/Apache 1.xのPOSTは保護方式に未対応のため拒否します。Flashはサポート対象外です。
 
 ## 参照
 

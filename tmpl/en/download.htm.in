@@ -26,9 +26,10 @@
   </div>
 
   <form method="post" enctype="multipart/form-data" id="download">
+      <input type="hidden" name="csrf_token" value="${CSRF_TOKEN}" />
    <div class="input_download_pass">
     <label for="download_pass" accesskey="D">DL pass:</label>
-    <input type="password" name="download_pass" value="" size="8" maxlength="8" id="download_pass" />
+    <input type="password" name="download_pass" value="" size="8" maxlength="127" id="download_pass" />
     <input type="submit" name="submit" value="Download" class="submit" />
    </div>
   </form>

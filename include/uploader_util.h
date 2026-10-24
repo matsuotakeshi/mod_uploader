@@ -193,7 +193,7 @@ void get_remove_param(apr_pool_t *pool, apr_array_header_t *content_array,
     remove_pass_content = MultipartMessageParser<R>::get_content
         (content_array, POST_REMOVE_PASS_PARAM);
 
-    if (!is_text_content(id_content)) {
+    if (!is_text_content(id_content) || !is_text_content(remove_pass_content)) {
         THROW(MESSAGE_POST_DATA_INVALID);
     }
 

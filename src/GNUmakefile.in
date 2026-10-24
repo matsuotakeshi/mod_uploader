@@ -84,7 +84,7 @@ CFLAGS      := @CFLAGS@ -MMD \
 CXXFLAGS    = $(CFLAGS) @CXXFLAGS@ -std=c++11
 LDFLAGS     := @LDFLAGS@ -Wall \
 	$(shell @APRCONF@ --ldflags) $(shell @MCONF@ --ldflags)
-LIBS        := -lm $(shell @APRCONF@ --link-ld --libs ) \
+LIBS        := -lcrypto -lm $(shell @APRCONF@ --link-ld --libs ) \
 	$(shell @MCONF@ --libs) @LIB_ICONV@
 
 ifneq ($(findstring freebsd,@target_os@),)
@@ -267,3 +267,6 @@ endif
 # mode: makefile
 # coding: utf-8-unix
 # End:
+
+password-tool: ../util/password_tool.cpp .pre-compile
+	$(CXX_ORIG) $(DEFS) $(INCLUDES) $(CXXFLAGS) $(LDFLAGS) -o password_tool ../util/password_tool.cpp $(LIBS)

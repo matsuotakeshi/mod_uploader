@@ -7244,10 +7244,10 @@ $as_echo "#define ITM_MAX_FILE_EXT_SIZE 8" >>confdefs.h
 $as_echo "#define ITM_MAX_FILE_DIGEST_SIZE 48" >>confdefs.h
 
 
-$as_echo "#define ITM_MAX_REMOVE_PASS_SIZE 16" >>confdefs.h
+$as_echo "#define ITM_MAX_REMOVE_PASS_SIZE 128" >>confdefs.h
 
 
-$as_echo "#define ITM_MAX_DOWNLOAD_PASS_SIZE 16" >>confdefs.h
+$as_echo "#define ITM_MAX_DOWNLOAD_PASS_SIZE 128" >>confdefs.h
 
 
 $as_echo "#define ITM_MAX_COMMENT_SIZE 256" >>confdefs.h

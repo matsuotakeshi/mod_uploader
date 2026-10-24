@@ -39,10 +39,11 @@ python3 tests/handler_test.py
 Tests substitute APR/httpd interfaces where stated; they are not full
 module integration tests. See [the Japanese migration report](docs/FREEBSD-ja.md)
 for changes, security limitations, FreeBSD verification steps and layout details.
-In particular, downloads now use attachments, password storage remains in
-the legacy format. Apache POST now requires a matching Origin or Referer;
-requests with neither header are rejected. This is not authentication and
-a token-based CSRF design remains a future improvement. Thumbnail decoding requires
-an appropriate ImageMagick resource/coder policy.
+Downloads use attachments. Password metadata now uses version 4 and salted
+PBKDF2-HMAC-SHA256 (600,000 iterations). Existing version 2/3 data requires an
+offline, verified-backup-first migration; the new module refuses legacy data.
+Signed, session-bound CSRF tokens protect Apache POST in addition to origin
+checks. See [the migration and rollback guide](docs/SECURITY-MIGRATION-ja.md).
+No production data is automatically migrated by installing or loading this module.
 
 Validation logs are checked in under `docs/validation/`.

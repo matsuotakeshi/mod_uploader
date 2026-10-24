@@ -33,3 +33,6 @@
 @dir(www,www,0700) /var/db/mod_uploader/file
 @dir(www,www,0700) /var/db/mod_uploader/thumb
 @dir(www,www,0700) /var/db/mod_uploader/temp
+libexec/mod_uploader/password_tool
+libexec/mod_uploader/migrate_passwords.py
+%%DATADIR%%/SECURITY-MIGRATION-ja.md

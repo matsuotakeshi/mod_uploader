@@ -34,6 +34,7 @@
 #endif
 
 #include "UploadItem.h"
+#include "PasswordHash.h"
 #include "TemporaryPool.h"
 #include "PostDataChecker.h"
 #include "Message.h"
@@ -101,8 +102,10 @@ UploadItem *UploadItem::get_instance(void *memory, apr_size_t item_id,
     strncpy(uitem->header_.file_mime, file_mime, ITM_MAX_FILE_MIME_SIZE);
     strncpy(uitem->header_.file_ext, file_ext, ITM_MAX_FILE_EXT_SIZE);
     strncpy(uitem->header_.file_digest, file_digest, ITM_MAX_FILE_DIGEST_SIZE);
-    strncpy(uitem->header_.remove_pass, remove_pass, ITM_MAX_REMOVE_PASS_SIZE);
-    strncpy(uitem->header_.download_pass, download_pass, ITM_MAX_DOWNLOAD_PASS_SIZE);
+    std::string remove_hash = PasswordHash::make(remove_pass);
+    strncpy(uitem->header_.remove_pass, remove_hash.c_str(), ITM_MAX_REMOVE_PASS_SIZE-1);
+    std::string download_hash = PasswordHash::make(download_pass);
+    strncpy(uitem->header_.download_pass, download_hash.c_str(), ITM_MAX_DOWNLOAD_PASS_SIZE-1);
     strncpy(uitem->header_.comment, comment, ITM_MAX_COMMENT_SIZE);
 
     return uitem;
@@ -247,7 +250,7 @@ void run_size_32()
 
     show_spacer();
 
-    check_item("sizeof(header_t)", sizeof(UploadItem::header_t), 608);
+    check_item("sizeof(header_t)", sizeof(UploadItem::header_t), 832);
 
     check_item("- identifier", OFFSETOF(UploadItem::header_t, identifier), 0);
     check_item("- version", OFFSETOF(UploadItem::header_t, version), 16);
@@ -263,8 +266,8 @@ void run_size_32()
     check_item("- file_mime", OFFSETOF(UploadItem::header_t, file_mime), 200);
     check_item("- file_digest", OFFSETOF(UploadItem::header_t, file_digest), 272);
     check_item("- remove_pass", OFFSETOF(UploadItem::header_t, remove_pass), 320);
-    check_item("- download_pass", OFFSETOF(UploadItem::header_t, download_pass), 336);
-    check_item("- comment", OFFSETOF(UploadItem::header_t, comment), 352);
+    check_item("- download_pass", OFFSETOF(UploadItem::header_t, download_pass), 448);
+    check_item("- comment", OFFSETOF(UploadItem::header_t, comment), 576);
 }
 
 void run_size_64()
@@ -275,7 +278,7 @@ void run_size_64()
 
     show_spacer();
 
-    check_item("sizeof(header_t)", sizeof(UploadItem::header_t), 616);
+    check_item("sizeof(header_t)", sizeof(UploadItem::header_t), 840);
 
     check_item("- identifier", OFFSETOF(UploadItem::header_t, identifier), 0);
     check_item("- version", OFFSETOF(UploadItem::header_t, version), 16);
@@ -291,8 +294,8 @@ void run_size_64()
     check_item("- file_mime", OFFSETOF(UploadItem::header_t, file_mime), 208);
     check_item("- file_digest", OFFSETOF(UploadItem::header_t, file_digest), 280);
     check_item("- remove_pass", OFFSETOF(UploadItem::header_t, remove_pass), 328);
-    check_item("- download_pass", OFFSETOF(UploadItem::header_t, download_pass), 344);
-    check_item("- comment", OFFSETOF(UploadItem::header_t, comment), 360);
+    check_item("- download_pass", OFFSETOF(UploadItem::header_t, download_pass), 456);
+    check_item("- comment", OFFSETOF(UploadItem::header_t, comment), 584);
 }
 
 void run_size()

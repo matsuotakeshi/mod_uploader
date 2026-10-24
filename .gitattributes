@@ -2,3 +2,6 @@ ports/** text eol=lf
 ports/**/files/patch-* -text -whitespace
 tests/** text eol=lf
 docs/validation/*.log -whitespace
+
+util/*.py text eol=lf
+docs/validation/security-format4/*.log -whitespace

@@ -126,3 +126,6 @@ clean:
 # mode: makefile
 # coding: utf-8-unix
 # End:
+
+password-tool:
+	cd src && $(MAKE) -f GNUmakefile password-tool

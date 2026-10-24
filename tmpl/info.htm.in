@@ -48,11 +48,12 @@
   </div>
 
   <form method="post" enctype="multipart/form-data" action="${BASE_URL}/remove/" id="remove">
+      <input type="hidden" name="csrf_token" value="${CSRF_TOKEN}" />
    <div>
     <table>
      <tr>
       <td><label for="rm_remove_pass" accesskey="P">pass:</label></td>
-      <td><input type="password" name="remove_pass" value="" size="8" maxlength="8" id="rm_remove_pass" /></td>
+      <td><input type="password" name="remove_pass" value="" size="8" maxlength="127" id="rm_remove_pass" /></td>
       <td><input type="submit" name="submit" value="ºï½ü" class="submit" /></td>
       <td><input type="hidden" name="id" value="${ITEM.id}" /></td>
      </tr>

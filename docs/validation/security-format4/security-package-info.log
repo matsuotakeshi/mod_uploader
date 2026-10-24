@@ -1,0 +1,45 @@
+FreeBSD 15.1-RELEASE
+FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)
+Server version: Apache/2.4.69 (FreeBSD)
+Server built:   unknown
+OpenSSL 3.5.6 7 Apr 2026 (Library: OpenSSL 3.5.6 7 Apr 2026)
+ap24-mod_uploader-3.2.0_3
+Name           : ap24-mod_uploader
+Version        : 3.2.0_3
+Origin         : www/mod_uploader
+Architecture   : FreeBSD:15:amd64
+Prefix         : /usr/local
+Categories     : www
+Licenses       : ZLIB
+Maintainer     : takeshi@ysni.org
+WWW            : https://github.com/matsuotakeshi/mod_uploader
+Comment        : Apache file uploader with FreeBSD compatibility and security patches
+Options        :
+	THUMBNAIL      : off
+Shared Libs required:
+	libapr-1.so.0
+	libc++.so.1
+	libc.so.7
+	libcrypt.so.5
+	libcrypto.so.35
+	libcxxrt.so.1
+	libgcc_s.so.1
+	libm.so.5
+	libthr.so.3
+Annotations    :
+	FreeBSD_version: 1501000
+Flat size      : 462KiB
+Description    :
+mod_uploader is an Apache C++ file uploader with Japanese and English
+screens, upload progress, download passwords, deletion, RSS, and optional
+thumbnails. This altered version targets FreeBSD and Apache 2.4, with
+versioned password hashes, an offline backup-first migration tool, and
+session-bound signed CSRF tokens.
+
+See the fork's migration report for tested configurations, rollback steps
+and remaining deployment/security limitations.
+SHA256 (<review-dir>/work<review-dir>/src/ports/www/mod_uploader/work/pkg/ap24-mod_uploader-3.2.0_3.pkg) = 735841e76b49839ef30f91d04b41279dbc2f1b7a44ea5aec9eae430e2c72845a
+Production patch fe0cf7519eeffd3c3aa54ad24574bdbbc070b627baf7ac65a5983d7f6c4c996a
+Native converter source d8bfaebd2d4f3c0aa8ea0cb22b78d1249bddc301294b60f758066eff01f6391a
+Migration driver source 3d76bb90d1808f8a307a2f9435931f49355fc4035a03feb23982277ce31ffe90
+HTTP test source f28e58e9871f63c23e974cf1886e49264a107a432b1a2caa2a095d8ae695523c

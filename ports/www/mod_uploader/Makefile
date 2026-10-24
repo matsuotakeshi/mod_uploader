@@ -1,6 +1,6 @@
 PORTNAME=	mod_uploader
 PORTVERSION=	3.2.0
-PORTREVISION=	2
+PORTREVISION=	3
 CATEGORIES=	www
 PKGNAMEPREFIX=	${APACHE_PKGNAMEPREFIX}
 
@@ -14,7 +14,7 @@ LICENSE_FILE=	${WRKSRC}/COPYING
 LIB_DEPENDS=	libapr-1.so:devel/apr1
 BUILD_DEPENDS=	libtool:devel/libtool
 
-USES=		apache:2.4 gmake iconv perl5
+USES=		apache:2.4 gmake iconv perl5 ssl python:run
 USE_PERL5=	build
 USE_GITHUB=	yes
 GH_ACCOUNT=	kimata
@@ -25,9 +25,11 @@ CONFIGURE_ARGS=	--with-apxs=${APXS} \
 		--with-aprconf=${LOCALBASE}/bin/apr-1-config \
 		--with-libtool=${LOCALBASE}/bin/libtool \
 		--with-writer=basic
+CPPFLAGS+=	-I${OPENSSLINC}
+LDFLAGS+=	-L${OPENSSLLIB}
 MAKE_ARGS=	LANG=ja_JP.eucJP
 MAKEFILE=	GNUmakefile
-ALL_TARGET=	apache-module
+ALL_TARGET=	apache-module password-tool
 SUB_FILES=	mod_uploader.conf pkg-message
 SUB_LIST=	APACHEMODDIR=${APACHEMODDIR}
 
@@ -39,6 +41,7 @@ THUMBNAIL_CONFIGURE_ON=	--enable-thumbnail --with-mconf=${LOCALBASE}/bin/Magick+
 
 pre-patch:
 	${PERL} -pi -e 's/\r\n/\n/g' \
+		${WRKSRC}/GNUmakefile.in \
 		${WRKSRC}/acinclude.m4 \
 		${WRKSRC}/conf/en/apache.conf.in \
 		${WRKSRC}/configure \
@@ -46,6 +49,8 @@ pre-patch:
 		${WRKSRC}/include/ApacheResponse.h \
 		${WRKSRC}/include/MultipartMessageParser.h.in \
 		${WRKSRC}/include/MultipartMessageParserBuffer.h \
+		${WRKSRC}/include/UploadItem.h \
+		${WRKSRC}/include/uploader_util.h \
 		${WRKSRC}/src/ApacheRequestReader.cpp \
 		${WRKSRC}/src/CGIConfigReader.cpp \
 		${WRKSRC}/src/ConfigReader.cpp \
@@ -60,9 +65,24 @@ pre-patch:
 		${WRKSRC}/src/StandConfigReader.cpp \
 		${WRKSRC}/src/TemplateLexer.cpp \
 		${WRKSRC}/src/TemplateParser.cpp \
+		${WRKSRC}/src/UploadItem.cpp \
+		${WRKSRC}/src/UploadItemReader.cpp \
+		${WRKSRC}/src/UploaderConfig.cpp \
 		${WRKSRC}/src/UploaderTemplate.cpp \
 		${WRKSRC}/src/mod_uploader.cpp \
-		${WRKSRC}/src/uploader_handler.cpp
+		${WRKSRC}/src/uploader_handler.cpp \
+		${WRKSRC}/tmpl/admin.htm.in \
+		${WRKSRC}/tmpl/download.htm.in \
+		${WRKSRC}/tmpl/en/admin.htm.in \
+		${WRKSRC}/tmpl/en/download.htm.in \
+		${WRKSRC}/tmpl/en/index.htm.in \
+		${WRKSRC}/tmpl/en/info.htm.in \
+		${WRKSRC}/tmpl/index.htm.in \
+		${WRKSRC}/tmpl/index_swf.htm.in \
+		${WRKSRC}/tmpl/info.htm.in
+
+post-patch:
+	${REINPLACE_CMD} -e '1s|.*|#!${PYTHON_CMD}|' ${WRKSRC}/util/migrate_passwords.py
 
 post-configure:
 	${REINPLACE_CMD} -e 's|^SHELL=.*|SHELL=/bin/sh|' ${WRKSRC}/GNUmakefile
@@ -70,8 +90,11 @@ post-configure:
 do-install:
 	${MKDIR} ${STAGEDIR}${PREFIX}/${APACHEMODDIR}
 	${INSTALL_LIB} ${WRKSRC}/src/mod_uploader.so ${STAGEDIR}${PREFIX}/${APACHEMODDIR}/
+	${MKDIR} ${STAGEDIR}${PREFIX}/libexec/mod_uploader
+	${INSTALL_PROGRAM} ${WRKSRC}/src/password_tool ${STAGEDIR}${PREFIX}/libexec/mod_uploader/
+	${INSTALL_SCRIPT} ${WRKSRC}/util/migrate_passwords.py ${STAGEDIR}${PREFIX}/libexec/mod_uploader/
 	${MKDIR} ${STAGEDIR}${ETCDIR} ${STAGEDIR}${DATADIR}/tmpl/en
-	${INSTALL_DATA} ${WRKSRC}/COPYING ${WRKSRC}/MODIFICATIONS ${STAGEDIR}${DATADIR}/
+	${INSTALL_DATA} ${WRKSRC}/COPYING ${WRKSRC}/MODIFICATIONS ${WRKSRC}/docs/SECURITY-MIGRATION-ja.md ${STAGEDIR}${DATADIR}/
 	${INSTALL_DATA} ${WRKDIR}/mod_uploader.conf ${STAGEDIR}${ETCDIR}/mod_uploader.conf.sample
 	${INSTALL_DATA} ${WRKSRC}/tmpl/*.htm ${STAGEDIR}${DATADIR}/tmpl/
 	${INSTALL_DATA} ${WRKSRC}/tmpl/en/*.htm ${STAGEDIR}${DATADIR}/tmpl/en/

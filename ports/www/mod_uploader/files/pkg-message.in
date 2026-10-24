@@ -1,15 +1,17 @@
 [
 { type: install
   message: <<EOM
-Application operation was reported by the user; this Port packaging
-has not been validated on FreeBSD.
-Use an isolated test jail before deployment. The module is not enabled
-by installation. Review %%ETCDIR%%/mod_uploader.conf.sample, set the public
-UploaderBaseUrl, and only then include a copy from Apache configuration.
-Storage is outside DocumentRoot. Do not publish it through an Alias.
-Downloads are attachments. Thumbnails are optional and need ImageMagick
-resource/coder policy. Keep admin/mail restricted to trusted clients.
-Read the accompanying migration report for outstanding security work.
+This version uses password metadata format 4 and signed CSRF tokens.
+STOP all old servers before migrating existing data. Loading this module
+will refuse legacy metadata rather than silently rewrite plaintext passwords.
+Read %%DATADIR%%/SECURITY-MIGRATION-ja.md and create a verified backup first.
+The offline tools are in %%PREFIX%%/libexec/mod_uploader/.
+Rollback requires stopping the server and restoring the entire backup plus
+the previous module/configuration/templates. Installation does not migrate
+production data or automatically enable the module.
+Use HTTPS with the correct UploaderBaseUrl. Existing templates and scripted
+clients must send the session cookie and CSRF token on POST.
+Keep admin/mail restricted and storage outside DocumentRoot/Alias.
 EOM
 }
 ]

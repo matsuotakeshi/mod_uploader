@@ -185,8 +185,8 @@ AC_DEFINE(ITM_MAX_FILE_NAME_SIZE,       64,		[アップロードファイルの名前の最大長
 AC_DEFINE(ITM_MAX_FILE_MIME_SIZE,       64,		[アップロードファイルの MIME タイプの最大長])
 AC_DEFINE(ITM_MAX_FILE_EXT_SIZE,        8,		[アップロードファイルの拡張子の最大長])
 AC_DEFINE(ITM_MAX_FILE_DIGEST_SIZE,     48,		[アップロードファイルの MD5 値の最大長])
-AC_DEFINE(ITM_MAX_REMOVE_PASS_SIZE,     16,		[アップロードアイテムの削除パスワードの最大長])
-AC_DEFINE(ITM_MAX_DOWNLOAD_PASS_SIZE,   16,		[アップロードアイテムのダウンロードパスワードの最大長])
+AC_DEFINE(ITM_MAX_REMOVE_PASS_SIZE,     128,		[アップロードアイテムの削除パスワードの最大長])
+AC_DEFINE(ITM_MAX_DOWNLOAD_PASS_SIZE,   128,		[アップロードアイテムのダウンロードパスワードの最大長])
 AC_DEFINE(ITM_MAX_COMMENT_SIZE,         256,	[アップロードアイテムのコメントの最大長])
 
 AC_DEFINE(PST_MAX_ITEM_COUNT,           10,     [投稿する項目の最大数])

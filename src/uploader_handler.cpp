@@ -40,6 +40,10 @@
 #include "uploader_util.h"
 
 #include "RequestResponseImpl.h"
+#include "PasswordHash.h"
+#if defined(UPLOADER_TYPE_APACHE) && AP_SERVER_MAJORVERSION_NUMBER >= 2
+#include "ApacheSecurity.h"
+#endif
 
 #include "UploadItem.h"
 #include "UploadItemIO.h"
@@ -119,6 +123,30 @@ UploadItem::CompareFunc get_sort_func(const char *sort_type)
 }
 
 template<class Response>
+static const char *csrf_token(typename Response::Handle *r) {
+#if defined(UPLOADER_TYPE_APACHE) && AP_SERVER_MAJORVERSION_NUMBER >= 2
+    const char *token=apr_table_get(r->notes,"uploader-csrf-token");return token?token:"";
+#else
+    return "";
+#endif
+}
+template<class Response>
+static bool check_csrf(typename Response::Handle *r,apr_array_header_t *array) {
+#if defined(UPLOADER_TYPE_APACHE) && AP_SERVER_MAJORVERSION_NUMBER >= 2
+    if(apr_table_get(r->notes,"uploader-csrf-verified"))return true;
+    typedef RFC1867Parser<typename Response::Reader> Parser;
+    typename Parser::content_t *entries=reinterpret_cast<typename Parser::content_t *>(array->elts);
+    const char *token=NULL;int count=0;
+    for(int i=0;i<array->nelts;++i)if(std::strcmp(entries[i].name,"csrf_token")==0) {
+        if(entries[i].type!=Parser::TEXT)return false;token=entries[i].text;++count;
+    }
+    return count==1&&ApacheSecurity::verify(r,token);
+#else
+    (void)r;(void)array;return false;
+#endif
+}
+
+template<class Response>
 static int redirect(typename Response::Handle *r, typename Response::Writer& o,
                     const char *url)
 {
@@ -178,6 +206,7 @@ static int error(typename Response::Handle *r,
         TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
 
         var_creator.create(BASE_URL_VAR_NAME, config->base_url);
+        var_creator.create("CSRF_TOKEN", csrf_token<Response>(r));
         var_creator.create(ERROR_MESSAGE_VAR_NAME, message);
 
         TemplateExecutor<typename Response::Writer> executor(r->pool, o);
@@ -268,6 +297,7 @@ static int index(typename Response::Handle *r, UploaderConfig *config,
         TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
 
         var_creator.create(BASE_URL_VAR_NAME, config->base_url);
+        var_creator.create("CSRF_TOKEN", csrf_token<Response>(r));
         var_creator.create(COMMAND_VAR_NAME, INDEX_COMMAND);
 
         var_creator.create
@@ -348,6 +378,7 @@ static int sort(typename Response::Handle *r, UploaderConfig *config,
         TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
 
         var_creator.create(BASE_URL_VAR_NAME, config->base_url);
+        var_creator.create("CSRF_TOKEN", csrf_token<Response>(r));
         var_creator.create
             (COMMAND_VAR_NAME,
              apr_pstrcat(r->pool, SORT_COMMAND, sort_type, NULL));
@@ -403,6 +434,7 @@ static int info(typename Response::Handle *r, UploaderConfig *config,
         TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
 
         var_creator.create(BASE_URL_VAR_NAME, config->base_url);
+        var_creator.create("CSRF_TOKEN", csrf_token<Response>(r));
 
         var_creator.create
             (ITEM_VAR_NAME,
@@ -573,6 +605,7 @@ static int thumbnail(typename Response::Handle *r, UploaderConfig *config,
         TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
 
         var_creator.create(BASE_URL_VAR_NAME, config->base_url);
+        var_creator.create("CSRF_TOKEN", csrf_token<Response>(r));
 
         var_creator.create
             (THUMBNAIL_LIST_VAR_NAME,
@@ -673,6 +706,7 @@ static int upload(typename Response::Handle *r, UploaderConfig *config,
     try {
         content_array = parser.parse(Response::get_content_type(r),
                                      Response::get_content_size(r));
+        if (!check_csrf<Response>(r, content_array)) return HTTP_FORBIDDEN;
         progress->end_time = apr_time_now();
     } catch(const char *message) {
         progress->end_time = apr_time_now();
@@ -783,6 +817,7 @@ static int mail_upload(typename Response::Handle *r, UploaderConfig *config,
          PST_MAX_ITEM_COUNT);
 
     content_array = parser.parse();
+    if (!check_csrf<Response>(r, content_array)) return HTTP_FORBIDDEN;
 
     file_temp_path = NULL;
     try {
@@ -827,6 +862,7 @@ static int input_pass(typename Response::Handle *r, UploaderConfig *config,
         TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
 
         var_creator.create(BASE_URL_VAR_NAME, config->base_url);
+        var_creator.create("CSRF_TOKEN", csrf_token<Response>(r));
 
         var_creator.create
             (ITEM_VAR_NAME,
@@ -1037,6 +1073,7 @@ static int download(typename Response::Handle *r, UploaderConfig *config,
 
             content_array = parser.parse(Response::get_content_type(r),
                                          Response::get_content_size(r));
+        if (!check_csrf<Response>(r, content_array)) return HTTP_FORBIDDEN;
 
             download_pass = get_download_password<typename Response::Reader>
                 (r->pool, content_array);
@@ -1051,7 +1088,7 @@ static int download(typename Response::Handle *r, UploaderConfig *config,
         // DL pass のチェック
         if (!is_admin_mode) {
             if ((strlen(uitem->get_download_pass()) != 0) &&
-                (strcmp(uitem->get_download_pass(), download_pass) != 0)) {
+                (!PasswordHash::verify(uitem->get_download_pass(), download_pass))) {
                 if (strlen(download_pass) != 0) {
                     THROW(MESSAGE_DOWNLOAD_PASS_MISMATCH);
                 }
@@ -1127,6 +1164,7 @@ static int remove(typename Response::Handle *r, UploaderConfig *config,
 
         content_array = parser.parse(Response::get_content_type(r),
                                      Response::get_content_size(r));
+        if (!check_csrf<Response>(r, content_array)) return HTTP_FORBIDDEN;
 
         get_remove_param<typename Response::Reader>
             (r->pool, content_array, &item_id, &remove_pass);
@@ -1138,7 +1176,7 @@ static int remove(typename Response::Handle *r, UploaderConfig *config,
 #ifndef EMPTY_PASSWORD
                 (strlen(uitem->get_remove_pass()) == 0) ||
 #endif
-                (strcmp(remove_pass, uitem->get_remove_pass()) != 0)) {
+                (!PasswordHash::verify(uitem->get_remove_pass(), remove_pass))) {
                 THROW(MESSAGE_REMOVE_PASS_MISMATCH);
             }
         }
@@ -1271,6 +1309,7 @@ static int admin(typename Response::Handle *r, UploaderConfig *config,
         TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
 
         var_creator.create(BASE_URL_VAR_NAME, config->base_url);
+        var_creator.create("CSRF_TOKEN", csrf_token<Response>(r));
 
         var_creator.create
             (ITEM_LIST_VAR_NAME,
@@ -1314,6 +1353,12 @@ int uploader_command_handler(typename Response::Handle *r, UploaderConfig *confi
         if (!RequestOrigin::allowed(config->base_url, origin, referer, site))
             return HTTP_FORBIDDEN;
     }
+#endif
+
+#if defined(UPLOADER_TYPE_APACHE) && AP_SERVER_MAJORVERSION_NUMBER >= 2
+    if (!ApacheSecurity::prepare(r,config->data_dir_path,config->base_url)) return HTTP_FORBIDDEN;
+#else
+    if (Response::is_post_method(r)) return HTTP_FORBIDDEN;
 #endif
 
     if (UNLIKELY(strlen(arg) > HDL_MAX_PATH_INFO_SIZE)) {

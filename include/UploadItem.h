@@ -80,12 +80,46 @@ public:
         char            comment[ITM_MAX_COMMENT_SIZE];
 
         header() {
-            memset(identifier, 0, sizeof(struct header));
+            memset(identifier, 0, sizeof(*this));
+
+            strncpy(identifier, PACKAGE_NAME, ITM_MAX_IDENTIFIER_SIZE-1);
+            strncpy(version, "4.0.0", ITM_MAX_VERSION_SIZE-1);
+        }
+    } header_t;
+
+    typedef struct header_ver3 {
+        char            identifier[ITM_MAX_IDENTIFIER_SIZE];
+        char            version[ITM_MAX_VERSION_SIZE];
+        apr_size_t      id;
+        apr_size_t      index;
+        apr_atomic_t    download_count;
+        union {
+            struct {
+                bool    is_gzipped      : 1;
+                bool    is_need_sync    : 1;
+            };
+            bool        flags;
+        };
+        apr_uint64_t    file_size;
+        apr_time_t      mtime;
+        apr_time_t      atime;
+        char            date[ITM_MAX_DATE_SIZE];
+        char            ip_address[ITM_MAX_IP_ADDRESS_SIZE];
+        char            file_name[ITM_MAX_FILE_NAME_SIZE];
+        char            file_mime[ITM_MAX_FILE_MIME_SIZE];
+        char            file_ext[ITM_MAX_FILE_EXT_SIZE];
+        char            file_digest[ITM_MAX_FILE_DIGEST_SIZE];
+        char            remove_pass[16];
+        char            download_pass[16];
+        char            comment[ITM_MAX_COMMENT_SIZE];
+
+        header_ver3() {
+            memset(identifier, 0, sizeof(*this));
 
             strncpy(identifier, PACKAGE_NAME, ITM_MAX_IDENTIFIER_SIZE-1);
             strncpy(version, PACKAGE_VERSION, ITM_MAX_VERSION_SIZE-1);
         }
-    } header_t;
+    } header_ver3_t;
 
     typedef struct header_ver2x {
         char            identifier[ITM_MAX_IDENTIFIER_SIZE];
@@ -108,12 +142,12 @@ public:
         char            file_mime[ITM_MAX_FILE_MIME_SIZE];
         char            file_ext[ITM_MAX_FILE_EXT_SIZE];
         char            file_digest[ITM_MAX_FILE_DIGEST_SIZE];
-        char            remove_pass[ITM_MAX_REMOVE_PASS_SIZE];
-        char            download_pass[ITM_MAX_DOWNLOAD_PASS_SIZE];
+        char            remove_pass[16];
+        char            download_pass[16];
         char            comment[ITM_MAX_COMMENT_SIZE];
 
         header_ver2x() {
-            memset(identifier, 0, sizeof(struct header));
+            memset(identifier, 0, sizeof(*this));
 
             strncpy(identifier, PACKAGE_NAME, ITM_MAX_IDENTIFIER_SIZE-1);
             strncpy(version, PACKAGE_VERSION, ITM_MAX_VERSION_SIZE-1);

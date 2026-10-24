@@ -1,0 +1,16 @@
+usage: migrate_passwords.py [-h] --data-dir DATA_DIR --file-dir FILE_DIR
+                            --thumb-dir THUMB_DIR [--temp-dir TEMP_DIR]
+                            --backup-dir BACKUP_DIR --tool TOOL
+                            [--server-stopped]
+
+Offline migration. Back up and verify all roots before replacing any metadata.
+
+options:
+  -h, --help            show this help message and exit
+  --data-dir DATA_DIR
+  --file-dir FILE_DIR
+  --thumb-dir THUMB_DIR
+  --temp-dir TEMP_DIR
+  --backup-dir BACKUP_DIR
+  --tool TOOL
+  --server-stopped

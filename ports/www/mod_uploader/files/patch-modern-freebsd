@@ -1,3 +1,12 @@
+--- a/GNUmakefile.in
++++ b/GNUmakefile.in
+@@ -126,3 +126,6 @@
+ # mode: makefile
+ # coding: utf-8-unix
+ # End:
++
++password-tool:
++	cd src && $(MAKE) -f GNUmakefile password-tool
 --- a/acinclude.m4
 +++ b/acinclude.m4
 @@ -1,3 +1,4 @@
@@ -80,6 +89,21 @@
  
  
  ###############################################################################
+@@ -7243,10 +7244,10 @@
+ $as_echo "#define ITM_MAX_FILE_DIGEST_SIZE 48" >>confdefs.h
+ 
+ 
+-$as_echo "#define ITM_MAX_REMOVE_PASS_SIZE 16" >>confdefs.h
+-
+-
+-$as_echo "#define ITM_MAX_DOWNLOAD_PASS_SIZE 16" >>confdefs.h
++$as_echo "#define ITM_MAX_REMOVE_PASS_SIZE 128" >>confdefs.h
++
++
++$as_echo "#define ITM_MAX_DOWNLOAD_PASS_SIZE 128" >>confdefs.h
+ 
+ 
+ $as_echo "#define ITM_MAX_COMMENT_SIZE 256" >>confdefs.h
 --- a/configure.ac
 +++ b/configure.ac
 @@ -1,4 +1,5 @@
@@ -106,6 +130,17 @@
  AC_SUBST(PACKAGE_CODE)
  
  ###############################################################################
+@@ -183,8 +185,8 @@
+ AC_DEFINE(ITM_MAX_FILE_MIME_SIZE,       64,		[���åץ����ɥե������ MIME �����פκ���Ĺ])
+ AC_DEFINE(ITM_MAX_FILE_EXT_SIZE,        8,		[���åץ����ɥե�����γ�ĥ�Ҥκ���Ĺ])
+ AC_DEFINE(ITM_MAX_FILE_DIGEST_SIZE,     48,		[���åץ����ɥե������ MD5 �ͤκ���Ĺ])
+-AC_DEFINE(ITM_MAX_REMOVE_PASS_SIZE,     16,		[���åץ����ɥ����ƥ�κ���ѥ���ɤκ���Ĺ])
+-AC_DEFINE(ITM_MAX_DOWNLOAD_PASS_SIZE,   16,		[���åץ����ɥ����ƥ�Υ���������ɥѥ���ɤκ���Ĺ])
++AC_DEFINE(ITM_MAX_REMOVE_PASS_SIZE,     128,		[���åץ����ɥ����ƥ�κ���ѥ���ɤκ���Ĺ])
++AC_DEFINE(ITM_MAX_DOWNLOAD_PASS_SIZE,   128,		[���åץ����ɥ����ƥ�Υ���������ɥѥ���ɤκ���Ĺ])
+ AC_DEFINE(ITM_MAX_COMMENT_SIZE,         256,	[���åץ����ɥ����ƥ�Υ����Ȥκ���Ĺ])
+ 
+ AC_DEFINE(PST_MAX_ITEM_COUNT,           10,     [��Ƥ�����ܤκ����])
 --- a/include/ApacheResponse.h
 +++ b/include/ApacheResponse.h
 @@ -1,3 +1,4 @@
@@ -218,6 +253,84 @@
      }
  
  private:
+--- a/include/UploadItem.h
++++ b/include/UploadItem.h
+@@ -80,12 +80,46 @@
+         char            comment[ITM_MAX_COMMENT_SIZE];
+ 
+         header() {
+-            memset(identifier, 0, sizeof(struct header));
++            memset(identifier, 0, sizeof(*this));
++
++            strncpy(identifier, PACKAGE_NAME, ITM_MAX_IDENTIFIER_SIZE-1);
++            strncpy(version, "4.0.0", ITM_MAX_VERSION_SIZE-1);
++        }
++    } header_t;
++
++    typedef struct header_ver3 {
++        char            identifier[ITM_MAX_IDENTIFIER_SIZE];
++        char            version[ITM_MAX_VERSION_SIZE];
++        apr_size_t      id;
++        apr_size_t      index;
++        apr_atomic_t    download_count;
++        union {
++            struct {
++                bool    is_gzipped      : 1;
++                bool    is_need_sync    : 1;
++            };
++            bool        flags;
++        };
++        apr_uint64_t    file_size;
++        apr_time_t      mtime;
++        apr_time_t      atime;
++        char            date[ITM_MAX_DATE_SIZE];
++        char            ip_address[ITM_MAX_IP_ADDRESS_SIZE];
++        char            file_name[ITM_MAX_FILE_NAME_SIZE];
++        char            file_mime[ITM_MAX_FILE_MIME_SIZE];
++        char            file_ext[ITM_MAX_FILE_EXT_SIZE];
++        char            file_digest[ITM_MAX_FILE_DIGEST_SIZE];
++        char            remove_pass[16];
++        char            download_pass[16];
++        char            comment[ITM_MAX_COMMENT_SIZE];
++
++        header_ver3() {
++            memset(identifier, 0, sizeof(*this));
+ 
+             strncpy(identifier, PACKAGE_NAME, ITM_MAX_IDENTIFIER_SIZE-1);
+             strncpy(version, PACKAGE_VERSION, ITM_MAX_VERSION_SIZE-1);
+         }
+-    } header_t;
++    } header_ver3_t;
+ 
+     typedef struct header_ver2x {
+         char            identifier[ITM_MAX_IDENTIFIER_SIZE];
+@@ -108,12 +142,12 @@
+         char            file_mime[ITM_MAX_FILE_MIME_SIZE];
+         char            file_ext[ITM_MAX_FILE_EXT_SIZE];
+         char            file_digest[ITM_MAX_FILE_DIGEST_SIZE];
+-        char            remove_pass[ITM_MAX_REMOVE_PASS_SIZE];
+-        char            download_pass[ITM_MAX_DOWNLOAD_PASS_SIZE];
++        char            remove_pass[16];
++        char            download_pass[16];
+         char            comment[ITM_MAX_COMMENT_SIZE];
+ 
+         header_ver2x() {
+-            memset(identifier, 0, sizeof(struct header));
++            memset(identifier, 0, sizeof(*this));
+ 
+             strncpy(identifier, PACKAGE_NAME, ITM_MAX_IDENTIFIER_SIZE-1);
+             strncpy(version, PACKAGE_VERSION, ITM_MAX_VERSION_SIZE-1);
+--- a/include/uploader_util.h
++++ b/include/uploader_util.h
+@@ -193,7 +193,7 @@
+     remove_pass_content = MultipartMessageParser<R>::get_content
+         (content_array, POST_REMOVE_PASS_PARAM);
+ 
+-    if (!is_text_content(id_content)) {
++    if (!is_text_content(id_content) || !is_text_content(remove_pass_content)) {
+         THROW(MESSAGE_POST_DATA_INVALID);
+     }
+ 
 --- a/src/ApacheRequestReader.cpp
 +++ b/src/ApacheRequestReader.cpp
 @@ -1,3 +1,4 @@
@@ -412,8 +525,9 @@
 +CXXFLAGS    = $(CFLAGS) @CXXFLAGS@ -std=c++11
 +LDFLAGS     := @LDFLAGS@ -Wall \
  	$(shell @APRCONF@ --ldflags) $(shell @MCONF@ --ldflags)
- LIBS        := -lm $(shell @APRCONF@ --link-ld --libs ) \
+-LIBS        := -lm $(shell @APRCONF@ --link-ld --libs ) \
 -	$(shell @MCONF@ --libs) -lstdc++ @LIB_ICONV@
++LIBS        := -lcrypto -lm $(shell @APRCONF@ --link-ld --libs ) \
 +	$(shell @MCONF@ --libs) @LIB_ICONV@
  
  ifneq ($(findstring freebsd,@target_os@),)
@@ -445,6 +559,13 @@
  endif
  %.s: CFLAGS += -g
  
+@@ -266,3 +267,6 @@
+ # mode: makefile
+ # coding: utf-8-unix
+ # End:
++
++password-tool: ../util/password_tool.cpp .pre-compile
++	$(CXX_ORIG) $(DEFS) $(INCLUDES) $(CXXFLAGS) $(LDFLAGS) -o password_tool ../util/password_tool.cpp $(LIBS)
 --- a/src/ImageFile.cpp
 +++ b/src/ImageFile.cpp
 @@ -1,3 +1,4 @@
@@ -876,6 +997,165 @@
  
      APR_PALLOC(node_memory, void *, pool,
                 TemplateParser::calc_node_memory_size(lexer->get_token_array()));
+--- a/src/UploadItem.cpp
++++ b/src/UploadItem.cpp
+@@ -34,6 +34,7 @@
+ #endif
+ 
+ #include "UploadItem.h"
++#include "PasswordHash.h"
+ #include "TemporaryPool.h"
+ #include "PostDataChecker.h"
+ #include "Message.h"
+@@ -101,8 +102,10 @@
+     strncpy(uitem->header_.file_mime, file_mime, ITM_MAX_FILE_MIME_SIZE);
+     strncpy(uitem->header_.file_ext, file_ext, ITM_MAX_FILE_EXT_SIZE);
+     strncpy(uitem->header_.file_digest, file_digest, ITM_MAX_FILE_DIGEST_SIZE);
+-    strncpy(uitem->header_.remove_pass, remove_pass, ITM_MAX_REMOVE_PASS_SIZE);
+-    strncpy(uitem->header_.download_pass, download_pass, ITM_MAX_DOWNLOAD_PASS_SIZE);
++    std::string remove_hash = PasswordHash::make(remove_pass);
++    strncpy(uitem->header_.remove_pass, remove_hash.c_str(), ITM_MAX_REMOVE_PASS_SIZE-1);
++    std::string download_hash = PasswordHash::make(download_pass);
++    strncpy(uitem->header_.download_pass, download_hash.c_str(), ITM_MAX_DOWNLOAD_PASS_SIZE-1);
+     strncpy(uitem->header_.comment, comment, ITM_MAX_COMMENT_SIZE);
+ 
+     return uitem;
+@@ -247,7 +250,7 @@
+ 
+     show_spacer();
+ 
+-    check_item("sizeof(header_t)", sizeof(UploadItem::header_t), 608);
++    check_item("sizeof(header_t)", sizeof(UploadItem::header_t), 832);
+ 
+     check_item("- identifier", OFFSETOF(UploadItem::header_t, identifier), 0);
+     check_item("- version", OFFSETOF(UploadItem::header_t, version), 16);
+@@ -263,8 +266,8 @@
+     check_item("- file_mime", OFFSETOF(UploadItem::header_t, file_mime), 200);
+     check_item("- file_digest", OFFSETOF(UploadItem::header_t, file_digest), 272);
+     check_item("- remove_pass", OFFSETOF(UploadItem::header_t, remove_pass), 320);
+-    check_item("- download_pass", OFFSETOF(UploadItem::header_t, download_pass), 336);
+-    check_item("- comment", OFFSETOF(UploadItem::header_t, comment), 352);
++    check_item("- download_pass", OFFSETOF(UploadItem::header_t, download_pass), 448);
++    check_item("- comment", OFFSETOF(UploadItem::header_t, comment), 576);
+ }
+ 
+ void run_size_64()
+@@ -275,7 +278,7 @@
+ 
+     show_spacer();
+ 
+-    check_item("sizeof(header_t)", sizeof(UploadItem::header_t), 616);
++    check_item("sizeof(header_t)", sizeof(UploadItem::header_t), 840);
+ 
+     check_item("- identifier", OFFSETOF(UploadItem::header_t, identifier), 0);
+     check_item("- version", OFFSETOF(UploadItem::header_t, version), 16);
+@@ -291,8 +294,8 @@
+     check_item("- file_mime", OFFSETOF(UploadItem::header_t, file_mime), 208);
+     check_item("- file_digest", OFFSETOF(UploadItem::header_t, file_digest), 280);
+     check_item("- remove_pass", OFFSETOF(UploadItem::header_t, remove_pass), 328);
+-    check_item("- download_pass", OFFSETOF(UploadItem::header_t, download_pass), 344);
+-    check_item("- comment", OFFSETOF(UploadItem::header_t, comment), 360);
++    check_item("- download_pass", OFFSETOF(UploadItem::header_t, download_pass), 456);
++    check_item("- comment", OFFSETOF(UploadItem::header_t, comment), 584);
+ }
+ 
+ void run_size()
+--- a/src/UploadItemReader.cpp
++++ b/src/UploadItemReader.cpp
+@@ -33,6 +33,7 @@
+ 
+ #include "UploadItemReader.h"
+ #include "UploadItem.h"
++#include "PasswordHash.h"
+ #include "TemporaryPool.h"
+ #include "TemporaryFile.h"
+ #include "Message.h"
+@@ -64,38 +65,12 @@
+     File uitem_file(temp_pool.get(), uitem_file_path);
+ 
+     version = read_and_check(&uitem_file, &uitem_file_map);
+-    switch (version) {
+-    case 3:
+-        memcpy(uitem, uitem_file_map->mm, sizeof(UploadItem::header_t));
+-        break;
+-    case 2:
+-        // フォーマット変換
+-        UploadItem::header_t *header;
+-        UploadItem::header_ver2x_t *header_ver2x;
+-
+-        header = AS_UITEM_H(uitem);
+-        header_ver2x = AS_UITEM_H_VER2x(uitem_file_map->mm);
+-
+-        new(header) UploadItem::header_t;
+-        header->id             = header_ver2x->id;
+-        header->index          = header_ver2x->index;
+-        header->download_count = header_ver2x->download_count;
+-        header->flags          = header_ver2x->flags;
+-        header->file_size      = header_ver2x->file_size;
+-        header->mtime          = header_ver2x->mtime;
+-        strncpy(header->date, header_ver2x->date, ITM_MAX_DATE_SIZE);
+-        strncpy(header->ip_address, header_ver2x->ip_address, ITM_MAX_IP_ADDRESS_SIZE);
+-        strncpy(header->file_name, header_ver2x->file_name, ITM_MAX_FILE_NAME_SIZE);
+-        strncpy(header->file_mime, header_ver2x->file_mime, ITM_MAX_FILE_MIME_SIZE);
+-        strncpy(header->file_ext, header_ver2x->file_ext, ITM_MAX_FILE_EXT_SIZE);
+-        strncpy(header->file_digest, header_ver2x->file_digest, ITM_MAX_FILE_DIGEST_SIZE);
+-        strncpy(header->remove_pass, header_ver2x->remove_pass, ITM_MAX_REMOVE_PASS_SIZE);
+-        strncpy(header->download_pass, header_ver2x->download_pass, ITM_MAX_DOWNLOAD_PASS_SIZE);
+-        strncpy(header->comment, header_ver2x->comment, ITM_MAX_COMMENT_SIZE);
+-        break;
+-    default:
+-        THROW(MESSAGE_BUG_FOUND);
+-    }
++    if (version != 4) throw "Legacy metadata: stop Apache and run migrate_passwords.py before startup";
++    memcpy(uitem, uitem_file_map->mm, sizeof(UploadItem::header_t));
++    if (memchr(uitem->get_remove_pass(),0,ITM_MAX_REMOVE_PASS_SIZE)==NULL ||
++        memchr(uitem->get_download_pass(),0,ITM_MAX_DOWNLOAD_PASS_SIZE)==NULL ||
++        !PasswordHash::valid(uitem->get_remove_pass()) || !PasswordHash::valid(uitem->get_download_pass()))
++        throw "Invalid password metadata";
+ }
+ 
+ bool UploadItemReader::is_exist_item(apr_size_t item_id) const
+@@ -166,13 +141,17 @@
+ 
+     version = (uitem->get_version())[0] - '0';
+     switch (version) {
+-    case 3:
+-        if (uitem_file_map->size < sizeof(UploadItem::header_t)) {
++    case 4:
++        if (uitem_file_map->size != sizeof(UploadItem::header_t)) {
+             THROW(MESSAGE_UPLOAD_ITEM_FORMAT_INVALID);
+         }
+         break;
++    case 3:
++        if (uitem_file_map->size != sizeof(UploadItem::header_ver3_t))
++            THROW(MESSAGE_UPLOAD_ITEM_FORMAT_INVALID);
++        break;
+     case 2:
+-        if (uitem_file_map->size < sizeof(UploadItem::header_ver2x_t)) {
++        if (uitem_file_map->size != sizeof(UploadItem::header_ver2x_t)) {
+             THROW(MESSAGE_UPLOAD_ITEM_FORMAT_INVALID);
+         }
+         break;
+--- a/src/UploaderConfig.cpp
++++ b/src/UploaderConfig.cpp
+@@ -33,6 +33,7 @@
+ #include "apr_strings.h"
+ 
+ #include "UploaderConfig.h"
++#include "StorageLock.h"
+ #include "UploadItemList.h"
+ #include "UploadItemManager.h"
+ #include "UploadItemListReader.h"
+@@ -277,6 +278,9 @@
+     }
+ 
+     check_dir(data_dir_path);
++    StorageLock::hold(pool_,data_dir_path);
++    if (File::is_exist(pool_, apr_pstrcat(pool_, data_dir_path, "/.migration-in-progress", NULL)))
++        throw "Password migration is incomplete; restore backup or finish migration before startup";
+     check_dir(file_dir_path);
+     check_dir(thumb_dir_path);
+     check_dir(temp_dir_path);
 --- a/src/UploaderTemplate.cpp
 +++ b/src/UploaderTemplate.cpp
 @@ -1,3 +1,4 @@
@@ -935,7 +1215,7 @@
  /******************************************************************************
   * Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
   *
-@@ -35,6 +36,7 @@
+@@ -35,9 +36,14 @@
  #include "apr_strings.h"
  
  #include "uploader_handler.h"
@@ -943,7 +1223,109 @@
  #include "uploader_util.h"
  
  #include "RequestResponseImpl.h"
-@@ -846,7 +848,9 @@
++#include "PasswordHash.h"
++#if defined(UPLOADER_TYPE_APACHE) && AP_SERVER_MAJORVERSION_NUMBER >= 2
++#include "ApacheSecurity.h"
++#endif
+ 
+ #include "UploadItem.h"
+ #include "UploadItemIO.h"
+@@ -117,6 +123,30 @@
+ }
+ 
+ template<class Response>
++static const char *csrf_token(typename Response::Handle *r) {
++#if defined(UPLOADER_TYPE_APACHE) && AP_SERVER_MAJORVERSION_NUMBER >= 2
++    const char *token=apr_table_get(r->notes,"uploader-csrf-token");return token?token:"";
++#else
++    return "";
++#endif
++}
++template<class Response>
++static bool check_csrf(typename Response::Handle *r,apr_array_header_t *array) {
++#if defined(UPLOADER_TYPE_APACHE) && AP_SERVER_MAJORVERSION_NUMBER >= 2
++    if(apr_table_get(r->notes,"uploader-csrf-verified"))return true;
++    typedef RFC1867Parser<typename Response::Reader> Parser;
++    typename Parser::content_t *entries=reinterpret_cast<typename Parser::content_t *>(array->elts);
++    const char *token=NULL;int count=0;
++    for(int i=0;i<array->nelts;++i)if(std::strcmp(entries[i].name,"csrf_token")==0) {
++        if(entries[i].type!=Parser::TEXT)return false;token=entries[i].text;++count;
++    }
++    return count==1&&ApacheSecurity::verify(r,token);
++#else
++    (void)r;(void)array;return false;
++#endif
++}
++
++template<class Response>
+ static int redirect(typename Response::Handle *r, typename Response::Writer& o,
+                     const char *url)
+ {
+@@ -176,6 +206,7 @@
+         TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
+ 
+         var_creator.create(BASE_URL_VAR_NAME, config->base_url);
++        var_creator.create("CSRF_TOKEN", csrf_token<Response>(r));
+         var_creator.create(ERROR_MESSAGE_VAR_NAME, message);
+ 
+         TemplateExecutor<typename Response::Writer> executor(r->pool, o);
+@@ -266,6 +297,7 @@
+         TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
+ 
+         var_creator.create(BASE_URL_VAR_NAME, config->base_url);
++        var_creator.create("CSRF_TOKEN", csrf_token<Response>(r));
+         var_creator.create(COMMAND_VAR_NAME, INDEX_COMMAND);
+ 
+         var_creator.create
+@@ -346,6 +378,7 @@
+         TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
+ 
+         var_creator.create(BASE_URL_VAR_NAME, config->base_url);
++        var_creator.create("CSRF_TOKEN", csrf_token<Response>(r));
+         var_creator.create
+             (COMMAND_VAR_NAME,
+              apr_pstrcat(r->pool, SORT_COMMAND, sort_type, NULL));
+@@ -401,6 +434,7 @@
+         TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
+ 
+         var_creator.create(BASE_URL_VAR_NAME, config->base_url);
++        var_creator.create("CSRF_TOKEN", csrf_token<Response>(r));
+ 
+         var_creator.create
+             (ITEM_VAR_NAME,
+@@ -571,6 +605,7 @@
+         TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
+ 
+         var_creator.create(BASE_URL_VAR_NAME, config->base_url);
++        var_creator.create("CSRF_TOKEN", csrf_token<Response>(r));
+ 
+         var_creator.create
+             (THUMBNAIL_LIST_VAR_NAME,
+@@ -671,6 +706,7 @@
+     try {
+         content_array = parser.parse(Response::get_content_type(r),
+                                      Response::get_content_size(r));
++        if (!check_csrf<Response>(r, content_array)) return HTTP_FORBIDDEN;
+         progress->end_time = apr_time_now();
+     } catch(const char *message) {
+         progress->end_time = apr_time_now();
+@@ -781,6 +817,7 @@
+          PST_MAX_ITEM_COUNT);
+ 
+     content_array = parser.parse();
++    if (!check_csrf<Response>(r, content_array)) return HTTP_FORBIDDEN;
+ 
+     file_temp_path = NULL;
+     try {
+@@ -825,6 +862,7 @@
+         TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
+ 
+         var_creator.create(BASE_URL_VAR_NAME, config->base_url);
++        var_creator.create("CSRF_TOKEN", csrf_token<Response>(r));
+ 
+         var_creator.create
+             (ITEM_VAR_NAME,
+@@ -846,7 +884,9 @@
  static int download_set_header(typename Response::Handle *r, UploadItem *uitem,
                                 apr_file_t *item_file)
  {
@@ -954,7 +1336,7 @@
  
  #ifdef UPLOADER_TYPE_APACHE
  #if AP_SERVER_MAJORVERSION_NUMBER != 1
-@@ -917,7 +921,7 @@
+@@ -917,7 +957,7 @@
      }
  
      Response::set_expires(r, apr_time_now() +  apr_time_from_sec(VIW_EXPIRES));
@@ -963,27 +1345,51 @@
  
  #if defined(USE_GZIP) && defined(UPLOADER_TYPE_APACHE)
      if (uitem->is_gzipped()) {
-@@ -1047,8 +1051,7 @@
+@@ -1033,6 +1073,7 @@
+ 
+             content_array = parser.parse(Response::get_content_type(r),
+                                          Response::get_content_size(r));
++        if (!check_csrf<Response>(r, content_array)) return HTTP_FORBIDDEN;
+ 
+             download_pass = get_download_password<typename Response::Reader>
+                 (r->pool, content_array);
+@@ -1047,8 +1088,7 @@
          // DL pass のチェック
          if (!is_admin_mode) {
              if ((strlen(uitem->get_download_pass()) != 0) &&
 -                (strncmp(uitem->get_download_pass(), download_pass,
 -                         strlen(uitem->get_download_pass())) != 0)) {
-+                (strcmp(uitem->get_download_pass(), download_pass) != 0)) {
++                (!PasswordHash::verify(uitem->get_download_pass(), download_pass))) {
                  if (strlen(download_pass) != 0) {
                      THROW(MESSAGE_DOWNLOAD_PASS_MISMATCH);
                  }
-@@ -1135,8 +1138,7 @@
+@@ -1124,6 +1164,7 @@
+ 
+         content_array = parser.parse(Response::get_content_type(r),
+                                      Response::get_content_size(r));
++        if (!check_csrf<Response>(r, content_array)) return HTTP_FORBIDDEN;
+ 
+         get_remove_param<typename Response::Reader>
+             (r->pool, content_array, &item_id, &remove_pass);
+@@ -1135,8 +1176,7 @@
  #ifndef EMPTY_PASSWORD
                  (strlen(uitem->get_remove_pass()) == 0) ||
  #endif
 -                (strncmp(remove_pass, uitem->get_remove_pass(),
 -                         strlen(uitem->get_remove_pass())) != 0)) {
-+                (strcmp(remove_pass, uitem->get_remove_pass()) != 0)) {
++                (!PasswordHash::verify(uitem->get_remove_pass(), remove_pass))) {
                  THROW(MESSAGE_REMOVE_PASS_MISMATCH);
              }
          }
-@@ -1303,6 +1305,16 @@
+@@ -1269,6 +1309,7 @@
+         TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
+ 
+         var_creator.create(BASE_URL_VAR_NAME, config->base_url);
++        var_creator.create("CSRF_TOKEN", csrf_token<Response>(r));
+ 
+         var_creator.create
+             (ITEM_LIST_VAR_NAME,
+@@ -1303,6 +1344,22 @@
  {
      const char *command;
      const char *request_uri;
@@ -997,9 +1403,191 @@
 +            return HTTP_FORBIDDEN;
 +    }
 +#endif
++
++#if defined(UPLOADER_TYPE_APACHE) && AP_SERVER_MAJORVERSION_NUMBER >= 2
++    if (!ApacheSecurity::prepare(r,config->data_dir_path,config->base_url)) return HTTP_FORBIDDEN;
++#else
++    if (Response::is_post_method(r)) return HTTP_FORBIDDEN;
++#endif
  
      if (UNLIKELY(strlen(arg) > HDL_MAX_PATH_INFO_SIZE)) {
          THROW(MESSAGE_HANDLER_PATH_INFO_TOO_LONG);
+--- a/tmpl/admin.htm.in
++++ b/tmpl/admin.htm.in
+@@ -308,6 +308,7 @@
+     <td class="ip_address"><a href="http://whois.ansi.co.jp/?key=${item.ip_address}">${item.ip_address}</a></td>
+     <td class="remove">
+      <form method="post" enctype="multipart/form-data" action="${BASE_URL}/admin/remove/index/${CURRENT_PAGE}">
++      <input type="hidden" name="csrf_token" value="${CSRF_TOKEN}" />
+       <input type="hidden" name="remove_pass" value="" />
+       <input type="hidden" name="id" value="${item.id}" />
+       <input type="submit" name="submit" value="���" />
+--- a/tmpl/download.htm.in
++++ b/tmpl/download.htm.in
+@@ -27,9 +27,10 @@
+   </div>
+ 
+   <form method="post" enctype="multipart/form-data" id="download">
++      <input type="hidden" name="csrf_token" value="${CSRF_TOKEN}" />
+    <div class="input_download_pass">
+     <label for="download_pass" accesskey="D">DL pass:</label>
+-    <input type="password" name="download_pass" value="" size="8" maxlength="8" id="download_pass" />
++    <input type="password" name="download_pass" value="" size="8" maxlength="127" id="download_pass" />
+     <input type="hidden" name="code_pat" value="��" />
+     <input type="submit" name="submit" value="�����������" class="submit" />
+    </div>
+--- a/tmpl/en/admin.htm.in
++++ b/tmpl/en/admin.htm.in
+@@ -307,6 +307,7 @@
+     <td class="ip_address"><a href="http://whois.ansi.co.jp/?key=${item.ip_address}">${item.ip_address}</a></td>
+     <td class="remove">
+      <form method="post" enctype="multipart/form-data" action="${BASE_URL}/admin/remove/">
++      <input type="hidden" name="csrf_token" value="${CSRF_TOKEN}" />
+       <input type="hidden" name="remove_pass" value="" />
+       <input type="hidden" name="id" value="${item.id}" />
+       <input type="submit" name="submit" value="Remove" />
+--- a/tmpl/en/download.htm.in
++++ b/tmpl/en/download.htm.in
+@@ -26,9 +26,10 @@
+   </div>
+ 
+   <form method="post" enctype="multipart/form-data" id="download">
++      <input type="hidden" name="csrf_token" value="${CSRF_TOKEN}" />
+    <div class="input_download_pass">
+     <label for="download_pass" accesskey="D">DL pass:</label>
+-    <input type="password" name="download_pass" value="" size="8" maxlength="8" id="download_pass" />
++    <input type="password" name="download_pass" value="" size="8" maxlength="127" id="download_pass" />
+     <input type="submit" name="submit" value="Download" class="submit" />
+    </div>
+   </form>
+--- a/tmpl/en/index.htm.in
++++ b/tmpl/en/index.htm.in
+@@ -42,6 +42,7 @@
+   </div>
+ 
+   <form method="post" enctype="multipart/form-data" action="${BASE_URL}/upload/" id="upload">
++      <input type="hidden" name="csrf_token" value="${CSRF_TOKEN}" />
+    <div>
+     <table>
+      <tr>
+@@ -53,9 +54,9 @@
+       <td>
+        <input type="text" name="comment" value="" size="50" maxlength="256" id="upload_comment" />
+        <label for="download_pass" accesskey="D">DL pass:</label>
+-       <input type="password" name="download_pass" value="" size="8" maxlength="8" id="download_pass" />
++       <input type="password" name="download_pass" value="" size="8" maxlength="127" id="download_pass" />
+        <label for="remove_pass" accesskey="R">RM pass:</label>
+-       <input type="password" name="remove_pass" value="" size="8" maxlength="8" id="remove_pass" />
++       <input type="password" name="remove_pass" value="" size="8" maxlength="127" id="remove_pass" />
+        <input type="submit" name="submit" value="Upload" class="submit" />
+       </td>
+      </tr>
+@@ -150,13 +151,14 @@
+   </div>
+ 
+   <form method="post" enctype="multipart/form-data" action="${BASE_URL}/remove/" id="remove">
++      <input type="hidden" name="csrf_token" value="${CSRF_TOKEN}" />
+    <div>
+     <table>
+      <tr>
+       <td><label for="rm_file" accesskey="F">file:</label></td>
+       <td><input type="text" name="name" value="" size="30" id="rm_file" /></td>
+       <td><label for="rm_remove_pass" accesskey="P">pass:</label></td>
+-      <td><input type="password" name="remove_pass" value="" size="8" maxlength="8" id="rm_remove_pass" /></td>
++      <td><input type="password" name="remove_pass" value="" size="8" maxlength="127" id="rm_remove_pass" /></td>
+       <td><input type="submit" name="submit" value="Remove" class="submit" /></td>
+       <td><input type="hidden" name="id" value="" /></td>
+      </tr>
+--- a/tmpl/en/info.htm.in
++++ b/tmpl/en/info.htm.in
+@@ -47,13 +47,14 @@
+   </div>
+ 
+   <form method="post" enctype="multipart/form-data" action="${BASE_URL}/remove/" id="remove">
++      <input type="hidden" name="csrf_token" value="${CSRF_TOKEN}" />
+    <div>
+     <table>
+      <tr>
+       <td><label for="rm_file" accesskey="F">file:</label></td>
+       <td><input type="text" name="name" value="" size="30" id="rm_file" /></td>
+       <td><label for="rm_remove_pass" accesskey="P">pass:</label></td>
+-      <td><input type="password" name="remove_pass" value="" size="8" maxlength="8" id="rm_remove_pass" /></td>
++      <td><input type="password" name="remove_pass" value="" size="8" maxlength="127" id="rm_remove_pass" /></td>
+       <td><input type="submit" name="submit" value="Remove" class="submit" /></td>
+       <td><input type="hidden" name="id" value="" /></td>
+      </tr>
+--- a/tmpl/index.htm.in
++++ b/tmpl/index.htm.in
+@@ -88,6 +88,7 @@
+   </div>
+ 
+   <form method="post" enctype="multipart/form-data" action="${BASE_URL}/upload/" id="upload">
++      <input type="hidden" name="csrf_token" value="${CSRF_TOKEN}" />
+    <div>
+     <table>
+      <tr>
+@@ -99,9 +100,9 @@
+       <td>
+        <input type="text" name="comment" value="" size="50" maxlength="256" id="upload_comment" />
+        <label for="download_pass" accesskey="D">DL pass:</label>
+-       <input type="password" name="download_pass" value="" size="8" maxlength="8" id="download_pass" />
++       <input type="password" name="download_pass" value="" size="8" maxlength="127" id="download_pass" />
+        <label for="remove_pass" accesskey="R">RM pass:</label>
+-       <input type="password" name="remove_pass" value="" size="8" maxlength="8" id="remove_pass" />
++       <input type="password" name="remove_pass" value="" size="8" maxlength="127" id="remove_pass" />
+        <input type="hidden" name="code_pat" value="��" />
+        <input type="submit" name="submit" value="����" class="submit" id="upload_submit" />
+       </td>
+@@ -197,13 +198,14 @@
+   </div>
+ 
+   <form method="post" enctype="multipart/form-data" action="${BASE_URL}/remove/" id="remove">
++      <input type="hidden" name="csrf_token" value="${CSRF_TOKEN}" />
+    <div>
+     <table>
+      <tr>
+       <td><label for="rm_file" accesskey="F">file:</label></td>
+       <td><input type="text" name="name" value="" size="30" id="rm_file" /></td>
+       <td><label for="rm_remove_pass" accesskey="P">pass:</label></td>
+-      <td><input type="password" name="remove_pass" value="" size="8" maxlength="8" id="rm_remove_pass" /></td>
++      <td><input type="password" name="remove_pass" value="" size="8" maxlength="127" id="rm_remove_pass" /></td>
+       <td><input type="submit" name="submit" value="���" class="submit" /></td>
+       <td><input type="hidden" name="id" value="" /></td>
+      </tr>
+--- a/tmpl/index_swf.htm.in
++++ b/tmpl/index_swf.htm.in
+@@ -127,13 +127,14 @@
+   </div>
+ 
+   <form method="post" enctype="multipart/form-data" action="${BASE_URL}/remove/" id="remove">
++      <input type="hidden" name="csrf_token" value="${CSRF_TOKEN}" />
+    <div>
+     <table>
+      <tr>
+       <td><label for="rm_file" accesskey="F">file:</label></td>
+       <td><input type="text" name="name" value="" size="30" id="rm_file" /></td>
+       <td><label for="rm_remove_pass" accesskey="P">pass:</label></td>
+-      <td><input type="password" name="remove_pass" value="" size="8" maxlength="8" id="rm_remove_pass" /></td>
++      <td><input type="password" name="remove_pass" value="" size="8" maxlength="127" id="rm_remove_pass" /></td>
+       <td><input type="submit" name="submit" value="���" class="submit" /></td>
+       <td><input type="hidden" name="id" value="" /></td>
+      </tr>
+--- a/tmpl/info.htm.in
++++ b/tmpl/info.htm.in
+@@ -48,11 +48,12 @@
+   </div>
+ 
+   <form method="post" enctype="multipart/form-data" action="${BASE_URL}/remove/" id="remove">
++      <input type="hidden" name="csrf_token" value="${CSRF_TOKEN}" />
+    <div>
+     <table>
+      <tr>
+       <td><label for="rm_remove_pass" accesskey="P">pass:</label></td>
+-      <td><input type="password" name="remove_pass" value="" size="8" maxlength="8" id="rm_remove_pass" /></td>
++      <td><input type="password" name="remove_pass" value="" size="8" maxlength="127" id="rm_remove_pass" /></td>
+       <td><input type="submit" name="submit" value="���" class="submit" /></td>
+       <td><input type="hidden" name="id" value="${ITEM.id}" /></td>
+      </tr>
 --- /dev/null
 +++ b/include/UploadSafety.h
 @@ -0,0 +1,22 @@
@@ -1070,8 +1658,535 @@
 +}
 +#endif
 --- /dev/null
++++ b/include/PasswordHash.h
+@@ -0,0 +1,43 @@
++// SPDX-License-Identifier: Zlib
++#ifndef UPLOADER_PASSWORD_HASH_H
++#define UPLOADER_PASSWORD_HASH_H
++#include <openssl/evp.h>
++#include <openssl/rand.h>
++#include <openssl/crypto.h>
++#include <string>
++#include <cstring>
++namespace PasswordHash {
++static const int ITERATIONS = 600000;
++inline std::string hex(const unsigned char *p, size_t n) {
++    const char *digits="0123456789abcdef"; std::string out(n*2, '0');
++    for(size_t i=0;i<n;++i) {out[2*i]=digits[p[i]>>4];out[2*i+1]=digits[p[i]&15];}return out;
++}
++inline bool unhex(const std::string& s, unsigned char *p, size_t n) {
++    if(s.size()!=n*2)return false;
++    for(size_t i=0;i<n*2;++i) {unsigned char c=s[i];int v=c>='0'&&c<='9'?c-'0':c>='a'&&c<='f'?c-'a'+10:-1;
++        if(v<0)return false;
++        if(i%2)p[i/2]|=v;else p[i/2]=static_cast<unsigned char>(v<<4);}return true;
++}
++inline bool decode(const std::string& value, unsigned char *salt, unsigned char *digest) {
++    const std::string prefix="pbkdf2-sha256$600000$";
++    return value.size()==prefix.size()+32+1+64 && value.compare(0,prefix.size(),prefix)==0 &&
++        value[prefix.size()+32]=='$' && unhex(value.substr(prefix.size(),32),salt,16) &&
++        unhex(value.substr(prefix.size()+33),digest,32);
++}
++inline bool valid(const char *s) {unsigned char salt[16],digest[32];return *s==0 || decode(s,salt,digest);}
++inline std::string make(const char *password) {
++    size_t n=std::strlen(password);if(n==0)return "";if(n>127)throw "Password exceeds 127 bytes";
++    unsigned char salt[16],digest[32];
++    if(RAND_bytes(salt,16)!=1 || PKCS5_PBKDF2_HMAC(password,static_cast<int>(n),salt,16,ITERATIONS,EVP_sha256(),32,digest)!=1)
++        throw "Password hashing failed";
++    std::string value="pbkdf2-sha256$600000$"+hex(salt,16)+"$"+hex(digest,32);
++    OPENSSL_cleanse(digest,sizeof(digest));return value;
++}
++inline bool verify(const char *stored,const char *password) {
++    size_t n=std::strlen(password);if(n>127)return false;if(*stored==0)return n==0;
++    unsigned char salt[16],expected[32],actual[32];if(!decode(stored,salt,expected))return false;
++    if(PKCS5_PBKDF2_HMAC(password,static_cast<int>(n),salt,16,ITERATIONS,EVP_sha256(),32,actual)!=1)throw "Password verification failed";
++    bool ok=CRYPTO_memcmp(actual,expected,32)==0;OPENSSL_cleanse(actual,sizeof(actual));return ok;
++}
++}
++#endif
+--- /dev/null
++++ b/include/SecurityTokens.h
+@@ -0,0 +1,33 @@
++// SPDX-License-Identifier: Zlib
++#ifndef UPLOADER_SECURITY_TOKENS_H
++#define UPLOADER_SECURITY_TOKENS_H
++#include "PasswordHash.h"
++#include <openssl/hmac.h>
++#include <ctime>
++#include <cstdint>
++namespace SecurityTokens {
++static const uint64_t LIFETIME=7200;
++inline std::string random_hex() {unsigned char value[32];if(RAND_bytes(value,32)!=1)throw "Random generator failed";return PasswordHash::hex(value,32);}
++inline bool session_valid(const std::string& sid) {unsigned char value[32];return PasswordHash::unhex(sid,value,32);}
++inline std::string sign(const std::string& key,const std::string& base,const std::string& sid,const std::string& stamp) {
++    std::string input=base+"\n"+sid+"\n"+stamp;unsigned char mac[EVP_MAX_MD_SIZE];unsigned int size=0;
++    if(key.size()!=32 || !HMAC(EVP_sha256(),key.data(),32,reinterpret_cast<const unsigned char*>(input.data()),input.size(),mac,&size) || size!=32)
++        throw "Token signing failed";
++    return PasswordHash::hex(mac,size);
++}
++inline std::string issue(const std::string& key,const std::string& base,const std::string& sid,uint64_t now) {
++    if(!session_valid(sid))throw "Invalid session";
++    std::string stamp=std::to_string(now);return stamp+"."+sign(key,base,sid,stamp);
++}
++inline bool verify(const std::string& key,const std::string& base,const std::string& sid,const std::string& token,uint64_t now) {
++    if(!session_valid(sid))return false;
++    size_t dot=token.find('.');
++    if(dot==std::string::npos || dot==0 || dot>20 || token.size()!=dot+65)return false;
++    uint64_t stamp=0;
++    for(size_t i=0;i<dot;++i) {if(token[i]<'0'||token[i]>'9' || stamp>(UINT64_MAX-9)/10)return false;stamp=stamp*10+token[i]-'0';}
++    if(std::to_string(stamp)!=token.substr(0,dot) || stamp>now || now-stamp>LIFETIME)return false;
++    unsigned char mac[32];if(!PasswordHash::unhex(token.substr(dot+1),mac,32))return false;
++    std::string expected=sign(key,base,sid,token.substr(0,dot));return CRYPTO_memcmp(expected.data(),token.data()+dot+1,64)==0;
++}
++}
++#endif
+--- /dev/null
++++ b/include/ApacheSecurity.h
+@@ -0,0 +1,77 @@
++// SPDX-License-Identifier: Zlib
++#ifndef UPLOADER_APACHE_SECURITY_H
++#define UPLOADER_APACHE_SECURITY_H
++#include "SecurityTokens.h"
++#include <fcntl.h>
++#include <unistd.h>
++#include <sys/stat.h>
++#include <cerrno>
++namespace ApacheSecurity {
++inline std::string key(const char *directory) {
++    std::string path=std::string(directory)+"/.csrf-key";
++    int fd=open(path.c_str(),O_RDONLY|O_NOFOLLOW|O_CLOEXEC);
++    if(fd<0 && errno==ENOENT) {
++        std::string tmp=path+".tmp."+SecurityTokens::random_hex();
++        int out=open(tmp.c_str(),O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW|O_CLOEXEC,0600);
++        if(out<0)throw "Cannot create CSRF secret";
++        unsigned char bytes[32];bool good=RAND_bytes(bytes,32)==1;size_t written=0;
++        while(good && written<sizeof(bytes)) {
++            ssize_t n=write(out,bytes+written,sizeof(bytes)-written);
++            if(n<0 && errno==EINTR)continue;if(n<=0){good=false;break;}written+=n;
++        }
++        if(good && fsync(out)!=0)good=false;
++        if(close(out)!=0)good=false;
++        OPENSSL_cleanse(bytes,sizeof(bytes));
++        if(!good){unlink(tmp.c_str());throw "Cannot write CSRF secret";}
++        int result=link(tmp.c_str(),path.c_str());int saved=errno;unlink(tmp.c_str());
++        if(result!=0 && saved!=EEXIST)throw "Cannot publish CSRF secret";
++        fd=open(path.c_str(),O_RDONLY|O_NOFOLLOW|O_CLOEXEC);
++    }
++    if(fd<0)throw "Cannot open CSRF secret";
++    struct stat st;
++    if(fstat(fd,&st)!=0 || !S_ISREG(st.st_mode) || st.st_size!=32 ||
++        (st.st_mode&077)!=0 || st.st_uid!=geteuid()) {close(fd);throw "Unsafe CSRF secret permissions or owner";}
++    std::string result(32,'\0');size_t count=0;
++    while(count<32) {ssize_t n=read(fd,&result[count],32-count);if(n<0&&errno==EINTR)continue;
++        if(n<=0){close(fd);throw "Cannot read CSRF secret";}count+=n;}
++    close(fd);return result;
++}
++inline const char *cookie_name(const char *base) {return std::strncmp(base,"https://",8)==0?"__Host-mod_uploader_sid":"mod_uploader_sid";}
++inline std::string session(request_rec *r,const char *base) {
++    const char *header=apr_table_get(r->headers_in,"Cookie");if(!header)return "";
++    std::string all(header),name=std::string(cookie_name(base))+"=",value;size_t start=0;int found=0;
++    while(start<all.size()) {
++        size_t end=all.find(';',start);if(end==std::string::npos)end=all.size();
++        while(start<end&&(all[start]==' '||all[start]=='\t'))++start;
++        if(all.compare(start,name.size(),name)==0){value=all.substr(start+name.size(),end-start-name.size());++found;}
++        start=end+1;
++    }
++    return found==1&&SecurityTokens::session_valid(value)?value:"";
++}
++inline bool verify(request_rec *r,const char *token) {
++    if(!token)return false;
++    const char *base=apr_table_get(r->notes,"uploader-csrf-base");
++    const char *dir=apr_table_get(r->notes,"uploader-csrf-dir");
++    return base&&dir&&SecurityTokens::verify(key(dir),base,session(r,base),token,static_cast<uint64_t>(std::time(NULL)));
++}
++inline bool prepare(request_rec *r,const char *directory,const char *base) {
++    apr_table_setn(r->notes,"uploader-csrf-base",base);apr_table_setn(r->notes,"uploader-csrf-dir",directory);
++    if(r->method_number==M_POST) {
++        if(session(r,base).empty())return false;
++        const char *header=apr_table_get(r->headers_in,"X-CSRF-Token");
++        if(header) {if(!verify(r,header))return false;apr_table_setn(r->notes,"uploader-csrf-verified","1");}
++        return true;
++    }
++    std::string sid=session(r,base);
++    if(sid.empty()) {
++        sid=SecurityTokens::random_hex();std::string cookie=std::string(cookie_name(base))+"="+sid+"; Path=/; HttpOnly; SameSite=Strict";
++        if(std::strncmp(base,"https://",8)==0)cookie+="; Secure";
++        apr_table_add(r->headers_out,"Set-Cookie",cookie.c_str());
++    }
++    std::string token=SecurityTokens::issue(key(directory),base,sid,static_cast<uint64_t>(std::time(NULL)));
++    apr_table_set(r->notes,"uploader-csrf-token",token.c_str());
++    apr_table_setn(r->headers_out,"Cache-Control","private, no-store");
++    apr_table_mergen(r->headers_out,"Vary","Cookie");return true;
++}
++}
++#endif
+--- /dev/null
++++ b/include/StorageLock.h
+@@ -0,0 +1,23 @@
++// SPDX-License-Identifier: Zlib
++#ifndef UPLOADER_STORAGE_LOCK_H
++#define UPLOADER_STORAGE_LOCK_H
++#include <sys/file.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++#include <unistd.h>
++#include <string>
++namespace StorageLock {
++inline apr_status_t release(void *data) {int *fd=static_cast<int*>(data);close(*fd);return APR_SUCCESS;}
++inline void hold(apr_pool_t *pool,const char *directory) {
++    std::string path=std::string(directory)+"/.format-lock";
++    int fd=open(path.c_str(),O_RDONLY|O_CREAT|O_NOFOLLOW|O_CLOEXEC,0600);
++    if(fd<0)throw "Cannot open storage lock";
++    struct stat st;
++    if(fstat(fd,&st)!=0||!S_ISREG(st.st_mode)||flock(fd,LOCK_SH|LOCK_NB)!=0) {
++        close(fd);throw "Storage migration is running; stop and retry later";
++    }
++    int *handle=static_cast<int*>(apr_palloc(pool,sizeof(int)));*handle=fd;
++    apr_pool_cleanup_register(pool,handle,release,apr_pool_cleanup_null);
++}
++}
++#endif
+--- /dev/null
++++ b/util/password_tool.cpp
+@@ -0,0 +1,93 @@
++// SPDX-License-Identifier: Zlib
++// Native ABI converter. This tool never edits its input file.
++#include "Environment.h"
++#include "UploadItem.h"
++#include "PasswordHash.h"
++#include <fstream>
++#include <iostream>
++#include <vector>
++#include <cstring>
++#include <sys/stat.h>
++#include <unistd.h>
++#include <fcntl.h>
++typedef UploadItem::header_t Header;
++
++static std::vector<char> read_file(const char *path) {
++    struct stat st;if(lstat(path,&st)!=0||!S_ISREG(st.st_mode)||st.st_nlink!=1||st.st_size<24||st.st_size>4096)
++        throw "Not a regular native metadata file";
++    std::ifstream in(path,std::ios::binary);std::vector<char> data(static_cast<size_t>(st.st_size));
++    if(!in.read(data.data(),data.size()))throw "Cannot read metadata";return data;
++}
++template<size_t N> static void terminated(const char (&s)[N]) {if(!memchr(s,0,N))throw "Unterminated metadata field";}
++template<class T> static void validate_fields(const T& h) {
++    terminated(h.identifier);terminated(h.version);terminated(h.date);terminated(h.ip_address);
++    terminated(h.file_name);terminated(h.file_mime);terminated(h.file_ext);terminated(h.file_digest);
++    terminated(h.remove_pass);terminated(h.download_pass);terminated(h.comment);
++    if(strcmp(h.identifier,"mod_uploader")!=0)throw "Invalid metadata identifier";
++    if ((reinterpret_cast<const unsigned char*>(&h.flags)[0]&~3U)!=0)throw "Invalid metadata flags";
++}
++template<class T> static Header convert(const T& old) {
++    validate_fields(old);Header h;
++    h.id=old.id;h.index=old.index;h.download_count=old.download_count;memcpy(&h.flags,&old.flags,sizeof(h.flags));
++    h.is_need_sync=false;h.file_size=old.file_size;h.mtime=old.mtime;
++#define COPY_FIELD(field) memcpy(h.field,old.field,sizeof(h.field))
++    COPY_FIELD(date);COPY_FIELD(ip_address);COPY_FIELD(file_name);COPY_FIELD(file_mime);
++    COPY_FIELD(file_ext);COPY_FIELD(file_digest);COPY_FIELD(comment);
++#undef COPY_FIELD
++    std::string remove=PasswordHash::make(old.remove_pass),download=PasswordHash::make(old.download_pass);
++    memcpy(h.remove_pass,remove.c_str(),remove.size()+1);memcpy(h.download_pass,download.c_str(),download.size()+1);
++    return h;
++}
++static Header load(const std::vector<char>& data,bool migrate) {
++    int version=data[16]-'0';Header h;
++    if(version==4) {
++        if(data.size()!=sizeof(Header))throw "Wrong native v4 metadata size";
++        memcpy(&h,data.data(),sizeof(h));validate_fields(h);
++        if(!PasswordHash::valid(h.remove_pass)||!PasswordHash::valid(h.download_pass))throw "Invalid v4 password encoding";
++    } else if(version==3) {
++        if(data.size()!=sizeof(UploadItem::header_ver3_t))throw "Wrong native v3 metadata size";
++        UploadItem::header_ver3_t old;memcpy(&old,data.data(),sizeof(old));validate_fields(old);
++        if(migrate){h=convert(old);h.atime=old.atime;}else {h.id=old.id;}
++    } else if(version==2) {
++        if(data.size()!=sizeof(UploadItem::header_ver2x_t))throw "Wrong native v2 metadata size";
++        UploadItem::header_ver2x_t old;memcpy(&old,data.data(),sizeof(old));validate_fields(old);
++        if(migrate){h=convert(old);h.atime=old.mtime;}else {h.id=old.id;}
++    } else throw "Unsupported metadata version";
++    return h;
++}
++static void write_file(const char *path,const void *data,size_t size) {
++    int fd=open(path,O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW,0600);if(fd<0)throw "Output must not already exist";
++    size_t n=0;while(n<size){ssize_t count=write(fd,static_cast<const char*>(data)+n,size-n);if(count<0&&errno==EINTR)continue;
++        if(count<=0){close(fd);throw "Write failed";}n+=count;}
++    if(fsync(fd)!=0){close(fd);throw "fsync failed";}if(close(fd)!=0)throw "close failed";
++}
++int main(int argc,char **argv) {
++    try {
++        if(argc==3&&(strcmp(argv[1],"--fixture3")==0||strcmp(argv[1],"--fixture2")==0||strcmp(argv[1],"--fixture3-empty")==0)) {
++            UploadItem::header_ver3_t h;h.id=1;h.index=0;h.file_size=16;h.mtime=1700000000000000LL;h.atime=h.mtime;
++            strcpy(h.date,"23/11/14(Tue) 22:13:20");strcpy(h.ip_address,"127.0.0.1");strcpy(h.file_name,"fixture.txt");
++            strcpy(h.file_mime,"text/plain");strcpy(h.file_ext,"txt");strcpy(h.file_digest,"0123456789abcdef0123456789abcdef");
++            strcpy(h.remove_pass,"remove123");strcpy(h.download_pass,"download123");strcpy(h.comment,"migration fixture");
++            if(strcmp(argv[1],"--fixture3-empty")==0){h.remove_pass[0]=0;h.download_pass[0]=0;}
++            if(strcmp(argv[1],"--fixture2")!=0)write_file(argv[2],&h,sizeof(h));
++            else {UploadItem::header_ver2x_t v;v.id=h.id;v.index=h.index;v.file_size=h.file_size;v.mtime=h.mtime;
++#define COPY_OLD(field) memcpy(v.field,h.field,sizeof(v.field))
++                COPY_OLD(date);COPY_OLD(ip_address);COPY_OLD(file_name);COPY_OLD(file_mime);COPY_OLD(file_ext);COPY_OLD(file_digest);COPY_OLD(remove_pass);COPY_OLD(download_pass);COPY_OLD(comment);
++#undef COPY_OLD
++                strcpy(v.version,"2.0.0");write_file(argv[2],&v,sizeof(v));}return 0;
++        }
++        if(argc<3)throw "Usage: password_tool --inspect FILE | --convert IN OUT | --verify-remove FILE | --verify-download FILE";
++        std::vector<char> data=read_file(argv[2]);bool inspect=strcmp(argv[1],"--inspect")==0;
++        Header h=load(data,!inspect);
++        if(inspect){std::cout<<"{\"version\":"<<static_cast<int>(data[16]-'0')<<",\"id\":"<<h.id<<",\"bytes\":"<<data.size()<<"}\n";return 0;}
++        if(strcmp(argv[1],"--convert")==0&&argc==4){write_file(argv[3],&h,sizeof(h));return 0;}
++        if(strcmp(argv[1],"--verify-remove")==0||strcmp(argv[1],"--verify-download")==0) {
++            if(data[16]!='4')throw "Verify requires migrated metadata";
++            std::string password;std::getline(std::cin,password);
++            bool ok=PasswordHash::verify(strcmp(argv[1],"--verify-remove")==0?h.remove_pass:h.download_pass,password.c_str());
++            OPENSSL_cleanse(&password[0],password.size());return ok?0:3;
++        }
++        throw "Invalid arguments";
++    }catch(const char *message){std::cerr<<message<<"\n";return 1;}
++    catch(...){std::cerr<<"Metadata operation failed\n";return 1;}
++}
+--- /dev/null
++++ b/util/migrate_passwords.py
+@@ -0,0 +1,138 @@
++#!/usr/bin/env python3
++# SPDX-License-Identifier: Zlib
++"""Offline migration. Back up and verify all roots before replacing any metadata."""
++import argparse, fcntl, hashlib, json, os, shutil, stat, subprocess, tempfile
++from pathlib import Path
++
++def digest(path):
++    h=hashlib.sha256()
++    with path.open('rb') as f:
++        for block in iter(lambda:f.read(1024*1024),b''): h.update(block)
++    return h.hexdigest()
++
++def scan(root):
++    result={}
++    for base, dirs, files in os.walk(root,followlinks=False):
++        for name in dirs+files:
++            p=Path(base)/name;s=p.lstat()
++            if stat.S_ISLNK(s.st_mode) or not (stat.S_ISDIR(s.st_mode) or stat.S_ISREG(s.st_mode)):
++                raise RuntimeError('Symlinks and special files are not supported: '+str(p))
++            if stat.S_ISREG(s.st_mode):
++                if s.st_nlink!=1: raise RuntimeError('Hard-linked files are not supported: '+str(p))
++                result[str(p.relative_to(root))]={'sha256':digest(p),'size':s.st_size,'mode':stat.S_IMODE(s.st_mode),'uid':s.st_uid,'gid':s.st_gid}
++    return result
++
++def syncdir(path):
++    fd=os.open(path,os.O_RDONLY)
++    try: os.fsync(fd)
++    finally: os.close(fd)
++
++def journal(backup,state):
++    p=backup/'journal.json';tmp=backup/'journal.tmp'
++    with tmp.open('w',encoding='utf8') as f:
++        json.dump(state,f,indent=2);f.write('\n');f.flush();os.fsync(f.fileno())
++    os.replace(tmp,p);syncdir(backup)
++
++def tool_run(tool,*args):
++    return subprocess.run([str(tool),*map(str,args)],check=True,capture_output=True)
++
++def migrate_locked(args):
++    if not args.server_stopped: raise RuntimeError('Stop every server using these directories and pass --server-stopped')
++    tool=Path(args.tool).resolve(strict=True)
++    roots={name:Path(getattr(args,name+'_dir')).resolve(strict=True) for name in ['data','file','thumb']}
++    if args.temp_dir:roots['temp']=Path(args.temp_dir).resolve(strict=True)
++    backup=Path(args.backup_dir).absolute()
++    if backup.exists() or backup.is_symlink():raise RuntimeError('Backup destination must not exist')
++    parent=backup.parent.resolve(strict=True);backup=parent/backup.name
++    for a in roots.values():
++        if not a.is_dir():raise RuntimeError('Every source must be a directory')
++        if backup==a or a in backup.parents or backup in a.parents:raise RuntimeError('Backup and source roots must be disjoint')
++    paths=list(roots.values())
++    for i,a in enumerate(paths):
++        for b in paths[i+1:]:
++            if a==b or a in b.parents or b in a.parents:raise RuntimeError('Source roots must be disjoint')
++    inventory={name:scan(path) for name,path in roots.items()}
++    sentinel=roots['data']/'.migration-in-progress'
++    if sentinel.exists():raise RuntimeError('Previous migration is incomplete: restore its backup first')
++    backup.mkdir(mode=0o700);os.chmod(backup,0o700)
++    state={'state':'backup-in-progress','format':1,'inventory':inventory,'converted':[]}
++    journal(backup,state)
++    # No source changes before this entire backup is complete and verified.
++    for name,root in roots.items():
++        target=backup/'snapshot'/name
++        target.parent.mkdir(mode=0o700,exist_ok=True)
++        # FreeBSD cp -a preserves ACLs, flags, ownership, modes and timestamps.
++        subprocess.run(['/bin/cp','-a',str(root),str(target)],check=True,capture_output=True)
++        copied=scan(target)
++        if any(n not in copied or copied[n]['sha256']!=meta['sha256'] for n,meta in inventory[name].items()) or set(copied)!=set(inventory[name]):
++            raise RuntimeError('Backup verification failed; no metadata was changed')
++        for base,dirs,files in os.walk(target):
++            for file in files:
++                with (Path(base)/file).open('rb') as f:os.fsync(f.fileno())
++            syncdir(base)
++    syncdir(backup/'snapshot');syncdir(backup)
++    state['state']='backup-verified';journal(backup,state)
++    prepared=backup/'prepared';prepared.mkdir(mode=0o700)
++    candidates=[]
++    for rel in sorted(inventory['data']):
++        # This is the exact two-hex-digit / decimal filename layout used by UploadItemIO.
++        parts=Path(rel).parts
++        if len(parts)!=2 or len(parts[0])!=2 or any(c not in '0123456789abcdef' for c in parts[0]) or not parts[1].isascii() or not parts[1].isdigit():continue
++        source=roots['data']/rel
++        info=json.loads(tool_run(tool,'--inspect',source).stdout)
++        if info['id']!=int(parts[1]) or parts[0]!=format(info['id']&255,'02x'):raise RuntimeError('Metadata id/path mismatch: '+rel)
++        dest=prepared/rel;dest.parent.mkdir(mode=0o700,parents=True,exist_ok=True)
++        tool_run(tool,'--convert',source,dest)
++        if json.loads(tool_run(tool,'--inspect',dest).stdout)['version']!=4:raise RuntimeError('Prepared metadata was not v4')
++        candidates.append(rel)
++    # Reject any concurrent source modification, including payload/thumbnail changes.
++    if any(scan(root)!=inventory[name] for name,root in roots.items()):raise RuntimeError('Source changed during backup/preparation; no metadata was changed')
++    state['state']='prepared';state['candidates']=candidates;journal(backup,state)
++    # The new module refuses startup while this marker exists. Old processes must be stopped.
++    fd=os.open(sentinel,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
++    os.write(fd,b'Offline password migration in progress. Restore backup if interrupted.\n');os.fsync(fd);os.close(fd);syncdir(roots['data'])
++    try:
++        state['state']='converting';journal(backup,state)
++        for rel in candidates:
++            source=roots['data']/rel;meta=inventory['data'][rel]
++            if digest(source)!=meta['sha256']:raise RuntimeError('Metadata changed before replacement')
++            fd,name=tempfile.mkstemp(prefix='.password-migration-',dir=source.parent)
++            try:
++                with os.fdopen(fd,'wb') as f:
++                    f.write((prepared/rel).read_bytes());f.flush();os.fsync(f.fileno())
++                if os.geteuid()==0:os.chown(name,meta['uid'],meta['gid'])
++                elif source.stat().st_uid!=os.geteuid():raise RuntimeError('Run as the file owner or root')
++                os.chmod(name,0o600);os.replace(name,source);syncdir(source.parent)
++            finally:
++                if os.path.exists(name):os.unlink(name)
++            state['converted'].append(rel);journal(backup,state)
++        state['state']='complete';journal(backup,state)
++        sentinel.unlink();syncdir(roots['data'])
++    except BaseException:
++        state['state']='interrupted-restore-backup';journal(backup,state)
++        raise
++    print('Migration complete: '+str(len(candidates))+' metadata files. Verified backup: '+str(backup))
++    print('Rollback: stop Apache, restore the entire snapshot (data/file/thumb and optional temp), then reinstall the old module and templates.')
++
++def migrate(args):
++    if not args.server_stopped:raise RuntimeError('Stop every old server and pass --server-stopped')
++    root=Path(args.data_dir).resolve(strict=True)
++    fd=os.open(root/'.format-lock',os.O_RDONLY|os.O_CREAT|os.O_NOFOLLOW,0o600)
++    try:
++        if not stat.S_ISREG(os.fstat(fd).st_mode):raise RuntimeError('Unsafe lock file')
++        try:fcntl.flock(fd,fcntl.LOCK_EX|fcntl.LOCK_NB)
++        except BlockingIOError:raise RuntimeError('The new server or another migration is using this data directory')
++        return migrate_locked(args)
++    finally:os.close(fd)
++
++def main():
++    p=argparse.ArgumentParser(description=__doc__)
++    for name in ['data','file','thumb']:p.add_argument('--'+name+'-dir',required=True)
++    p.add_argument('--temp-dir');p.add_argument('--backup-dir',required=True)
++    p.add_argument('--tool',required=True);p.add_argument('--server-stopped',action='store_true')
++    args=p.parse_args()
++    try:migrate(args)
++    except Exception as e:
++        # Converter errors never include password bytes. Do not print its captured input.
++        print('Migration failed: '+str(e));raise SystemExit(1)
++if __name__=='__main__':main()
+--- /dev/null
++++ b/docs/SECURITY-MIGRATION-ja.md
+@@ -0,0 +1,99 @@
++# パスワード保存形式4への安全な移行とCSRF対策
++
++対象: このForkのFreeBSD / Apache 2.4版。既存の稼働データへ自動適用する機能ではありません。
++
++## 変更内容
++
++- 現用メタデータのパスワードは、OpenSSLのPBKDF2-HMAC-SHA256、600,000回、ランダム16バイトsalt、32バイト出力で保存します。saltと回数を含む文字列を128バイトの欄に保存します。
++- 保存形式は`4.0.0`です。プログラムの系統はmod_uploader 3.2.0の改修版で、Portのリビジョンは3です。
++- 旧形式2/3の16バイト平文欄は、新サーバーでは読み込まず起動時に移行を要求します。無断の自動書換え・平文へのフォールバックはありません。
++- 入力パスワードの上限は127バイトです。文字コードの変換や正規化をせず、従来と同じ入力バイト列をハッシュ化します。既存パスワードの再設定は不要です。
++- 暗号化ではなく検証用ハッシュです。旧版へ戻すにはバックアップを戻してください。
++
++## 作業前の準備
++
++1. 現在ロードしている旧モジュール、設定、テンプレート、旧パッケージを退避してください。手動導入の場合はLoadModuleが指す実ファイルを保存します。
++2. 同じデータ領域を使うApacheと投稿スクリプトをすべて停止します。graceful restartではなく完全停止してください。
++3. 新しいモジュール・移行ツールを、旧データを書いた環境と同じCPU/ABI上でビルドします。現在の検証対象はFreeBSD 15 amd64です。異なるABIや未対応サイズは変換せず停止します。
++4. バックアップ先の親を用意し、元の全保存領域をもう1組保存できる空き容量を確保します。バックアップ先そのものは存在しないパスを指定してください。
++5. 所有者・ACL・フラグを含むバックアップのため、原則rootで移行します。同一ユーザー所有の検証データでは一般ユーザーでも実行できます。バックアップには旧平文パスワードが残るので、外部公開しない場所に保管してください。
++
++Portの移行ツールは `/usr/local/libexec/mod_uploader/password_tool` と `/usr/local/libexec/mod_uploader/migrate_passwords.py` です。手動ビルドはconfigure後に `gmake password-tool` を実行します。
++
++## 実行例
++
++実際のApache設定にある保存先を指定します。以下は標準の設定例です。backupの親ディレクトリは事前に用意します。
++
++```sh
++# Apache等を完全停止した後に実行
++/usr/local/libexec/mod_uploader/migrate_passwords.py \
++  --tool /usr/local/libexec/mod_uploader/password_tool \
++  --data-dir /var/db/mod_uploader/data \
++  --file-dir /var/db/mod_uploader/file \
++  --thumb-dir /var/db/mod_uploader/thumb \
++  --temp-dir /var/db/mod_uploader/temp \
++  --backup-dir /secure-backups/mod_uploader-before-format4 \
++  --server-stopped
++```
++
++`--server-stopped`は旧版を停止したことの明示的な確認です。旧版には新しい排他ロックがないため、旧版の停止をツールだけで保証できません。新版は共有ストレージロックを保持し、移行ツールは排他ロックを取るので、新版稼働中や他の移行との同時実行は拒否します。
++
++ツールは次の順に処理します。
++
++1. 保存先の重複・入れ子、シンボリックリンク、ハードリンク、特殊ファイルを検査。
++2. `snapshot/data`、`snapshot/file`、`snapshot/thumb`、指定時は`snapshot/temp`をFreeBSDの`cp -a`で保存。バックアップ最上位は0700。
++3. 全通常ファイルのSHA-256と一覧を照合し、バックアップを検証。
++4. ネイティブABIの変換ツールで全メタデータを別領域へ準備。破損・未対応形式があれば、現用メタデータは置き換えず停止。
++5. コピー・準備中に元データが変化していないことを再検査。
++6. 起動防止マーカーを置き、メタデータを1件ずつ同一ディレクトリ内のrenameで置換し、fsync・journalを更新。所有者を維持し、メタデータは0600とします。
++7. 全件完了後にマーカーを除去。
++
++ユーザーのアップロードファイルやサムネイルの内容は変換しません。旧形式4の正しいデータは再ハッシュせずそのまま扱います。同じバックアップ先の上書きは拒否します。
++
++## 完了・中断時
++
++`journal.json`が`complete`であることと、正しい削除／取得パスワードが使えることを確認してから再公開してください。ブラウザはページを再読み込みし、新しいCookieとフォームのトークンを取得します。
++
++途中で中断した場合は、混在したデータのままサーバーを起動しないでください。`.migration-in-progress`が残ると新版は起動を拒否します。マーカーだけを削除して先へ進めず、バックアップへ戻してからやり直してください。
++
++### 旧版へ戻す
++
++Apache等を停止し、新しい保存ディレクトリを別名で退避します。バックアップの`snapshot/`からdata/file/thumbと必要ならtempを**マージせず、ディレクトリ単位で**元のパスへ戻します。保存しておいた旧モジュール・設定・テンプレートを戻し、所有者・権限を確認してから起動します。移行後に増えた投稿は元のバックアップには含まれません。退避した新データは確認が終わるまで残してください。
++
++バックアップは平文を含むため、検証後もアクセス制限を維持してください。ハッシュ化は、バックアップ内の平文や、利用者自身がファイル本文・コメントへ書いた文字列を消す処理ではありません。
++
++## CSRFトークン
++
++- ランダム256ビットのブラウザセッションCookieに、サーバー秘密鍵によるHMAC-SHA256トークンを結び付けます。トークンには発行時刻と設定BaseUrlを含めて署名し、有効期間は2時間です。
++- GETでフォームに`${CSRF_TOKEN}`を出力します。カスタムテンプレートには `name="csrf_token" value="${CSRF_TOKEN}"` のhidden inputを各POSTフォームへ追加してください。
++- POSTではCookieとフォームのトークン、またはCookieと`X-CSRF-Token`ヘッダーを検証します。不在・改ざん・期限切れ・別セッション・重複トークンは403です。
++- Origin/Referer検査も維持します。トークンがあっても送信元が不正な要求は許可しません。
++- HTTPSでは`__Host-mod_uploader_sid`、`Secure`、`HttpOnly`、`SameSite=Strict`、`Path=/`、Domain指定なしを使用します。HTTPの通常Cookieは隔離した検証用です。外部公開にはHTTPSを使用してください。
++- 複数タブ、Apacheの複数プロセス、完全再起動に対応します。秘密鍵はdata内の`.csrf-key`に0600で保存し、シンボリックリンク・不正な所有者/権限・壊れた鍵は拒否します。秘密鍵は公開せず、意図的な鍵交換後はページを再読み込みしてください。
++- `UploaderBaseUrl`は外部から見える正しいHTTPS URLに設定します。リバースプロキシ配下でも同じです。
++- トークンは認証の代わりではありません。admin/mailの接続制限・認証、HTTPS、認証試行・リクエスト量の制限は引き続き必要です。
++
++スクリプトから投稿する場合も、最初にページをGETしてCookieとトークンを取得し、同じCookie、正しいOrigin、X-CSRF-TokenをPOSTで送ってください。メール投稿はフォームではないためヘッダートークンを使用します。CookieやトークンをURL・公開ログへ記録しないでください。
++
++CGI/standalone/Apache 1.xのPOST経路は今回の保護方式に未対応のため拒否します。Flashクライアントもサポート対象ではありません。
++
++## 検証の再実行
++
++```sh
++sh tests/run_native.sh
++python3 tests/handler_test.py
++python3 tests/migration_test.py --tool /path/to/build/src/password_tool
++python3 tests/security_http_test.py --build-root /path/to/build \
++  --legacy-build-root /path/to/previous-build
++python3 tests/security_https_test.py --build-root /path/to/build
++```
++
++HTTPテストは専用の一時保存領域と127.0.0.1の空きポートで別Apacheを起動します。稼働Apacheの設定変更や再起動はしません。HTTPSテストは試験用証明書を発行し、その証明書を明示的に信頼して検証します。
++
++今回の実行結果はdocs/validation内に記録します。本番データの移行、全ブラウザ、他ABI、巨大データセット、電源断の実機注入、総当たり耐性・完全なセキュリティ監査を確認したものではありません。
++
++## 根拠
++
++- https://docs.openssl.org/3.0/man3/PKCS5_PBKDF2_HMAC/
++- https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html
++- https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html
+--- /dev/null
 +++ b/MODIFICATIONS
-@@ -0,0 +1,21 @@
+@@ -0,0 +1,25 @@
 +mod_uploader 3.2.0 - altered FreeBSD / Apache 2.4 version
 +
 +Original software: Tetsuya Kimata.
@@ -1093,9 +2208,13 @@
 +and individual feature results were not supplied. Local C++ regression
 +tests use Windows/G++ and simulated APR/httpd APIs; they do not certify
 +FreeBSD Ports packaging or complete HTTP functionality.
++
++Security update: version-4 hashed password metadata, offline verified backups,
++storage exclusion, and expiring session-bound signed CSRF tokens.
++See docs/SECURITY-MIGRATION-ja.md before replacing an existing installation.
 --- /dev/null
 +++ b/README.md
-@@ -0,0 +1,48 @@
+@@ -0,0 +1,49 @@
 +# mod_uploader 3.2.0: altered FreeBSD / Apache 2.4 version
 +
 +Original software by Tetsuya Kimata: https://github.com/kimata/mod_uploader
@@ -1106,9 +2225,9 @@
 +See [MODIFICATIONS](MODIFICATIONS) for attribution and modification notice.
 +
 +The user reported successful operation on their FreeBSD / Apache setup
-+following the build correction. Exact OS/compiler/server versions and
-+feature-by-feature test results were not supplied. Ports packaging,
-+poudriere, concurrency and complete HTTP acceptance tests remain unverified.
++following the build correction. The Port has now built and passed stage, check-plist, stage-qa and package
++on FreeBSD 15.1 amd64 / Clang 19.1.7 / Apache 2.4.69 (THUMBNAIL off).
++Package installation, poudriere, concurrency and full HTTP tests remain unverified.
 +
 +## Build
 +
@@ -1137,10 +2256,11 @@
 +Tests substitute APR/httpd interfaces where stated; they are not full
 +module integration tests. See [the Japanese migration report](docs/FREEBSD-ja.md)
 +for changes, security limitations, FreeBSD verification steps and layout details.
-+In particular, downloads now use attachments, password storage remains in
-+the legacy format. Apache POST now requires a matching Origin or Referer;
-+requests with neither header are rejected. This is not authentication and
-+a token-based CSRF design remains a future improvement. Thumbnail decoding requires
-+an appropriate ImageMagick resource/coder policy.
++Downloads use attachments. Password metadata now uses version 4 and salted
++PBKDF2-HMAC-SHA256 (600,000 iterations). Existing version 2/3 data requires an
++offline, verified-backup-first migration; the new module refuses legacy data.
++Signed, session-bound CSRF tokens protect Apache POST in addition to origin
++checks. See [the migration and rollback guide](docs/SECURITY-MIGRATION-ja.md).
++No production data is automatically migrated by installing or loading this module.
 +
 +Validation logs are checked in under `docs/validation/`.

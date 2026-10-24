@@ -33,6 +33,7 @@
 #include "apr_strings.h"
 
 #include "UploaderConfig.h"
+#include "StorageLock.h"
 #include "UploadItemList.h"
 #include "UploadItemManager.h"
 #include "UploadItemListReader.h"
@@ -277,6 +278,9 @@ void UploaderConfig::check()
     }
 
     check_dir(data_dir_path);
+    StorageLock::hold(pool_,data_dir_path);
+    if (File::is_exist(pool_, apr_pstrcat(pool_, data_dir_path, "/.migration-in-progress", NULL)))
+        throw "Password migration is incomplete; restore backup or finish migration before startup";
     check_dir(file_dir_path);
     check_dir(thumb_dir_path);
     check_dir(temp_dir_path);

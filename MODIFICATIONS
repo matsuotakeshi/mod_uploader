@@ -19,3 +19,7 @@ Apache setup after the catch-handler correction. Exact system versions
 and individual feature results were not supplied. Local C++ regression
 tests use Windows/G++ and simulated APR/httpd APIs; they do not certify
 FreeBSD Ports packaging or complete HTTP functionality.
+
+Security update: version-4 hashed password metadata, offline verified backups,
+storage exclusion, and expiring session-bound signed CSRF tokens.
+See docs/SECURITY-MIGRATION-ja.md before replacing an existing installation.
