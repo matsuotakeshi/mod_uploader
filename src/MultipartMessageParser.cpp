@@ -211,6 +211,7 @@ void MultipartMessageParser<R, W>::get_text_content(content_t *content)
             if (!UploadSafety::allowed(text.size(), tail, max_text_size_))
                 THROW(MESSAGE_RFC2822_TEXT_SIZE_TOO_LARGE);
             text.append(buffer_.get_data(), tail);
+            if (text.find('\0') != std::string::npos) THROW(MESSAGE_RFC1867_FORMAT_INVALID);
             content->text = apr_pstrmemdup(pool_, text.data(), text.size());
             buffer_.erase(end - buffer_.get_data() + boundary_len_);
             return;

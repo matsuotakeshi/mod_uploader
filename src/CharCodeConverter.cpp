@@ -66,7 +66,7 @@ const char *CharCodeConverter::convert(apr_pool_t *pool, const char *str,
 #if APU_HAVE_APR_ICONV
     char *buffer;
     apr_size_t str_len = strlen(str);
-    apr_size_t buffer_len = str_len * 3;
+    apr_size_t buffer_len = str_len * 3 + 1;
     apr_size_t converted_len = 0;
     apr_iconv_t handle;
 
@@ -77,14 +77,14 @@ const char *CharCodeConverter::convert(apr_pool_t *pool, const char *str,
         throw apr_pstrcat(pool, MESSAGE_ICONV_CONVERTER_NOT_FOUND,
                           "(", from, " -> ", to, ")", NULL);
     }
-    apr_iconv(handle,
-              &str, &str_len, &buffer, &buffer_len, &converted_len);
+    apr_status_t result = apr_iconv(handle, &str, &str_len, &buffer, &buffer_len, &converted_len);
     apr_iconv_close(handle, pool);
+    if (result != APR_SUCCESS || str_len != 0) THROW(MESSAGE_ICONV_ENCODING_INVALID);
 #elif APU_HAVE_ICONV
     char *buffer;
     ICONV_2ND_ARG_TYPE target;
     size_t str_len = strlen(str);
-    size_t buffer_len = str_len * 3;
+    size_t buffer_len = str_len * 3 + 1;
     iconv_t handle;
 
     target = static_cast<ICONV_2ND_ARG_TYPE>(apr_pstrdup(pool, str));
@@ -95,8 +95,9 @@ const char *CharCodeConverter::convert(apr_pool_t *pool, const char *str,
         throw apr_pstrcat(pool, MESSAGE_ICONV_CONVERTER_NOT_FOUND,
                           "(", from, " -> ", to, ")", NULL);
     }
-    iconv(handle, &target, &str_len, &buffer, &buffer_len);
+    size_t result = iconv(handle, &target, &str_len, &buffer, &buffer_len);
     iconv_close(handle);
+    if (result == static_cast<size_t>(-1) || str_len != 0) THROW(MESSAGE_ICONV_ENCODING_INVALID);
 #else
 
     // iconv，apr_iconv が無い場合，文字コード変換は行わない

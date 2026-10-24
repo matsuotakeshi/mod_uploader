@@ -148,7 +148,8 @@ UploaderConfig::UploaderConfig(apr_pool_t *pool)
     item_manager_(NULL)
 
 {
-    apr_pool_create(&pool_, NULL);
+    // Use the supplied configuration pool so our registered finalizer runs
+    // before APR releases this storage and Apache unloads the module DSO.
 
     apr_temp_dir_get(&temp_dir_path, pool_);
     memset(tmpls_, 0, sizeof(tmpls_));
@@ -226,6 +227,7 @@ void UploaderConfig::finalize()
     if (!is_active_) {
         return;
     }
+    is_active_ = false;
 
     item_manager_->sync_all_item(pool_);
 
@@ -277,6 +279,9 @@ void UploaderConfig::check()
         THROW(MESSAGE_CONF_PARAM_COMPULSORY_NOT_SPECIFIED);
     }
 
+    if (per_page_item_number == 0 || total_file_number_limit == 0 ||
+        total_file_number_limit > 1000000 || total_file_size_limit == 0 || file_size_limit == 0)
+        throw "Invalid capacity or pagination limits";
     check_dir(data_dir_path);
     StorageLock::hold(pool_,data_dir_path);
     if (File::is_exist(pool_, apr_pstrcat(pool_, data_dir_path, "/.migration-in-progress", NULL)))

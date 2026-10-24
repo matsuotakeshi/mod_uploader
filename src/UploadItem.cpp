@@ -73,6 +73,7 @@ UploadItem *UploadItem::get_instance(void *memory, apr_size_t item_id,
     const char *file_ext;
     TemporaryPool temp_pool;
 
+    if (strlen(ip_address) >= ITM_MAX_IP_ADDRESS_SIZE) throw "IP address is too long";
     if (is_need_validate) {
         PostDataChecker::validate_uitem(temp_pool.get(), file_size, mtime,
                                         &file_name, &file_mime, file_digest,

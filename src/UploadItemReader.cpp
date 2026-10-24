@@ -34,6 +34,7 @@
 #include "UploadItemReader.h"
 #include "UploadItem.h"
 #include "PasswordHash.h"
+#include "MetadataSafety.h"
 #include "TemporaryPool.h"
 #include "TemporaryFile.h"
 #include "Message.h"
@@ -67,6 +68,8 @@ void UploadItemReader::read(apr_size_t item_id, UploadItem *uitem)
     version = read_and_check(&uitem_file, &uitem_file_map);
     if (version != 4) throw "Legacy metadata: stop Apache and run migrate_passwords.py before startup";
     memcpy(uitem, uitem_file_map->mm, sizeof(UploadItem::header_t));
+    if (uitem->get_id() != item_id || !MetadataSafety::valid(*reinterpret_cast<UploadItem::header_t *>(uitem)))
+        throw "Invalid metadata strings, identifier or path components";
     if (memchr(uitem->get_remove_pass(),0,ITM_MAX_REMOVE_PASS_SIZE)==NULL ||
         memchr(uitem->get_download_pass(),0,ITM_MAX_DOWNLOAD_PASS_SIZE)==NULL ||
         !PasswordHash::valid(uitem->get_remove_pass()) || !PasswordHash::valid(uitem->get_download_pass()))

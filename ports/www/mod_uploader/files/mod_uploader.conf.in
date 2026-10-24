@@ -29,7 +29,7 @@ LoadModule uploader_module %%PREFIX%%/%%APACHEMODDIR%%/mod_uploader.so
     Require all denied
 </Location>
 <Location /up/mail>
-    Require local
+    Require all denied
 </Location>
 Alias /up_css "%%DATADIR%%/css"
 Alias /up_js "%%DATADIR%%/js"

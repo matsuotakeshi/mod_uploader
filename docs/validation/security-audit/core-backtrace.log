@@ -1,0 +1,11 @@
+(lldb) target create "/usr/local/sbin/httpd" --core "<test-dir>/src/ports/www/mod_uploader/httpd.core"
+Core file '<test-dir>/src/ports/www/mod_uploader/httpd.core' (x86_64) was loaded.
+(lldb) bt
+* thread #1, name = 'httpd', stop reason = signal SIGSEGV
+  * frame #0: 0x000000082ea2e200
+    frame #1: 0x000000082509bc8e libapr-1.so.0`apr_pool_destroy + 94
+    frame #2: 0x000000082509bc7e libapr-1.so.0`apr_pool_destroy + 78
+    frame #3: 0x000000082509bc16 libapr-1.so.0`apr_pool_terminate + 38
+    frame #4: 0x000000000025e0a9 httpd`main + 3145
+    frame #5: 0x0000000826d3f23f libc.so.7`__libc_start1 + 303
+    frame #6: 0x000000000025d3f4 httpd`_start + 36

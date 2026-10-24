@@ -42,16 +42,24 @@ class Server:
         deadline=time.monotonic()+15
         while time.monotonic()<deadline:
             if self.proc.poll() is not None:
-                if not success:return
+                if not success:
+                    assert self.proc.returncode > 0, 'Expected a rejected startup, not a signal/crash'
+                    return
                 raise AssertionError((self.root/'process.log').read_text(errors='replace')+(self.root/'error.log').read_text(errors='replace'))
+            # Apache can bind its socket before post_config rejects storage.
+            # For rejection tests, wait for the process to exit, not a TCP connect.
+            if not success:
+                time.sleep(.05)
+                continue
             try:
                 with socket.create_connection(('127.0.0.1',self.port),timeout=.2):
-                    if not success:raise AssertionError('Unsafe legacy/incomplete metadata unexpectedly started')
                     return
             except OSError:time.sleep(.05)
         raise AssertionError('httpd did not reach the expected state')
     def stop(self):
-        if self.proc and self.proc.poll() is None:self.proc.terminate();self.proc.wait(timeout=15)
+        if self.proc and self.proc.poll() is None:
+            self.proc.terminate();self.proc.wait(timeout=15)
+            assert self.proc.returncode==0, 'Apache shutdown failed: '+str(self.proc.returncode)
         if hasattr(self,'log'):self.log.close()
 
 class Client:
@@ -123,7 +131,10 @@ def main():
         assert b.request('/up/remove/',remove+[('csrf_token',a.token)])[0]==403;checks+=1
         assert a.request('/up/remove/',remove+[('csrf_token',a.token)],cookie='')[0]==403;checks+=1
         assert a.request('/up/remove/',remove+[('csrf_token',a.token)],headers={'Origin':'https://evil.example'})[0]==403;checks+=1
-        assert a.request('/up/remove/',remove+[('csrf_token',a.token),('csrf_token',a.token)])[0]==403;checks+=1
+        # Duplicate fields now fail in the multipart parser, before CSRF handling.
+        # The legacy error template uses HTTP 200; even a correct password must not delete.
+        status,_,body=a.request('/up/remove/',[('id','1'),('remove_pass','remove123'),('csrf_token',a.token),('csrf_token',a.token)])
+        assert status==200 and b'MESSAGE_RFC1867_FORMAT_INVALID' in body and (root/'data/01/1').exists();checks+=1
         key=(root/'data/.csrf-key').read_bytes();sid=a.cookie.split('=',1)[1];base=a.origin+'/up'
         for stamp in [int(time.time())-7201,int(time.time())+120]:
             stamp=str(stamp);token=stamp+'.'+hmac.new(key,(base+'\n'+sid+'\n'+stamp).encode(),hashlib.sha256).hexdigest()

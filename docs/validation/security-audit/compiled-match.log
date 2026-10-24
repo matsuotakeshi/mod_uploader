@@ -1,0 +1,27 @@
+All 26 changed implementation/guide files match the actual Port build tree after CRLF normalization.
+src/UploadItemManager.cpp
+src/UploadItemList.cpp
+src/UploadItemReader.cpp
+src/UploadItemListReader.cpp
+src/UploadItem.cpp
+src/UploaderConfig.cpp
+src/uploader_handler.cpp
+src/mod_uploader.cpp
+src/MultipartMessageParser.cpp
+src/RFC1867Parser.cpp
+src/RFC2822Parser.cpp
+src/CharCodeConverter.cpp
+src/PostFlowController.cpp
+src/DownloadFlowController.cpp
+include/UploadItemManager.h
+include/UploadItemList.h
+include/MetadataSafety.h
+include/HtmlSafety.h
+include/ReadLocker.h
+include/WriteLocker.h
+include/FlowController.h
+include/uploader_util.h
+util/password_tool.cpp
+docs/SECURITY-MIGRATION-ja.md
+MODIFICATIONS
+README.md

@@ -56,6 +56,7 @@ void UploadItemList::add(UploadItem *uitem)
     // MEMO: header_list_ は mtime に基づいて降順に並んでいる
 
     header_list_size = size();
+    if (is_full(uitem->get_file_size())) THROW(MESSAGE_LIST_ID_INVALID);
 
     i = get_insert_index(uitem);
     if (i == header_list_size) {

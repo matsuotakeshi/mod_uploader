@@ -61,23 +61,16 @@ public:
                    const char *code_pat, const char *ip_address);
     void remove(apr_pool_t *pool, UploadItem *uitem);
     UploadItem *get_item(apr_pool_t *pool, apr_size_t item_id);
-    apr_file_t *get_item_file(apr_pool_t *pool, apr_size_t item_id,
+    apr_file_t *get_item_file(apr_pool_t *pool, UploadItem *expected,
                               bool is_sendfile_enabled=false);
     void update_atime(apr_size_t item_id);
-    apr_time_t get_mtime() const
-    {
-        return *mtime_;
-    };
+    apr_time_t get_mtime() const;
+    // Caller must hold the manager write lock.
     void set_mtime(apr_time_t mtime)
     {
         *mtime_ = mtime;
     };
-    void update_mtime(apr_time_t mtime)
-    {
-        if (mtime > *mtime_) {
-            set_mtime(mtime);
-        }
-    };
+    void update_mtime(apr_time_t mtime);
     /**
      * 共有メモリを使ってインスタンスを生成します．
      *
@@ -147,8 +140,7 @@ private:
                         const char *code_pat, const char *ip_address);
     void remove_impl(apr_pool_t *pool, UploadItem *uitem);
     void remove_files(apr_pool_t *pool, apr_uint64_t file_size);
-    void remove_old_files(apr_pool_t *pool, apr_uint64_t file_size);
-    void remove_unpopular_files(apr_pool_t *pool, apr_uint64_t file_size);
+    void remove_files_locked(apr_pool_t *pool, apr_uint64_t file_size);
 
     /**
      * ユニークなアイテム ID とインデックスを生成します．

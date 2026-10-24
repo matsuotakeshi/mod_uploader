@@ -148,6 +148,7 @@ void get_mail_upload_param(apr_pool_t *pool, apr_array_header_t *content_array,
     }
     *comment = apr_pstrmemdup(pool, line_start, line_end-line_start);
 
+    if (line_end[1] != '\n') THROW(MESSAGE_POST_DATA_INVALID);
     line_start = line_end + 2;
     line_end = strnchr(line_start, strlen(line_start), MAIL_LINE_SEPARATOR[0]);
     if (line_end == NULL) {
@@ -156,6 +157,7 @@ void get_mail_upload_param(apr_pool_t *pool, apr_array_header_t *content_array,
     }
     *remove_pass = apr_pstrmemdup(pool, line_start, line_end-line_start);
 
+    if (line_end[1] != '\n') THROW(MESSAGE_POST_DATA_INVALID);
     line_start = line_end + 2;
     line_end = strnchr(line_start, strlen(line_start), MAIL_LINE_SEPARATOR[0]);
     if (line_end == NULL) {

@@ -1,3 +1,4 @@
+// Altered source: validate before eviction and serialize capacity changes.
 /******************************************************************************
  * Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
  *
@@ -37,6 +38,7 @@
 
 #include "UploadItemManager.h"
 #include "UploadItem.h"
+#include "MetadataSafety.h"
 #include "UploadItemList.h"
 #include "UploadItemIterator.h"
 #include "ThumbnailList.h"
@@ -71,6 +73,27 @@ SOURCE_INFO_ADD("$Id: UploadItemManager.cpp 2907 2009-01-14 12:56:44Z svn $");
 
 const apr_size_t UploadItemManager::SYNC_FACTOR = 32;
 const apr_size_t UploadItemManager::SYNC_LIMIT  = 200;
+
+namespace {
+// Let the compiler align time/size fields in the process-shared region.
+struct ManagerSharedState {
+    apr_atomic_t lock;
+    apr_time_t mtime;
+    apr_size_t age;
+};
+}
+
+apr_time_t UploadItemManager::get_mtime() const
+{
+    ReadLocker manager_locker(lock_);
+    return *mtime_;
+}
+
+void UploadItemManager::update_mtime(apr_time_t mtime)
+{
+    WriteLocker manager_locker(lock_);
+    if (mtime > *mtime_) *mtime_ = mtime;
+}
 
 
 /******************************************************************************
@@ -108,7 +131,7 @@ void UploadItemManager::sync_all_item(apr_pool_t *pool, apr_size_t sync_limit)
 {
     UploadItem::header_t *header;
     apr_size_t synced_count;
-    ReadLocker manager_locker(lock_);
+    WriteLocker manager_locker(lock_);
 
     REQUIRE_MANAGER_LOCKED();
 
@@ -140,14 +163,15 @@ UploadItem *UploadItemManager::get_item(apr_pool_t *pool, apr_size_t item_id)
 }
 
 apr_file_t *UploadItemManager::get_item_file(apr_pool_t *pool,
-                                             apr_size_t item_id,
+                                             UploadItem *expected,
                                              bool is_sendfile_enabled)
 {
+    const apr_size_t item_id = expected->get_id();
     const char *file_path;
     apr_file_t *file;
     UploadItem *uitem;
-    // カウンタを保護するだけなので読み出しロックで OK
-    ReadLocker manager_locker(lock_);
+    // Protect identity validation, opening the payload, and mutable counters.
+    WriteLocker manager_locker(lock_);
 
     REQUIRE_MANAGER_LOCKED();
 
@@ -155,12 +179,16 @@ apr_file_t *UploadItemManager::get_item_file(apr_pool_t *pool,
 
     file_path = UploadItemIO::get_file_path(pool, file_dir_path_, uitem);
 
+    if (!MetadataSafety::same_identity(*AS_UITEM_H(uitem), *AS_UITEM_H(expected)))
+        THROW(MESSAGE_LIST_ID_INVALID);
+
+    if (apr_file_open(&file, file_path,
+                      APR_READ | (is_sendfile_enabled ? APR_SENDFILE_ENABLED : 0),
+                      APR_OS_DEFAULT, pool) != APR_SUCCESS) {
+        THROW(MESSAGE_FILE_OPEN_FAILED);
+    }
     uitem->increment_download_count();
-
-    apr_file_open(&file, file_path,
-                  APR_READ | (is_sendfile_enabled ? APR_SENDFILE_ENABLED : 0),
-                  APR_OS_DEFAULT, pool);
-
+    uitem->update_atime();
     return file;
 }
 
@@ -202,18 +230,10 @@ UploadItemManager *UploadItemManager::get_instance(apr_shm_t *shm,
 void UploadItemManager::child_init(apr_shm_t *shm, UploadItemList *item_list,
                                    ThumbnailList *thumbnail_list)
 {
-    lock_ = AS_ATOMIC(apr_shm_baseaddr_get(shm));
-    mtime_ = AS_TIME(lock_ + 1);
-    age_ = AS_SIZE(mtime_ + 1);
-
-#ifdef __INTEL_COMPILER
-#pragma warning(disable:1684)
-#endif
-    ASSERT_EQUAL(AS_CHAR(age_ + 1),
-                 AS_CHAR(apr_shm_baseaddr_get(shm)) + get_memory_size());
-#ifdef __INTEL_COMPILER
-#pragma warning(default:1684)
-#endif
+    ManagerSharedState *state = static_cast<ManagerSharedState *>(apr_shm_baseaddr_get(shm));
+    lock_ = &state->lock;
+    mtime_ = &state->mtime;
+    age_ = &state->age;
 
     item_list_ = item_list;
     thumbnail_list_ = thumbnail_list;
@@ -221,7 +241,7 @@ void UploadItemManager::child_init(apr_shm_t *shm, UploadItemList *item_list,
 
 apr_size_t UploadItemManager::get_memory_size()
 {
-    return sizeof(apr_time_t) + sizeof(apr_atomic_t) + sizeof(apr_size_t);
+    return sizeof(ManagerSharedState);
 }
 
 void UploadItemManager::check_finalize_state(UploadItemManager *item_manager)
@@ -272,7 +292,12 @@ apr_size_t UploadItemManager::add_impl(apr_pool_t *pool,
     UploadItem *uitem;
     apr_time_t current_time;
 
-    remove_files(pool, file_size);
+    // Validate and hash before any deletion or shared-list lock.
+    current_time = apr_time_now();
+    uitem = UploadItem::get_instance
+        (pool, 0, 0, file_size, current_time, ip_address,
+         file_name, file_mime, file_digest, remove_pass, download_pass, comment, code_pat);
+    if (!item_list_->can_fit(file_size)) THROW(MESSAGE_RFC1867_FILE_SIZE_TOO_LARGE);
 
     {
         WriteLocker manager_locker(lock_);
@@ -280,12 +305,9 @@ apr_size_t UploadItemManager::add_impl(apr_pool_t *pool,
         REQUIRE_MANAGER_LOCKED();
 
         create_item_id_index(&item_id, &item_index);
-        current_time = apr_time_now();
-
-        uitem = UploadItem::get_instance
-            (pool, item_id, item_index, file_size, current_time, ip_address,
-             file_name, file_mime, file_digest, remove_pass, download_pass,
-             comment, code_pat);
+        remove_files_locked(pool, file_size);
+        reinterpret_cast<UploadItem::header_t *>(uitem)->id = item_id;
+        reinterpret_cast<UploadItem::header_t *>(uitem)->index = item_index;
 
         if (item_writer_.write(uitem, file_temp_path)) {
             thumbnail_list_->add(uitem->get_id());
@@ -294,9 +316,6 @@ apr_size_t UploadItemManager::add_impl(apr_pool_t *pool,
 
         set_mtime(current_time);
     }
-
-    // 2 回に分けてロックしているので，最悪の場合を考えると必要
-    remove_files(pool, 0);
 
     return item_id;
 }
@@ -307,6 +326,10 @@ void UploadItemManager::remove_impl(apr_pool_t *pool, UploadItem *uitem)
 
     REQUIRE_MANAGER_LOCKED();
 
+    UploadItem *current = AS_UITEM(item_list_->get_by_id(uitem->get_id()));
+    if (!MetadataSafety::same_identity(*AS_UITEM_H(current), *AS_UITEM_H(uitem)))
+        THROW(MESSAGE_LIST_ID_INVALID);
+
     // 処理の順番を変えるとまずい
     item_writer_.remove(pool, uitem);
     item_list_->remove(uitem->get_id());
@@ -315,50 +338,25 @@ void UploadItemManager::remove_impl(apr_pool_t *pool, UploadItem *uitem)
     set_mtime(apr_time_now());
 }
 
-void UploadItemManager::remove_files(apr_pool_t *pool,
-                                     apr_uint64_t file_size)
-{
-#ifdef REMOVE_UNPOPULAR
-    remove_unpopular_files(pool, file_size);
-#else
-    remove_old_files(pool, file_size);
-#endif
-}
-
-void UploadItemManager::remove_old_files(apr_pool_t *pool,
-                                         apr_uint64_t file_size)
+void UploadItemManager::remove_files(apr_pool_t *pool, apr_uint64_t file_size)
 {
     WriteLocker manager_locker(lock_);
-
-    REQUIRE_MANAGER_LOCKED();
-
-    // 古いアイテムを削除
-    while (item_list_->is_full(file_size)) {
-        UploadItem *old_uitem;
-
-        old_uitem = AS_UITEM(item_list_->get_by_index(item_list_->size()-1));
-
-        item_writer_.remove(pool, old_uitem);
-        thumbnail_list_->remove(old_uitem->get_id());
-        item_list_->remove(old_uitem->get_id());
-    }
+    remove_files_locked(pool, file_size);
 }
 
-void UploadItemManager::remove_unpopular_files(apr_pool_t *pool,
-                                               apr_uint64_t file_size)
+void UploadItemManager::remove_files_locked(apr_pool_t *pool, apr_uint64_t file_size)
 {
-    // アクセスが無いファイルを削除
+    REQUIRE_MANAGER_LOCKED();
+    if (!item_list_->can_fit(file_size)) THROW(MESSAGE_RFC1867_FILE_SIZE_TOO_LARGE);
     while (item_list_->is_full(file_size)) {
-        UploadItem *old_uitem;
-
-        UploadItemIterator item_iter(pool, this, 0, item_list_->size(),
-                                     UploadItem::cmp_file_atime);
-
-        WriteLocker manager_locker(lock_);
-        REQUIRE_MANAGER_LOCKED();
-
-        old_uitem = item_iter.get();
-
+        if (item_list_->size() == 0) THROW(MESSAGE_BUG_FOUND);
+        UploadItem *old_uitem = AS_UITEM(item_list_->get_by_index(item_list_->size()-1));
+#ifdef REMOVE_UNPOPULAR
+        for (apr_size_t i = 0; i < item_list_->size(); ++i) {
+            UploadItem *candidate = AS_UITEM(item_list_->get_by_index(i));
+            if (candidate->get_atime() < old_uitem->get_atime()) old_uitem = candidate;
+        }
+#endif
         item_writer_.remove(pool, old_uitem);
         thumbnail_list_->remove(old_uitem->get_id());
         item_list_->remove(old_uitem->get_id());
@@ -377,20 +375,29 @@ void UploadItemManager::create_item_id_index(apr_size_t *item_id,
         return;
     }
 
-    header = item_list_->get_by_index(0);
-    while (*item_id <= header->id) {
-        (*item_id)++;
+    apr_size_t max_id = 0, max_index = 0;
+    for (apr_size_t i = 0; i < item_list_->size(); ++i) {
+        header = item_list_->get_by_index(i);
+        max_id = std::max(max_id, header->id);
+        max_index = std::max(max_index, header->index);
     }
-    *item_index = header->index + 1;
+    if (max_id == static_cast<apr_size_t>(-1) || max_index == static_cast<apr_size_t>(-1))
+        throw "Upload identifier exhausted";
+    if (*item_id <= max_id) *item_id = max_id + 1;
+    *item_index = max_index + 1;
 }
 
 void UploadItemManager::sync_all_item_by_catches(apr_pool_t *pool)
 {
-    if ((*age_ % SYNC_FACTOR) == 0) {
+    bool synchronize;
+    {
+        WriteLocker manager_locker(lock_);
+        synchronize = (*age_ % SYNC_FACTOR) == 0;
+        ++*age_;
+    }
+    if (synchronize) {
         sync_all_item(pool, SYNC_LIMIT);
     }
-
-    *age_ += 1;
 }
 
 // Local Variables:

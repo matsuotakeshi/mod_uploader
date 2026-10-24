@@ -1,0 +1,260 @@
+[
+  {
+    "source": "ApacheLogger.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "ApacheRFC1867Parser.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "ApacheRFC2822Parser.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "ApacheRequestReader.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "ApacheResponseWriter.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "ApacheTemplateExecutor.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "ApacheUploadItemRss.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "Auxiliary.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "CharCodeConverter.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "DirectoryCleaner.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "DownloadFlowController.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "FileWriter.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "ImageFile.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "MessageDigest5.cpp",
+    "exit": 0,
+    "warnings": 1,
+    "errors": 0
+  },
+  {
+    "source": "MultipartMessageParser.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "MultipartMessageParserBuffer.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "PostDataChecker.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "PostFlowController.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "PostProgressList.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "ReadWriteLocker.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "RequestReader.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "SourceInfo.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "TemplateLexer.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "TemplateParser.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "TemplateVariable.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "TemplateVariableCreator.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "TemporaryFile.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "ThumbnailIterator.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "ThumbnailList.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "ThumbnailVariableCreator.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "UploadItem.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "UploadItemIO.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "UploadItemIterator.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "UploadItemList.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "UploadItemListReader.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "UploadItemManager.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "UploadItemReader.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "UploadItemVariableCreator.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "UploadItemWriter.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "UploaderConfig.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "UploaderTemplate.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "mod_uploader.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "source": "uploader_util.cpp",
+    "exit": 0,
+    "warnings": 0,
+    "errors": 0
+  }
+]

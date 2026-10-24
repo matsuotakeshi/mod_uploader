@@ -166,6 +166,40 @@
  #else
          return r->connection->remote_addr;
  #endif
+--- a/include/FlowController.h
++++ b/include/FlowController.h
+@@ -43,7 +43,7 @@
+ class FlowController: public Uncopyable
+ {
+ protected:
+-    static const apr_size_t MAX_ADDRESS_SIZE          = 40;
++    static const apr_size_t MAX_ADDRESS_SIZE          = 64;
+     static const apr_size_t MAX_PADDRESS_SIZE         = MAX_ADDRESS_SIZE + 1;
+ 
+     static const char *get_address(apr_sockaddr_t *sockaddr)
+@@ -60,18 +60,18 @@
+     {
+         const char *address;
+         char *paddress;
+-        char address_length;
++        apr_size_t address_length;
+ 
+         address = get_address(sockaddr);
+-        address_length = static_cast<char>(strlen(address));
++        address_length = strlen(address);
+ 
+-        if (address_length == 0) {
++        if (address_length <= 0 || static_cast<apr_size_t>(address_length) >= MAX_ADDRESS_SIZE) {
+             THROW(MESSAGE_BUG_FOUND);
+         }
+ 
+         APR_PALLOC(paddress, char *, sockaddr->pool, address_length + 1 + 1);
+ 
+-        paddress[0] = address_length;
++        paddress[0] = static_cast<char>(address_length);
+         memcpy(paddress + 1, address, address_length);
+         paddress[1 + address_length] = '\0';
+ 
 --- a/include/Locker.h
 +++ b/include/Locker.h
 @@ -1,3 +1,4 @@
@@ -292,6 +326,38 @@
      }
  
  private:
+--- a/include/ReadLocker.h
++++ b/include/ReadLocker.h
+@@ -1,3 +1,4 @@
++// Altered source: fail closed on timeout; never steal a live lock.
+ /******************************************************************************
+  * Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
+  *
+@@ -74,23 +75,7 @@
+                 }
+             } else if (((try_count++ & TIMEOUT_CHECK_MASK) == 0) &&
+                        should_timeout(curr_status)) {
+-                // タイムアウトしたら age を増やす
+-                new_status = (curr_status & (~READ_COUNT_MASK)) | READ_COUNT_UINIT;
+-                new_status += AGE_UINIT;
+-                prev_status = apr_atomic_cas(lock, new_status, curr_status);
+-                init(lock, new_status
+-#ifdef DEBUG_ReadWriteLocker
+-                     , mutex
+-#endif
+-                     );
+-                if (prev_status == curr_status) {
+-                    log_try_count("ReadLock(TIME OUT)",
+-                                  try_count, curr_status, new_status);
+-#ifdef DEBUG_ReadWriteLocker
+-                    is_process_timeout_ = true;
+-#endif
+-                    return;
+-                }
++                throw "Shared storage lock timed out; restart Apache after investigating the lock owner";
+             }
+ 
+             yield();
 --- a/include/UploadItem.h
 +++ b/include/UploadItem.h
 @@ -80,12 +80,46 @@
@@ -359,9 +425,125 @@
  
              strncpy(identifier, PACKAGE_NAME, ITM_MAX_IDENTIFIER_SIZE-1);
              strncpy(version, PACKAGE_VERSION, ITM_MAX_VERSION_SIZE-1);
+--- a/include/UploadItemList.h
++++ b/include/UploadItemList.h
+@@ -80,10 +80,12 @@
+      */
+     const UploadItem::header_t *get_by_index(apr_size_t i) const
+     {
++        if (i >= size()) THROW(MESSAGE_LIST_ID_INVALID);
+         return get_header_list() + i;
+     };
+     UploadItem::header_t *get_by_index(apr_size_t i)
+     {
++        if (i >= size()) THROW(MESSAGE_LIST_ID_INVALID);
+         return get_header_list() + i;
+     };
+     apr_size_t size() const
+@@ -94,9 +96,11 @@
+     {
+         return total_file_size_;
+     };
++    bool can_fit(apr_uint64_t file_size) const
++    { return max_list_size_ != 0 && file_size <= max_file_size_; }
+     bool is_full(apr_uint64_t file_size) const
+     {
+-        return ((total_file_size_ + file_size) > max_file_size_) ||
++        return !can_fit(file_size) || total_file_size_ > max_file_size_ - file_size ||
+             (size() >= max_list_size_);
+     };
+     /**
+--- a/include/UploadItemManager.h
++++ b/include/UploadItemManager.h
+@@ -61,23 +61,16 @@
+                    const char *code_pat, const char *ip_address);
+     void remove(apr_pool_t *pool, UploadItem *uitem);
+     UploadItem *get_item(apr_pool_t *pool, apr_size_t item_id);
+-    apr_file_t *get_item_file(apr_pool_t *pool, apr_size_t item_id,
++    apr_file_t *get_item_file(apr_pool_t *pool, UploadItem *expected,
+                               bool is_sendfile_enabled=false);
+     void update_atime(apr_size_t item_id);
+-    apr_time_t get_mtime() const
+-    {
+-        return *mtime_;
+-    };
++    apr_time_t get_mtime() const;
++    // Caller must hold the manager write lock.
+     void set_mtime(apr_time_t mtime)
+     {
+         *mtime_ = mtime;
+     };
+-    void update_mtime(apr_time_t mtime)
+-    {
+-        if (mtime > *mtime_) {
+-            set_mtime(mtime);
+-        }
+-    };
++    void update_mtime(apr_time_t mtime);
+     /**
+      * 共有メモリを使ってインスタンスを生成します．
+      *
+@@ -147,8 +140,7 @@
+                         const char *code_pat, const char *ip_address);
+     void remove_impl(apr_pool_t *pool, UploadItem *uitem);
+     void remove_files(apr_pool_t *pool, apr_uint64_t file_size);
+-    void remove_old_files(apr_pool_t *pool, apr_uint64_t file_size);
+-    void remove_unpopular_files(apr_pool_t *pool, apr_uint64_t file_size);
++    void remove_files_locked(apr_pool_t *pool, apr_uint64_t file_size);
+ 
+     /**
+      * ユニークなアイテム ID とインデックスを生成します．
+--- a/include/WriteLocker.h
++++ b/include/WriteLocker.h
+@@ -1,3 +1,4 @@
++// Altered source: fail closed on timeout; never steal a live lock.
+ /******************************************************************************
+  * Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
+  *
+@@ -78,23 +79,7 @@
+             } else {
+                 if (((try_count++ & TIMEOUT_CHECK_MASK) == 0) &&
+                     should_timeout(curr_status)) {
+-                    // タイムアウトしたら age を増やす
+-                    new_status = (curr_status | WRITE_LOCKED) & (~WAIT_WRITE);
+-                    new_status += AGE_UINIT;
+-                    prev_status = apr_atomic_cas(lock, new_status, curr_status);
+-                    init(lock, new_status
+-#ifdef DEBUG_ReadWriteLocker
+-                     , mutex
+-#endif
+-                         );
+-                    if (prev_status == curr_status) {
+-                        log_try_count("WriteLock(TIME OUT)",
+-                                      try_count, curr_status, new_status);
+-#ifdef DEBUG_ReadWriteLocker
+-                        is_process_timeout_ = true;
+-#endif
+-                        return;
+-                    }
++                    throw "Shared storage lock timed out; restart Apache after investigating the lock owner";
+                 }
+ 
+                 if (get_wait_write(curr_status) != WAIT_WRITE) {
 --- a/include/uploader_util.h
 +++ b/include/uploader_util.h
-@@ -193,7 +193,7 @@
+@@ -148,6 +148,7 @@
+     }
+     *comment = apr_pstrmemdup(pool, line_start, line_end-line_start);
+ 
++    if (line_end[1] != '\n') THROW(MESSAGE_POST_DATA_INVALID);
+     line_start = line_end + 2;
+     line_end = strnchr(line_start, strlen(line_start), MAIL_LINE_SEPARATOR[0]);
+     if (line_end == NULL) {
+@@ -156,6 +157,7 @@
+     }
+     *remove_pass = apr_pstrmemdup(pool, line_start, line_end-line_start);
+ 
++    if (line_end[1] != '\n') THROW(MESSAGE_POST_DATA_INVALID);
+     line_start = line_end + 2;
+     line_end = strnchr(line_start, strlen(line_start), MAIL_LINE_SEPARATOR[0]);
+     if (line_end == NULL) {
+@@ -193,7 +195,7 @@
      remove_pass_content = MultipartMessageParser<R>::get_content
          (content_array, POST_REMOVE_PASS_PARAM);
  
@@ -465,6 +647,46 @@
          cmap(ConfigReader::read(pool, conf_file_path));
      for (ConfigReader::config_map::const_iterator i = cmap.get()->begin();
           i != cmap.get()->end(); i++) {
+--- a/src/CharCodeConverter.cpp
++++ b/src/CharCodeConverter.cpp
+@@ -66,7 +66,7 @@
+ #if APU_HAVE_APR_ICONV
+     char *buffer;
+     apr_size_t str_len = strlen(str);
+-    apr_size_t buffer_len = str_len * 3;
++    apr_size_t buffer_len = str_len * 3 + 1;
+     apr_size_t converted_len = 0;
+     apr_iconv_t handle;
+ 
+@@ -77,14 +77,14 @@
+         throw apr_pstrcat(pool, MESSAGE_ICONV_CONVERTER_NOT_FOUND,
+                           "(", from, " -> ", to, ")", NULL);
+     }
+-    apr_iconv(handle,
+-              &str, &str_len, &buffer, &buffer_len, &converted_len);
++    apr_status_t result = apr_iconv(handle, &str, &str_len, &buffer, &buffer_len, &converted_len);
+     apr_iconv_close(handle, pool);
++    if (result != APR_SUCCESS || str_len != 0) THROW(MESSAGE_ICONV_ENCODING_INVALID);
+ #elif APU_HAVE_ICONV
+     char *buffer;
+     ICONV_2ND_ARG_TYPE target;
+     size_t str_len = strlen(str);
+-    size_t buffer_len = str_len * 3;
++    size_t buffer_len = str_len * 3 + 1;
+     iconv_t handle;
+ 
+     target = static_cast<ICONV_2ND_ARG_TYPE>(apr_pstrdup(pool, str));
+@@ -95,8 +95,9 @@
+         throw apr_pstrcat(pool, MESSAGE_ICONV_CONVERTER_NOT_FOUND,
+                           "(", from, " -> ", to, ")", NULL);
+     }
+-    iconv(handle, &target, &str_len, &buffer, &buffer_len);
++    size_t result = iconv(handle, &target, &str_len, &buffer, &buffer_len);
+     iconv_close(handle);
++    if (result == static_cast<size_t>(-1) || str_len != 0) THROW(MESSAGE_ICONV_ENCODING_INVALID);
+ #else
+ 
+     // iconv，apr_iconv が無い場合，文字コード変換は行わない
 --- a/src/ConfigReader.cpp
 +++ b/src/ConfigReader.cpp
 @@ -1,3 +1,4 @@
@@ -498,6 +720,43 @@
 +                (info.filetype != APR_REG)) {
                  continue;
              }
+ 
+--- a/src/DownloadFlowController.cpp
++++ b/src/DownloadFlowController.cpp
+@@ -28,6 +28,7 @@
+ #include "Environment.h"
+ 
+ #include <iomanip>
++#include <cstdio>
+ 
+ #include "apr_strings.h"
+ 
+@@ -145,15 +146,14 @@
+ {
+     is_valid_ = flow_controller_->add_session(sockaddr_);
+ 
+-    if (!is_valid_) {
+-        apr_sleep(apr_time_from_sec(DOWNLOAD_BUSY_SLEEP_SEC));
+-    }
++
+ }
+ 
+ DownloadSession::~DownloadSession()
+ {
+     if (is_valid_) {
+-        flow_controller_->remove_session(sockaddr_);
++        try { flow_controller_->remove_session(sockaddr_); }
++        catch (...) { std::fputs("mod_uploader: download session cleanup failed\n", stderr); }
+     }
+ }
+ 
+@@ -181,6 +181,7 @@
+ 
+     strncpy(downloader_list_[i].paddress, get_paddress(sockaddr),
+             MAX_PADDRESS_SIZE - 1);
++    downloader_list_[i].paddress[MAX_PADDRESS_SIZE - 1] = '\0';
+     downloader_list_[i].session_count = 1;
+     downloader_count_++;
  
 --- a/src/GNUmakefile.dep.in
 +++ b/src/GNUmakefile.dep.in
@@ -655,7 +914,7 @@
              return contents + i;
          }
      }
-@@ -198,84 +201,27 @@
+@@ -198,84 +201,28 @@
  template<class R, class W>
  void MultipartMessageParser<R, W>::get_text_content(content_t *content)
  {
@@ -746,6 +1005,7 @@
 +            if (!UploadSafety::allowed(text.size(), tail, max_text_size_))
 +                THROW(MESSAGE_RFC2822_TEXT_SIZE_TOO_LARGE);
 +            text.append(buffer_.get_data(), tail);
++            if (text.find('\0') != std::string::npos) THROW(MESSAGE_RFC1867_FORMAT_INVALID);
 +            content->text = apr_pstrmemdup(pool_, text.data(), text.size());
 +            buffer_.erase(end - buffer_.get_data() + boundary_len_);
 +            return;
@@ -760,7 +1020,7 @@
      }
  }
  
-@@ -295,12 +241,16 @@
+@@ -295,12 +242,16 @@
                                          "/", FILE_NAME_TEMPLATE, NULL),
                              false);
      temp_file.open(FileWriterClass::OPEN_FLAG);
@@ -779,7 +1039,7 @@
  
      if (end == NULL) { // まだバッファ中にバウンダリがない
          while (true) {
-@@ -318,9 +268,7 @@
+@@ -318,9 +269,7 @@
              write_file(writer, digest, buffer_, write_size);
  
              read_size = fill();
@@ -790,7 +1050,7 @@
              if (UNLIKELY(end != NULL)) { // バッファ中にバウンダリが見つかった
                  break;
              } else if (UNLIKELY(read_size == 0)) { // バウンダリが見つからないまま入力終了
-@@ -401,11 +349,14 @@
+@@ -401,11 +350,14 @@
  
      TRACE_FUNC;
  
@@ -807,7 +1067,7 @@
          *value = NULL;
  
          return NULL;
-@@ -418,6 +369,7 @@
+@@ -418,6 +370,7 @@
          return NULL;
      }
  
@@ -815,7 +1075,7 @@
      if (*input_start == QUOTE) {
          input_start++;
          end = strnchr(input_start, input_end-input_start, QUOTE);
-@@ -430,7 +382,7 @@
+@@ -430,7 +383,7 @@
          end++;
      } else {
          end = input_start + 1;
@@ -824,7 +1084,7 @@
              end++;
          }
          *value = static_cast<const char *>(apr_pstrmemdup(pool_, input_start,
-@@ -512,9 +464,13 @@
+@@ -512,9 +465,13 @@
  
      TRACE_FUNC;
  
@@ -922,6 +1182,16 @@
              (*mime == '.') || (*mime == '/') || (*mime == ';') ||
              (*mime == '=') || (*mime == ' ')) {
              continue;
+--- a/src/PostFlowController.cpp
++++ b/src/PostFlowController.cpp
+@@ -132,6 +132,7 @@
+ 
+     strncpy(poster_list_[poster_top_].paddress, get_paddress(sockaddr),
+             MAX_PADDRESS_SIZE - 1);
++    poster_list_[poster_top_].paddress[MAX_PADDRESS_SIZE - 1] = '\0';
+     poster_list_[poster_top_].time = apr_time_now();
+ }
+ 
 --- a/src/RFC1867Parser.cpp
 +++ b/src/RFC1867Parser.cpp
 @@ -1,3 +1,4 @@
@@ -950,7 +1220,15 @@
      M::buffer_.erase(start - M::buffer_.get_data());
  
      while (!M::is_end()) {
-@@ -155,6 +161,9 @@
+@@ -128,6 +134,7 @@
+         }
+ 
+         get_content(&content);
++        if (M::get_content(content_array, content.name) != NULL) THROW(MESSAGE_RFC1867_FORMAT_INVALID);
+         *AS_CONTENT(apr_array_push(content_array)) = content;
+     }
+ 
+@@ -155,6 +162,9 @@
      }
  
      start = M::buffer_.get_data();
@@ -960,7 +1238,7 @@
      start += strlen(M::CR_LF);
  
      line_end = M::skip_line(start);
-@@ -211,12 +220,16 @@
+@@ -211,12 +221,16 @@
          THROW(MESSAGE_RFC1867_CONTENT_TYPE_INVALID);
      }
  
@@ -979,6 +1257,17 @@
      return boundary;
  }
  
+--- a/src/RFC2822Parser.cpp
++++ b/src/RFC2822Parser.cpp
+@@ -257,6 +257,8 @@
+         THROW(MESSAGE_RFC2822_CONTENT_TYPE_INVALID);
+     }
+ 
++    if (!*boundary || strlen(boundary) > 70 || strpbrk(boundary, "\r\n"))
++        THROW(MESSAGE_RFC2822_CONTENT_TYPE_INVALID);
+     M::boundary_ = boundary;
+     M::boundary_len_ = strlen(M::boundary_);
+     M::barrier_len_ = M::boundary_len_ + strlen(M::CR_LF) +
 --- a/src/StandConfigReader.cpp
 +++ b/src/StandConfigReader.cpp
 @@ -1,3 +1,4 @@
@@ -1046,7 +1335,15 @@
  #include "TemporaryPool.h"
  #include "PostDataChecker.h"
  #include "Message.h"
-@@ -101,8 +102,10 @@
+@@ -72,6 +73,7 @@
+     const char *file_ext;
+     TemporaryPool temp_pool;
+ 
++    if (strlen(ip_address) >= ITM_MAX_IP_ADDRESS_SIZE) throw "IP address is too long";
+     if (is_need_validate) {
+         PostDataChecker::validate_uitem(temp_pool.get(), file_size, mtime,
+                                         &file_name, &file_mime, file_digest,
+@@ -101,8 +103,10 @@
      strncpy(uitem->header_.file_mime, file_mime, ITM_MAX_FILE_MIME_SIZE);
      strncpy(uitem->header_.file_ext, file_ext, ITM_MAX_FILE_EXT_SIZE);
      strncpy(uitem->header_.file_digest, file_digest, ITM_MAX_FILE_DIGEST_SIZE);
@@ -1059,7 +1356,7 @@
      strncpy(uitem->header_.comment, comment, ITM_MAX_COMMENT_SIZE);
  
      return uitem;
-@@ -247,7 +250,7 @@
+@@ -247,7 +251,7 @@
  
      show_spacer();
  
@@ -1068,7 +1365,7 @@
  
      check_item("- identifier", OFFSETOF(UploadItem::header_t, identifier), 0);
      check_item("- version", OFFSETOF(UploadItem::header_t, version), 16);
-@@ -263,8 +266,8 @@
+@@ -263,8 +267,8 @@
      check_item("- file_mime", OFFSETOF(UploadItem::header_t, file_mime), 200);
      check_item("- file_digest", OFFSETOF(UploadItem::header_t, file_digest), 272);
      check_item("- remove_pass", OFFSETOF(UploadItem::header_t, remove_pass), 320);
@@ -1079,7 +1376,7 @@
  }
  
  void run_size_64()
-@@ -275,7 +278,7 @@
+@@ -275,7 +279,7 @@
  
      show_spacer();
  
@@ -1088,7 +1385,7 @@
  
      check_item("- identifier", OFFSETOF(UploadItem::header_t, identifier), 0);
      check_item("- version", OFFSETOF(UploadItem::header_t, version), 16);
-@@ -291,8 +294,8 @@
+@@ -291,8 +295,8 @@
      check_item("- file_mime", OFFSETOF(UploadItem::header_t, file_mime), 208);
      check_item("- file_digest", OFFSETOF(UploadItem::header_t, file_digest), 280);
      check_item("- remove_pass", OFFSETOF(UploadItem::header_t, remove_pass), 328);
@@ -1099,17 +1396,337 @@
  }
  
  void run_size()
+--- a/src/UploadItemList.cpp
++++ b/src/UploadItemList.cpp
+@@ -56,6 +56,7 @@
+     // MEMO: header_list_ は mtime に基づいて降順に並んでいる
+ 
+     header_list_size = size();
++    if (is_full(uitem->get_file_size())) THROW(MESSAGE_LIST_ID_INVALID);
+ 
+     i = get_insert_index(uitem);
+     if (i == header_list_size) {
+--- a/src/UploadItemListReader.cpp
++++ b/src/UploadItemListReader.cpp
+@@ -142,7 +142,9 @@
+ {
+     apr_size_t i;
+ 
+-    for (i = 0; isxdigit(static_cast<unsigned char>(subdir_name[i])) != 0; i++) ;
++    if (strlen(subdir_name) != 2) return false;
++    for (i = 0; (subdir_name[i]>='0' && subdir_name[i]<='9') ||
++                (subdir_name[i]>='a' && subdir_name[i]<='f'); i++) ;
+ 
+     return (subdir_name[i] == '\0');
+ }
+@@ -151,6 +153,7 @@
+ {
+     apr_size_t i;
+ 
++    if (!*file_name || (file_name[0]=='0' && file_name[1]!=0)) return false;
+     for (i = 0; isdigit(static_cast<unsigned char>(file_name[i])) != 0; i++) ;
+ 
+     return (file_name[i] == '\0');
+--- a/src/UploadItemManager.cpp
++++ b/src/UploadItemManager.cpp
+@@ -1,3 +1,4 @@
++// Altered source: validate before eviction and serialize capacity changes.
+ /******************************************************************************
+  * Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
+  *
+@@ -37,6 +38,7 @@
+ 
+ #include "UploadItemManager.h"
+ #include "UploadItem.h"
++#include "MetadataSafety.h"
+ #include "UploadItemList.h"
+ #include "UploadItemIterator.h"
+ #include "ThumbnailList.h"
+@@ -71,6 +73,27 @@
+ 
+ const apr_size_t UploadItemManager::SYNC_FACTOR = 32;
+ const apr_size_t UploadItemManager::SYNC_LIMIT  = 200;
++
++namespace {
++// Let the compiler align time/size fields in the process-shared region.
++struct ManagerSharedState {
++    apr_atomic_t lock;
++    apr_time_t mtime;
++    apr_size_t age;
++};
++}
++
++apr_time_t UploadItemManager::get_mtime() const
++{
++    ReadLocker manager_locker(lock_);
++    return *mtime_;
++}
++
++void UploadItemManager::update_mtime(apr_time_t mtime)
++{
++    WriteLocker manager_locker(lock_);
++    if (mtime > *mtime_) *mtime_ = mtime;
++}
+ 
+ 
+ /******************************************************************************
+@@ -108,7 +131,7 @@
+ {
+     UploadItem::header_t *header;
+     apr_size_t synced_count;
+-    ReadLocker manager_locker(lock_);
++    WriteLocker manager_locker(lock_);
+ 
+     REQUIRE_MANAGER_LOCKED();
+ 
+@@ -140,14 +163,15 @@
+ }
+ 
+ apr_file_t *UploadItemManager::get_item_file(apr_pool_t *pool,
+-                                             apr_size_t item_id,
++                                             UploadItem *expected,
+                                              bool is_sendfile_enabled)
+ {
++    const apr_size_t item_id = expected->get_id();
+     const char *file_path;
+     apr_file_t *file;
+     UploadItem *uitem;
+-    // カウンタを保護するだけなので読み出しロックで OK
+-    ReadLocker manager_locker(lock_);
++    // Protect identity validation, opening the payload, and mutable counters.
++    WriteLocker manager_locker(lock_);
+ 
+     REQUIRE_MANAGER_LOCKED();
+ 
+@@ -155,12 +179,16 @@
+ 
+     file_path = UploadItemIO::get_file_path(pool, file_dir_path_, uitem);
+ 
++    if (!MetadataSafety::same_identity(*AS_UITEM_H(uitem), *AS_UITEM_H(expected)))
++        THROW(MESSAGE_LIST_ID_INVALID);
++
++    if (apr_file_open(&file, file_path,
++                      APR_READ | (is_sendfile_enabled ? APR_SENDFILE_ENABLED : 0),
++                      APR_OS_DEFAULT, pool) != APR_SUCCESS) {
++        THROW(MESSAGE_FILE_OPEN_FAILED);
++    }
+     uitem->increment_download_count();
+-
+-    apr_file_open(&file, file_path,
+-                  APR_READ | (is_sendfile_enabled ? APR_SENDFILE_ENABLED : 0),
+-                  APR_OS_DEFAULT, pool);
+-
++    uitem->update_atime();
+     return file;
+ }
+ 
+@@ -202,18 +230,10 @@
+ void UploadItemManager::child_init(apr_shm_t *shm, UploadItemList *item_list,
+                                    ThumbnailList *thumbnail_list)
+ {
+-    lock_ = AS_ATOMIC(apr_shm_baseaddr_get(shm));
+-    mtime_ = AS_TIME(lock_ + 1);
+-    age_ = AS_SIZE(mtime_ + 1);
+-
+-#ifdef __INTEL_COMPILER
+-#pragma warning(disable:1684)
+-#endif
+-    ASSERT_EQUAL(AS_CHAR(age_ + 1),
+-                 AS_CHAR(apr_shm_baseaddr_get(shm)) + get_memory_size());
+-#ifdef __INTEL_COMPILER
+-#pragma warning(default:1684)
+-#endif
++    ManagerSharedState *state = static_cast<ManagerSharedState *>(apr_shm_baseaddr_get(shm));
++    lock_ = &state->lock;
++    mtime_ = &state->mtime;
++    age_ = &state->age;
+ 
+     item_list_ = item_list;
+     thumbnail_list_ = thumbnail_list;
+@@ -221,7 +241,7 @@
+ 
+ apr_size_t UploadItemManager::get_memory_size()
+ {
+-    return sizeof(apr_time_t) + sizeof(apr_atomic_t) + sizeof(apr_size_t);
++    return sizeof(ManagerSharedState);
+ }
+ 
+ void UploadItemManager::check_finalize_state(UploadItemManager *item_manager)
+@@ -272,7 +292,12 @@
+     UploadItem *uitem;
+     apr_time_t current_time;
+ 
+-    remove_files(pool, file_size);
++    // Validate and hash before any deletion or shared-list lock.
++    current_time = apr_time_now();
++    uitem = UploadItem::get_instance
++        (pool, 0, 0, file_size, current_time, ip_address,
++         file_name, file_mime, file_digest, remove_pass, download_pass, comment, code_pat);
++    if (!item_list_->can_fit(file_size)) THROW(MESSAGE_RFC1867_FILE_SIZE_TOO_LARGE);
+ 
+     {
+         WriteLocker manager_locker(lock_);
+@@ -280,12 +305,9 @@
+         REQUIRE_MANAGER_LOCKED();
+ 
+         create_item_id_index(&item_id, &item_index);
+-        current_time = apr_time_now();
+-
+-        uitem = UploadItem::get_instance
+-            (pool, item_id, item_index, file_size, current_time, ip_address,
+-             file_name, file_mime, file_digest, remove_pass, download_pass,
+-             comment, code_pat);
++        remove_files_locked(pool, file_size);
++        reinterpret_cast<UploadItem::header_t *>(uitem)->id = item_id;
++        reinterpret_cast<UploadItem::header_t *>(uitem)->index = item_index;
+ 
+         if (item_writer_.write(uitem, file_temp_path)) {
+             thumbnail_list_->add(uitem->get_id());
+@@ -295,9 +317,6 @@
+         set_mtime(current_time);
+     }
+ 
+-    // 2 回に分けてロックしているので，最悪の場合を考えると必要
+-    remove_files(pool, 0);
+-
+     return item_id;
+ }
+ 
+@@ -306,6 +325,10 @@
+     WriteLocker manager_locker(lock_);
+ 
+     REQUIRE_MANAGER_LOCKED();
++
++    UploadItem *current = AS_UITEM(item_list_->get_by_id(uitem->get_id()));
++    if (!MetadataSafety::same_identity(*AS_UITEM_H(current), *AS_UITEM_H(uitem)))
++        THROW(MESSAGE_LIST_ID_INVALID);
+ 
+     // 処理の順番を変えるとまずい
+     item_writer_.remove(pool, uitem);
+@@ -315,56 +338,31 @@
+     set_mtime(apr_time_now());
+ }
+ 
+-void UploadItemManager::remove_files(apr_pool_t *pool,
+-                                     apr_uint64_t file_size)
+-{
++void UploadItemManager::remove_files(apr_pool_t *pool, apr_uint64_t file_size)
++{
++    WriteLocker manager_locker(lock_);
++    remove_files_locked(pool, file_size);
++}
++
++void UploadItemManager::remove_files_locked(apr_pool_t *pool, apr_uint64_t file_size)
++{
++    REQUIRE_MANAGER_LOCKED();
++    if (!item_list_->can_fit(file_size)) THROW(MESSAGE_RFC1867_FILE_SIZE_TOO_LARGE);
++    while (item_list_->is_full(file_size)) {
++        if (item_list_->size() == 0) THROW(MESSAGE_BUG_FOUND);
++        UploadItem *old_uitem = AS_UITEM(item_list_->get_by_index(item_list_->size()-1));
+ #ifdef REMOVE_UNPOPULAR
+-    remove_unpopular_files(pool, file_size);
+-#else
+-    remove_old_files(pool, file_size);
++        for (apr_size_t i = 0; i < item_list_->size(); ++i) {
++            UploadItem *candidate = AS_UITEM(item_list_->get_by_index(i));
++            if (candidate->get_atime() < old_uitem->get_atime()) old_uitem = candidate;
++        }
+ #endif
+-}
+-
+-void UploadItemManager::remove_old_files(apr_pool_t *pool,
+-                                         apr_uint64_t file_size)
+-{
+-    WriteLocker manager_locker(lock_);
+-
+-    REQUIRE_MANAGER_LOCKED();
+-
+-    // 古いアイテムを削除
+-    while (item_list_->is_full(file_size)) {
+-        UploadItem *old_uitem;
+-
+-        old_uitem = AS_UITEM(item_list_->get_by_index(item_list_->size()-1));
+-
+         item_writer_.remove(pool, old_uitem);
+         thumbnail_list_->remove(old_uitem->get_id());
+         item_list_->remove(old_uitem->get_id());
+     }
+ }
+ 
+-void UploadItemManager::remove_unpopular_files(apr_pool_t *pool,
+-                                               apr_uint64_t file_size)
+-{
+-    // アクセスが無いファイルを削除
+-    while (item_list_->is_full(file_size)) {
+-        UploadItem *old_uitem;
+-
+-        UploadItemIterator item_iter(pool, this, 0, item_list_->size(),
+-                                     UploadItem::cmp_file_atime);
+-
+-        WriteLocker manager_locker(lock_);
+-        REQUIRE_MANAGER_LOCKED();
+-
+-        old_uitem = item_iter.get();
+-
+-        item_writer_.remove(pool, old_uitem);
+-        thumbnail_list_->remove(old_uitem->get_id());
+-        item_list_->remove(old_uitem->get_id());
+-    }
+-}
+-
+ void UploadItemManager::create_item_id_index(apr_size_t *item_id,
+                                              apr_size_t *item_index) const
+ {
+@@ -377,20 +375,29 @@
+         return;
+     }
+ 
+-    header = item_list_->get_by_index(0);
+-    while (*item_id <= header->id) {
+-        (*item_id)++;
+-    }
+-    *item_index = header->index + 1;
++    apr_size_t max_id = 0, max_index = 0;
++    for (apr_size_t i = 0; i < item_list_->size(); ++i) {
++        header = item_list_->get_by_index(i);
++        max_id = std::max(max_id, header->id);
++        max_index = std::max(max_index, header->index);
++    }
++    if (max_id == static_cast<apr_size_t>(-1) || max_index == static_cast<apr_size_t>(-1))
++        throw "Upload identifier exhausted";
++    if (*item_id <= max_id) *item_id = max_id + 1;
++    *item_index = max_index + 1;
+ }
+ 
+ void UploadItemManager::sync_all_item_by_catches(apr_pool_t *pool)
+ {
+-    if ((*age_ % SYNC_FACTOR) == 0) {
++    bool synchronize;
++    {
++        WriteLocker manager_locker(lock_);
++        synchronize = (*age_ % SYNC_FACTOR) == 0;
++        ++*age_;
++    }
++    if (synchronize) {
+         sync_all_item(pool, SYNC_LIMIT);
+     }
+-
+-    *age_ += 1;
+ }
+ 
+ // Local Variables:
 --- a/src/UploadItemReader.cpp
 +++ b/src/UploadItemReader.cpp
-@@ -33,6 +33,7 @@
+@@ -33,6 +33,8 @@
  
  #include "UploadItemReader.h"
  #include "UploadItem.h"
 +#include "PasswordHash.h"
++#include "MetadataSafety.h"
  #include "TemporaryPool.h"
  #include "TemporaryFile.h"
  #include "Message.h"
-@@ -64,38 +65,12 @@
+@@ -64,38 +66,14 @@
      File uitem_file(temp_pool.get(), uitem_file_path);
  
      version = read_and_check(&uitem_file, &uitem_file_map);
@@ -1147,6 +1764,8 @@
 -    }
 +    if (version != 4) throw "Legacy metadata: stop Apache and run migrate_passwords.py before startup";
 +    memcpy(uitem, uitem_file_map->mm, sizeof(UploadItem::header_t));
++    if (uitem->get_id() != item_id || !MetadataSafety::valid(*reinterpret_cast<UploadItem::header_t *>(uitem)))
++        throw "Invalid metadata strings, identifier or path components";
 +    if (memchr(uitem->get_remove_pass(),0,ITM_MAX_REMOVE_PASS_SIZE)==NULL ||
 +        memchr(uitem->get_download_pass(),0,ITM_MAX_DOWNLOAD_PASS_SIZE)==NULL ||
 +        !PasswordHash::valid(uitem->get_remove_pass()) || !PasswordHash::valid(uitem->get_download_pass()))
@@ -1154,7 +1773,7 @@
  }
  
  bool UploadItemReader::is_exist_item(apr_size_t item_id) const
-@@ -166,13 +141,17 @@
+@@ -166,13 +144,17 @@
  
      version = (uitem->get_version())[0] - '0';
      switch (version) {
@@ -1185,9 +1804,31 @@
  #include "UploadItemList.h"
  #include "UploadItemManager.h"
  #include "UploadItemListReader.h"
-@@ -277,6 +278,9 @@
+@@ -147,7 +148,8 @@
+     item_manager_(NULL)
+ 
+ {
+-    apr_pool_create(&pool_, NULL);
++    // Use the supplied configuration pool so our registered finalizer runs
++    // before APR releases this storage and Apache unloads the module DSO.
+ 
+     apr_temp_dir_get(&temp_dir_path, pool_);
+     memset(tmpls_, 0, sizeof(tmpls_));
+@@ -225,6 +227,7 @@
+     if (!is_active_) {
+         return;
+     }
++    is_active_ = false;
+ 
+     item_manager_->sync_all_item(pool_);
+ 
+@@ -276,7 +279,13 @@
+         THROW(MESSAGE_CONF_PARAM_COMPULSORY_NOT_SPECIFIED);
      }
  
++    if (per_page_item_number == 0 || total_file_number_limit == 0 ||
++        total_file_number_limit > 1000000 || total_file_size_limit == 0 || file_size_limit == 0)
++        throw "Invalid capacity or pagination limits";
      check_dir(data_dir_path);
 +    StorageLock::hold(pool_,data_dir_path);
 +    if (File::is_exist(pool_, apr_pstrcat(pool_, data_dir_path, "/.migration-in-progress", NULL)))
@@ -1218,7 +1859,22 @@
  /******************************************************************************
   * Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
   *
-@@ -348,6 +349,9 @@
+@@ -181,7 +182,13 @@
+     UploaderConfig *config;
+ 
+     config = AS_UCONFIG(data);
+-    config->finalize();
++    try {
++        config->finalize();
++    } catch (...) {
++        // A C cleanup callback must never propagate a C++ exception through APR.
++        fprintf(stderr, "mod_uploader: configuration finalization failed\n");
++        return APR_EGENERAL;
++    }
+ 
+     return APR_SUCCESS;
+ }
+@@ -348,6 +355,9 @@
          logger.error(__FILE__, __LINE__, &r_wrapper, "Exception: %s", message);
  
          return HTTP_INTERNAL_SERVER_ERROR;
@@ -1228,7 +1884,7 @@
      }
  }
  
-@@ -362,7 +366,7 @@
+@@ -362,7 +372,7 @@
  {
      UploaderConfig *config;
  
@@ -1237,7 +1893,7 @@
          return DECLINED;
      }
  
-@@ -386,6 +390,9 @@
+@@ -386,6 +396,9 @@
      } catch(const char *message) {
          logger.error(__FILE__, __LINE__, r, "Exception: %s", message);
  
@@ -1254,7 +1910,7 @@
  /******************************************************************************
   * Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
   *
-@@ -35,9 +36,15 @@
+@@ -35,9 +36,16 @@
  #include "apr_strings.h"
  
  #include "uploader_handler.h"
@@ -1263,6 +1919,7 @@
  
  #include "RequestResponseImpl.h"
 +#include "PasswordHash.h"
++#include "HtmlSafety.h"
 +#include "AuthenticationThrottle.h"
 +#if defined(UPLOADER_TYPE_APACHE) && AP_SERVER_MAJORVERSION_NUMBER >= 2
 +#include "ApacheSecurity.h"
@@ -1270,7 +1927,7 @@
  
  #include "UploadItem.h"
  #include "UploadItemIO.h"
-@@ -117,6 +124,41 @@
+@@ -117,6 +125,41 @@
  }
  
  template<class Response>
@@ -1312,15 +1969,35 @@
  static int redirect(typename Response::Handle *r, typename Response::Writer& o,
                      const char *url)
  {
-@@ -176,6 +218,7 @@
+@@ -135,7 +178,7 @@
+     o.write("  <meta http-equiv=\"content-type\" "
+              "content=\"application/xhtml+xml\" />\n");
+     o.write("  <meta http-equiv=\"refresh\" content=\"0;url=");
+-    o.write(url);
++    o.write(HtmlSafety::escape(url).c_str());
+     o.write("\" />\n");
+     o.write("  <title>" PACKAGE_NAME "</title>\n");
+     o.write(" </head>\n");
+@@ -153,7 +196,7 @@
+                                   UploaderConfig *config, const char *message)
+ {
+     o.write("<div class=\"warning\">ERROR: ");
+-    o.write(message);
++    o.write(HtmlSafety::escape(message).c_str());
+     o.write("</div>\n");
+     o.finish();
+ 
+@@ -176,7 +219,8 @@
          TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
  
          var_creator.create(BASE_URL_VAR_NAME, config->base_url);
+-        var_creator.create(ERROR_MESSAGE_VAR_NAME, message);
 +        var_creator.create("CSRF_TOKEN", csrf_token<Response>(r));
-         var_creator.create(ERROR_MESSAGE_VAR_NAME, message);
++        var_creator.create(ERROR_MESSAGE_VAR_NAME, apr_pstrdup(r->pool, HtmlSafety::escape(message).c_str()));
  
          TemplateExecutor<typename Response::Writer> executor(r->pool, o);
-@@ -266,6 +309,7 @@
+ 
+@@ -266,6 +310,7 @@
          TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
  
          var_creator.create(BASE_URL_VAR_NAME, config->base_url);
@@ -1328,7 +2005,7 @@
          var_creator.create(COMMAND_VAR_NAME, INDEX_COMMAND);
  
          var_creator.create
-@@ -346,6 +390,7 @@
+@@ -346,6 +391,7 @@
          TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
  
          var_creator.create(BASE_URL_VAR_NAME, config->base_url);
@@ -1336,7 +2013,7 @@
          var_creator.create
              (COMMAND_VAR_NAME,
               apr_pstrcat(r->pool, SORT_COMMAND, sort_type, NULL));
-@@ -401,6 +446,7 @@
+@@ -401,6 +447,7 @@
          TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
  
          var_creator.create(BASE_URL_VAR_NAME, config->base_url);
@@ -1344,7 +2021,17 @@
  
          var_creator.create
              (ITEM_VAR_NAME,
-@@ -571,6 +617,7 @@
+@@ -478,6 +525,9 @@
+         (apr_atoi64(get_word(r->pool, &item_id_str, FILE_EXT_SEPARATOR[0])));
+ 
+     try {
++        // A public thumbnail must not bypass the original file's download password.
++        UploadItem *protected_item = config->get_item_manager()->get_item(r->pool, item_id);
++        if (*protected_item->get_download_pass()) return HTTP_FORBIDDEN;
+         const char  *thumb_file_path;
+ 
+         Response::set_content_type(r, get_image_mime(file_name));
+@@ -571,6 +621,7 @@
          TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
  
          var_creator.create(BASE_URL_VAR_NAME, config->base_url);
@@ -1352,7 +2039,7 @@
  
          var_creator.create
              (THUMBNAIL_LIST_VAR_NAME,
-@@ -603,6 +650,13 @@
+@@ -603,6 +654,13 @@
                         const char *download_pass, const char *comment,
                         const char *code_pat, apr_size_t *item_id)
  {
@@ -1366,7 +2053,7 @@
      *item_id = config->get_item_manager()->add
          (r->pool, file_name, file_mime, file_size, file_digest,
           file_temp_path, remove_pass, download_pass, comment,
-@@ -671,6 +725,7 @@
+@@ -671,6 +729,7 @@
      try {
          content_array = parser.parse(Response::get_content_type(r),
                                       Response::get_content_size(r));
@@ -1374,7 +2061,7 @@
          progress->end_time = apr_time_now();
      } catch(const char *message) {
          progress->end_time = apr_time_now();
-@@ -692,7 +747,7 @@
+@@ -692,7 +751,7 @@
               remove_pass, download_pass, comment, code_pat, &item_id);
  
          progress->item_id = item_id;
@@ -1383,7 +2070,19 @@
  
          return status;
      } catch(const char *message) {
-@@ -781,6 +836,7 @@
+@@ -751,6 +810,11 @@
+ static int mail_upload(typename Response::Handle *r, UploaderConfig *config,
+                        const char *arg)
+ {
++#if defined(UPLOADER_TYPE_APACHE) && AP_SERVER_MAJORVERSION_NUMBER >= 2
++    if (!r->user || !*r->user || !r->ap_auth_type || !*r->ap_auth_type) return HTTP_FORBIDDEN;
++#else
++    return HTTP_FORBIDDEN;
++#endif
+     int status;
+ 
+     const char *file_name;
+@@ -781,6 +845,7 @@
           PST_MAX_ITEM_COUNT);
  
      content_array = parser.parse();
@@ -1391,7 +2090,7 @@
  
      file_temp_path = NULL;
      try {
-@@ -825,6 +881,7 @@
+@@ -825,6 +890,7 @@
          TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
  
          var_creator.create(BASE_URL_VAR_NAME, config->base_url);
@@ -1399,7 +2098,7 @@
  
          var_creator.create
              (ITEM_VAR_NAME,
-@@ -846,7 +903,9 @@
+@@ -846,7 +912,9 @@
  static int download_set_header(typename Response::Handle *r, UploadItem *uitem,
                                 apr_file_t *item_file)
  {
@@ -1410,7 +2109,7 @@
  
  #ifdef UPLOADER_TYPE_APACHE
  #if AP_SERVER_MAJORVERSION_NUMBER != 1
-@@ -917,7 +976,7 @@
+@@ -917,7 +985,7 @@
      }
  
      Response::set_expires(r, apr_time_now() +  apr_time_from_sec(VIW_EXPIRES));
@@ -1419,7 +2118,7 @@
  
  #if defined(USE_GZIP) && defined(UPLOADER_TYPE_APACHE)
      if (uitem->is_gzipped()) {
-@@ -1033,6 +1092,7 @@
+@@ -1033,6 +1101,7 @@
  
              content_array = parser.parse(Response::get_content_type(r),
                                           Response::get_content_size(r));
@@ -1427,7 +2126,7 @@
  
              download_pass = get_download_password<typename Response::Reader>
                  (r->pool, content_array);
-@@ -1046,9 +1106,13 @@
+@@ -1046,9 +1115,13 @@
  
          // DL pass のチェック
          if (!is_admin_mode) {
@@ -1444,7 +2143,19 @@
                  if (strlen(download_pass) != 0) {
                      THROW(MESSAGE_DOWNLOAD_PASS_MISMATCH);
                  }
-@@ -1124,6 +1188,7 @@
+@@ -1069,10 +1142,9 @@
+         }
+ 
+         item_file = config->get_item_manager()
+-            ->get_item_file(r->pool, item_id,
++            ->get_item_file(r->pool, uitem,
+                             Response::Writer::is_sendfile_enabled(r));
+ 
+-        config->get_item_manager()->update_atime(item_id);
+ 
+         if (is_view_mode) {
+             // 表示
+@@ -1124,6 +1196,7 @@
  
          content_array = parser.parse(Response::get_content_type(r),
                                       Response::get_content_size(r));
@@ -1452,7 +2163,7 @@
  
          get_remove_param<typename Response::Reader>
              (r->pool, content_array, &item_id, &remove_pass);
-@@ -1131,12 +1196,15 @@
+@@ -1131,12 +1204,15 @@
          uitem = config->get_item_manager()->get_item(r->pool, item_id);
  
          if (!is_admin_mode) {
@@ -1470,7 +2181,7 @@
                  THROW(MESSAGE_REMOVE_PASS_MISMATCH);
              }
          }
-@@ -1228,12 +1296,15 @@
+@@ -1228,12 +1304,15 @@
      apr_size_t page_no;
      apr_size_t page_count;
  
@@ -1491,7 +2202,7 @@
  
      // コマンド
      admin_arg = arg;
-@@ -1269,6 +1340,7 @@
+@@ -1269,6 +1348,7 @@
          TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
  
          var_creator.create(BASE_URL_VAR_NAME, config->base_url);
@@ -1499,7 +2210,7 @@
  
          var_creator.create
              (ITEM_LIST_VAR_NAME,
-@@ -1303,6 +1375,22 @@
+@@ -1303,6 +1383,22 @@
  {
      const char *command;
      const char *request_uri;
@@ -2038,13 +2749,79 @@
 +};
 +#endif
 --- /dev/null
++++ b/include/HtmlSafety.h
+@@ -0,0 +1,21 @@
++// SPDX-License-Identifier: Zlib
++#ifndef UPLOADER_HTML_SAFETY_H
++#define UPLOADER_HTML_SAFETY_H
++#include <string>
++namespace HtmlSafety {
++inline std::string escape(const char *input) {
++    std::string out;
++    for (; *input; ++input) {
++        switch (*input) {
++        case '&': out += "&amp;"; break;
++        case '<': out += "&lt;"; break;
++        case '>': out += "&gt;"; break;
++        case '"': out += "&quot;"; break;
++        case 39: out += "&#39;"; break;
++        default: out += *input;
++        }
++    }
++    return out;
++}
++}
++#endif
+--- /dev/null
++++ b/include/MetadataSafety.h
+@@ -0,0 +1,38 @@
++// SPDX-License-Identifier: Zlib
++#ifndef UPLOADER_METADATA_SAFETY_H
++#define UPLOADER_METADATA_SAFETY_H
++#include <cstring>
++#include <cstddef>
++namespace MetadataSafety {
++template<size_t N> bool terminated(const char (&s)[N]) { return std::memchr(s, 0, N) != NULL; }
++inline bool path_component(const char *s) {
++    if (!*s || !std::strcmp(s,".") || !std::strcmp(s,"..")) return false;
++    for (; *s; ++s) {
++        unsigned char c = static_cast<unsigned char>(*s);
++        if (c < 32 || c == 127 || std::strchr("/\\<>\"'&", c)) return false;
++    }
++    return true;
++}
++template<class H> bool same_identity(const H& a,const H& b) {
++    return a.id==b.id && a.index==b.index && a.mtime==b.mtime && a.file_size==b.file_size &&
++        std::strcmp(a.file_digest,b.file_digest)==0 && std::strcmp(a.download_pass,b.download_pass)==0 &&
++        std::strcmp(a.remove_pass,b.remove_pass)==0;
++}
++template<class H> bool valid(const H& h) {
++#define TERMINATED(f) if (!terminated(h.f)) return false
++    TERMINATED(identifier); TERMINATED(version); TERMINATED(date); TERMINATED(ip_address);
++    TERMINATED(file_name); TERMINATED(file_mime); TERMINATED(file_ext); TERMINATED(file_digest);
++    TERMINATED(remove_pass); TERMINATED(download_pass); TERMINATED(comment);
++#undef TERMINATED
++    if ((reinterpret_cast<const unsigned char *>(&h.flags)[0] & ~3U) != 0) return false;
++    if (!path_component(h.file_name) || !path_component(h.file_ext) ||
++        std::strpbrk(h.file_ext,".") || std::strpbrk(h.comment,"<>") ||
++        std::strpbrk(h.date,"<>\"'&") || std::strpbrk(h.ip_address,"<>\"'&") ||
++        std::strpbrk(h.file_mime,"<>\"'&\r\n")) return false;
++    if (std::strlen(h.file_digest) != 32) return false;
++    for (const char *p=h.file_digest;*p;++p)
++        if (!((*p>='0'&&*p<='9')||(*p>='a'&&*p<='f')||(*p>='A'&&*p<='F'))) return false;
++    return true;
++}
++}
++#endif
+--- /dev/null
 +++ b/util/password_tool.cpp
-@@ -0,0 +1,93 @@
+@@ -0,0 +1,95 @@
 +// SPDX-License-Identifier: Zlib
 +// Native ABI converter. This tool never edits its input file.
 +#include "Environment.h"
 +#include "UploadItem.h"
 +#include "PasswordHash.h"
++#include "MetadataSafety.h"
 +#include <fstream>
 +#include <iostream>
 +#include <vector>
@@ -2095,6 +2872,7 @@
 +        UploadItem::header_ver2x_t old;memcpy(&old,data.data(),sizeof(old));validate_fields(old);
 +        if(migrate){h=convert(old);h.atime=old.mtime;}else {h.id=old.id;}
 +    } else throw "Unsupported metadata version";
++    if(migrate && !MetadataSafety::valid(h)) throw "Unsafe metadata strings or path components";
 +    return h;
 +}
 +static void write_file(const char *path,const void *data,size_t size) {
@@ -2276,7 +3054,7 @@
 +if __name__=='__main__':main()
 --- /dev/null
 +++ b/docs/SECURITY-MIGRATION-ja.md
-@@ -0,0 +1,136 @@
+@@ -0,0 +1,151 @@
 +# パスワード保存形式4への安全な移行とCSRF対策
 +
 +対象: このForkのFreeBSD / Apache 2.4版。既存の稼働データへ自動適用する機能ではありません。
@@ -2284,7 +3062,7 @@
 +## 変更内容
 +
 +- 現用メタデータのパスワードは、OpenSSLのPBKDF2-HMAC-SHA256、600,000回、ランダム16バイトsalt、32バイト出力で保存します。saltと回数を含む文字列を128バイトの欄に保存します。
-+- 保存形式は`4.0.0`です。プログラムの系統はmod_uploader 3.2.0の改修版で、Portのリビジョンは4です。
++- 保存形式は`4.0.0`です。プログラムの系統はmod_uploader 3.2.0の改修版で、Portのリビジョンは5です。
 +- 旧形式2/3の16バイト平文欄は、新サーバーでは読み込まず起動時に移行を要求します。無断の自動書換え・平文へのフォールバックはありません。
 +- 入力パスワードの上限は127バイトです。文字コードの変換や正規化をせず、従来と同じ入力バイト列をハッシュ化します。既存パスワードの再設定は不要です。
 +- 暗号化ではなく検証用ハッシュです。旧版へ戻すにはバックアップを戻してください。
@@ -2413,9 +3191,24 @@
 +## ロック解除エラー
 +
 +`Locker`のデストラクタは`noexcept`とし、APRのロック解除に失敗した場合は標準エラー（Apache起動構成によりErrorLog）へ状態コードを記録します。例外処理中も別の例外を投げません。失敗時は「ロック中」のフラグを維持します。OS/APR側のロック障害そのものを回復する機能ではないため、ログに出た場合は原因調査と必要に応じたサービスの復旧が必要です。
++
++
++## Portリビジョン5の監査修正
++
++保存形式4は継続し、移行済みデータの再ハッシュは不要です。投稿の検証・文字コード変換・ハッシュ化を古いファイルの削除前に行い、一覧の容量調整と追加を単一の排他区間にまとめました。一覧満杯・不正添字・容量計算の桁あふれを拒否します。設定を下げた結果、保存件数が一覧容量を超えている場合も起動を拒否します。元ファイルは自動削除せず、設定の見直しを要求します。
++
++multipartのテキスト中のNUL、重複フィールド、不正な文字コードは拒否します。バイナリファイルのNULはそのまま許可します。保存メタデータの未終端文字列、不正なパス要素・表示文字列・ID不一致も起動前に拒否します。不正な旧データがある場合は、バックアップを保持して内容を調べてください。
++
++管理操作に加えてメール投稿もApache認証を必須にし、Portの設定例では閉鎖します。メール連携を使う場合は専用のAuthType/Require valid-user設定と既存のCSRFヘッダートークンが必要です。公開プロキシでも管理・メール経路を遮断してください。元ファイルにダウンロードパスワードがある場合、公開サムネイルの直接取得は403とします。
++
++共有メモリのロックがタイムアウトしても、他の実行中処理からロックを奪いません。要求を失敗させ、原因調査とApacheの完全再起動による復旧を必要とします。停止したワーカーの共有ロックを自動回復する方式ではありません。ダウンロード上限超過時の5秒待機を除去し、HTTP応答を速やかに返します。ペイロード欠落時は未初期化ハンドルを使用せず、エラーとして処理します。
++
++THUMBNAILは引き続き既定で無効です。ImageMagickによる任意形式の解析・delegate・資源上限まで本ソースだけで安全を保証できません。一般公開では無効のまま運用するか、別途ImageMagickの許可形式・delegate・メモリ/ディスク/時間のpolicyと隔離を検証してください。
++
++認証したファイルと実際に取得・削除するファイルが同じ世代かを、排他区間で再確認します。並行投稿時のID重複、共有メモリの配置・更新時の競合も修正しました。設定用APRプールをApacheの設定プール配下に置き、モジュール解放後の後処理呼出しによる終了時クラッシュを防ぎます。更新時はApacheを完全停止してから起動してください。
 --- /dev/null
 +++ b/MODIFICATIONS
-@@ -0,0 +1,27 @@
+@@ -0,0 +1,30 @@
 +mod_uploader 3.2.0 - altered FreeBSD / Apache 2.4 version
 +
 +Original software: Tetsuya Kimata.
@@ -2443,9 +3236,12 @@
 +See docs/SECURITY-MIGRATION-ja.md before replacing an existing installation.
 +
 +Port revision 4: require Apache-authenticated administration; bound per-IP password attempts and cross-process concurrent hashing; make Locker cleanup non-throwing with error reporting. See SECURITY-MIGRATION-ja.md.
++
++Port revision 5: audit fixes validate before eviction, serialize capacity changes, reject malformed text/metadata and unsafe lock takeover, close mail/thumbnail authorization gaps, handle missing payloads and cleanup failures, and escape error/redirect output.
++The audit also fixes generation checks, concurrent identifiers, shared-state alignment and synchronization, and configuration-pool lifetime across Apache DSO unloading.
 --- /dev/null
 +++ b/README.md
-@@ -0,0 +1,51 @@
+@@ -0,0 +1,53 @@
 +# mod_uploader 3.2.0: altered FreeBSD / Apache 2.4 version
 +
 +Original software by Tetsuya Kimata: https://github.com/kimata/mod_uploader
@@ -2458,7 +3254,9 @@
 +The user reported successful operation on their FreeBSD / Apache setup
 +following the build correction. The Port has now built and passed stage, check-plist, stage-qa and package
 +on FreeBSD 15.1 amd64 / Clang 19.1.7 / Apache 2.4.69 (THUMBNAIL off).
-+Package installation, poudriere, concurrency and full HTTP tests remain unverified.
++Isolated real Apache HTTP/HTTPS, concurrent requests, migration and rollback tests
++also pass; their coverage and limits are recorded in docs/validation.
++Production package installation, poudriere and exhaustive HTTP behavior remain unverified.
 +
 +## Build
 +

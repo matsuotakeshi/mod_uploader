@@ -28,6 +28,7 @@
 #include "Environment.h"
 
 #include <iomanip>
+#include <cstdio>
 
 #include "apr_strings.h"
 
@@ -145,15 +146,14 @@ DownloadSession::DownloadSession(DownloadFlowController *flow_controller,
 {
     is_valid_ = flow_controller_->add_session(sockaddr_);
 
-    if (!is_valid_) {
-        apr_sleep(apr_time_from_sec(DOWNLOAD_BUSY_SLEEP_SEC));
-    }
+
 }
 
 DownloadSession::~DownloadSession()
 {
     if (is_valid_) {
-        flow_controller_->remove_session(sockaddr_);
+        try { flow_controller_->remove_session(sockaddr_); }
+        catch (...) { std::fputs("mod_uploader: download session cleanup failed\n", stderr); }
     }
 }
 
@@ -181,6 +181,7 @@ bool DownloadFlowController::downloader_list_add(apr_sockaddr_t *sockaddr)
 
     strncpy(downloader_list_[i].paddress, get_paddress(sockaddr),
             MAX_PADDRESS_SIZE - 1);
+    downloader_list_[i].paddress[MAX_PADDRESS_SIZE - 1] = '\0';
     downloader_list_[i].session_count = 1;
     downloader_count_++;
 

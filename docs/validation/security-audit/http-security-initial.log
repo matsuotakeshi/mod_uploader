@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "<test-dir>/src/tests/security_http_test.py", line 170, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "<test-dir>/src/tests/security_http_test.py", line 126, in main
+    assert a.request('/up/remove/',remove+[('csrf_token',a.token),('csrf_token',a.token)])[0]==403;checks+=1
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

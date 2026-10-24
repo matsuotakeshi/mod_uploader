@@ -25,3 +25,6 @@ storage exclusion, and expiring session-bound signed CSRF tokens.
 See docs/SECURITY-MIGRATION-ja.md before replacing an existing installation.
 
 Port revision 4: require Apache-authenticated administration; bound per-IP password attempts and cross-process concurrent hashing; make Locker cleanup non-throwing with error reporting. See SECURITY-MIGRATION-ja.md.
+
+Port revision 5: audit fixes validate before eviction, serialize capacity changes, reject malformed text/metadata and unsafe lock takeover, close mail/thumbnail authorization gaps, handle missing payloads and cleanup failures, and escape error/redirect output.
+The audit also fixes generation checks, concurrent identifiers, shared-state alignment and synchronization, and configuration-pool lifetime across Apache DSO unloading.

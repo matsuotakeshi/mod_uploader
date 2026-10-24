@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "<test-dir>/src/tests/audit_http_test.py", line 72, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "<test-dir>/src/tests/audit_http_test.py", line 52, in main
+    record.write_bytes(data);server.start(success=False);server.stop();checks+=1
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<test-dir>/src/tests/security_http_test.py", line 49, in start
+    if not success:raise AssertionError('Unsafe legacy/incomplete metadata unexpectedly started')
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Unsafe legacy/incomplete metadata unexpectedly started

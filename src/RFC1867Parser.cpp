@@ -134,6 +134,7 @@ apr_array_header_t *RFC1867Parser<R, W>::parse(const char *content_type,
         }
 
         get_content(&content);
+        if (M::get_content(content_array, content.name) != NULL) THROW(MESSAGE_RFC1867_FORMAT_INVALID);
         *AS_CONTENT(apr_array_push(content_array)) = content;
     }
 

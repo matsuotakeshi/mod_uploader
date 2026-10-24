@@ -10,7 +10,9 @@ See [MODIFICATIONS](MODIFICATIONS) for attribution and modification notice.
 The user reported successful operation on their FreeBSD / Apache setup
 following the build correction. The Port has now built and passed stage, check-plist, stage-qa and package
 on FreeBSD 15.1 amd64 / Clang 19.1.7 / Apache 2.4.69 (THUMBNAIL off).
-Package installation, poudriere, concurrency and full HTTP tests remain unverified.
+Isolated real Apache HTTP/HTTPS, concurrent requests, migration and rollback tests
+also pass; their coverage and limits are recorded in docs/validation.
+Production package installation, poudriere and exhaustive HTTP behavior remain unverified.
 
 ## Build
 

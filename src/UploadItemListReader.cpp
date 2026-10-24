@@ -142,7 +142,9 @@ bool UploadItemListReader::is_subdir_name_valid(const char *subdir_name)
 {
     apr_size_t i;
 
-    for (i = 0; isxdigit(static_cast<unsigned char>(subdir_name[i])) != 0; i++) ;
+    if (strlen(subdir_name) != 2) return false;
+    for (i = 0; (subdir_name[i]>='0' && subdir_name[i]<='9') ||
+                (subdir_name[i]>='a' && subdir_name[i]<='f'); i++) ;
 
     return (subdir_name[i] == '\0');
 }
@@ -151,6 +153,7 @@ bool UploadItemListReader::is_file_name_valid(const char *file_name)
 {
     apr_size_t i;
 
+    if (!*file_name || (file_name[0]=='0' && file_name[1]!=0)) return false;
     for (i = 0; isdigit(static_cast<unsigned char>(file_name[i])) != 0; i++) ;
 
     return (file_name[i] == '\0');

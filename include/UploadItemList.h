@@ -80,10 +80,12 @@ public:
      */
     const UploadItem::header_t *get_by_index(apr_size_t i) const
     {
+        if (i >= size()) THROW(MESSAGE_LIST_ID_INVALID);
         return get_header_list() + i;
     };
     UploadItem::header_t *get_by_index(apr_size_t i)
     {
+        if (i >= size()) THROW(MESSAGE_LIST_ID_INVALID);
         return get_header_list() + i;
     };
     apr_size_t size() const
@@ -94,9 +96,11 @@ public:
     {
         return total_file_size_;
     };
+    bool can_fit(apr_uint64_t file_size) const
+    { return max_list_size_ != 0 && file_size <= max_file_size_; }
     bool is_full(apr_uint64_t file_size) const
     {
-        return ((total_file_size_ + file_size) > max_file_size_) ||
+        return !can_fit(file_size) || total_file_size_ > max_file_size_ - file_size ||
             (size() >= max_list_size_);
     };
     /**

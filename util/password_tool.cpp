@@ -3,6 +3,7 @@
 #include "Environment.h"
 #include "UploadItem.h"
 #include "PasswordHash.h"
+#include "MetadataSafety.h"
 #include <fstream>
 #include <iostream>
 #include <vector>
@@ -53,6 +54,7 @@ static Header load(const std::vector<char>& data,bool migrate) {
         UploadItem::header_ver2x_t old;memcpy(&old,data.data(),sizeof(old));validate_fields(old);
         if(migrate){h=convert(old);h.atime=old.mtime;}else {h.id=old.id;}
     } else throw "Unsupported metadata version";
+    if(migrate && !MetadataSafety::valid(h)) throw "Unsafe metadata strings or path components";
     return h;
 }
 static void write_file(const char *path,const void *data,size_t size) {

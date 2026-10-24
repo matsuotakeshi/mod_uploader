@@ -1,0 +1,35 @@
+ap24-mod_uploader-3.2.0_5
+Name           : ap24-mod_uploader
+Version        : 3.2.0_5
+Origin         : www/mod_uploader
+Architecture   : FreeBSD:15:amd64
+Prefix         : /usr/local
+Categories     : www
+Licenses       : ZLIB
+Maintainer     : takeshi@ysni.org
+WWW            : https://github.com/matsuotakeshi/mod_uploader
+Comment        : Apache file uploader with FreeBSD compatibility and security patches
+Options        :
+	THUMBNAIL      : off
+Shared Libs required:
+	libapr-1.so.0
+	libc++.so.1
+	libc.so.7
+	libcrypt.so.5
+	libcrypto.so.35
+	libcxxrt.so.1
+	libgcc_s.so.1
+	libm.so.5
+	libthr.so.3
+Annotations    :
+	FreeBSD_version: 1501000
+Flat size      : 481KiB
+Description    :
+mod_uploader is an Apache C++ file uploader with Japanese and English
+screens, upload progress, download passwords, deletion, RSS, and optional
+thumbnails. This altered version targets FreeBSD and Apache 2.4, with
+versioned password hashes, an offline backup-first migration tool, and
+session-bound signed CSRF tokens.
+
+See the fork's migration report for tested configurations, rollback steps
+and remaining deployment/security limitations.

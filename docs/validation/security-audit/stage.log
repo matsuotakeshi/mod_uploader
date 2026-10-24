@@ -1,0 +1,634 @@
+===>  License ZLIB accepted by the user
+===>   ap24-mod_uploader-3.2.0_5 depends on file: /usr/local/sbin/pkg - found
+===> Fetching all distfiles required by ap24-mod_uploader-3.2.0_5 for building
+===>  Extracting for ap24-mod_uploader-3.2.0_5
+=> SHA256 Checksum OK for kimata-mod_uploader-3.2.0-31632a29138b18b7adbf533416a0ec660f1b07ac_GH0.tar.gz.
+===>  Patching for ap24-mod_uploader-3.2.0_5
+/usr/local/bin/perl -pi -e 's/\r\n/\n/g'  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/GNUmakefile.in  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/acinclude.m4  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/conf/en/apache.conf.in  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/configure  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/configure.ac  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/include/ApacheResponse.h  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/include/FlowController.h  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/include/Locker.h  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/include/MultipartMessageParser.h.in  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/include/MultipartMessageParserBuffer.h  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/include/ReadLocker.h  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/include/UploadItem.h  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/include/UploadItemList.h  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/include/UploadItemManager.h  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/include/WriteLocker.h  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/include/uploader_util.h  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/ApacheRequestReader.cpp  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/CGIConfigReader.cpp  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/CharCodeConverter.cpp  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/ConfigReader.cpp  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/DirectoryCleaner.cpp  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/DownloadFlowController.cpp  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/GNUmakefile.dep.in  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/GNUmakefile.in  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/ImageFile.cpp  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/MultipartMessageParser.cpp  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/MultipartMessageParserBuffer.cpp  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/PostDataChecker.cpp  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/PostFlowController.cpp  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/RFC1867Parser.cpp  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/RFC2822Parser.cpp  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/StandConfigReader.cpp  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/TemplateLexer.cpp  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/TemplateParser.cpp  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/UploadItem.cpp  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/UploadItemList.cpp  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/UploadItemListReader.cpp  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/UploadItemManager.cpp  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/UploadItemReader.cpp  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/UploaderConfig.cpp  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/UploaderTemplate.cpp  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/mod_uploader.cpp  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/uploader_handler.cpp  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/tmpl/admin.htm.in  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/tmpl/download.htm.in  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/tmpl/en/admin.htm.in  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/tmpl/en/download.htm.in  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/tmpl/en/index.htm.in  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/tmpl/en/info.htm.in  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/tmpl/index.htm.in  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/tmpl/index_swf.htm.in  <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/tmpl/info.htm.in
+===>  Applying FreeBSD patches for ap24-mod_uploader-3.2.0_5 from <test-dir>/src/ports/www/mod_uploader/files
+/usr/bin/sed -i.bak -e '1s|.*|#!/usr/local/bin/python3.11|' <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/util/migrate_passwords.py
+===>   ap24-mod_uploader-3.2.0_5 depends on executable: libtool - found
+===>   ap24-mod_uploader-3.2.0_5 depends on file: /usr/local/sbin/apxs - found
+===>   ap24-mod_uploader-3.2.0_5 depends on package: gmake>=4.4.1 - found
+===>   ap24-mod_uploader-3.2.0_5 depends on package: libiconv>=1.14_11 - found
+===>   ap24-mod_uploader-3.2.0_5 depends on package: perl5>=5.42.r<5.43 - found
+===>   ap24-mod_uploader-3.2.0_5 depends on shared library: libapr-1.so - found (/usr/local/lib/libapr-1.so)
+===>  Configuring for ap24-mod_uploader-3.2.0_5
+configure: loading site script /usr/ports/Templates/config.site
+checking build system type... amd64-portbld-freebsd15.1
+checking host system type... amd64-portbld-freebsd15.1
+checking target system type... amd64-portbld-freebsd15.1
+checking for gcc... cc
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... 
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether cc accepts -g... yes
+checking for cc option to accept ISO C89... none needed
+checking how to run the C preprocessor... cpp
+checking for gcc... (cached) cc
+checking whether we are using the GNU C compiler... (cached) yes
+checking whether cc accepts -g... (cached) yes
+checking for cc option to accept ISO C89... (cached) none needed
+checking whether we are using the GNU C++ compiler... yes
+checking whether c++ accepts -g... yes
+checking for inline... inline
+checking for an ANSI C-conforming const... yes
+checking for working volatile... yes
+checking how to run the C++ preprocessor... c++ -E
+checking for grep that handles long lines and -e... (cached) /usr/bin/grep
+checking for egrep... (cached) /usr/bin/egrep
+checking for ANSI C header files... (cached) yes
+checking for sys/types.h... (cached) yes
+checking for sys/stat.h... (cached) yes
+checking for stdlib.h... (cached) yes
+checking for string.h... (cached) yes
+checking for memory.h... (cached) yes
+checking for strings.h... (cached) yes
+checking for inttypes.h... (cached) yes
+checking for stdint.h... (cached) yes
+checking for unistd.h... (cached) yes
+checking for size_t... (cached) yes
+checking for uint32_t... (cached) yes
+checking for uint16_t... (cached) yes
+checking for uint8_t... (cached) yes
+checking for ANSI C header files... (cached) yes
+checking for whether to use GCC Atomic Builtins... no
+checking for CPU type... no
+checking for ctype.h... (cached) yes
+checking for fcntl.h... (cached) yes
+checking iconv.h usability... yes
+checking iconv.h presence... yes
+checking for iconv.h... yes
+checking for limits.h... (cached) yes
+checking setjmp.h usability... yes
+checking setjmp.h presence... yes
+checking for setjmp.h... yes
+checking for signal.h... (cached) yes
+checking for stdlib.h... (cached) yes
+checking for string.h... (cached) yes
+checking for sys/mman.h... (cached) yes
+checking for sys/mman.h... (cached) yes
+checking for sys/types.h... (cached) yes
+checking for sys/wait.h... (cached) yes
+checking for unistd.h... (cached) yes
+checking for utime.h... (cached) yes
+checking for sched.h... (cached) yes
+checking for fork... (cached) yes
+checking for getpagesize... (cached) yes
+checking for memmem... yes
+checking for strndup... (cached) yes
+checking for wait... (cached) yes
+checking for madvise... yes
+checking for mprotect... (cached) yes
+checking for main in -liconv... no
+checking for type of iconv 2nd argument... char *
+checking for isalpha... yes
+checking for isalnum... yes
+checking for isdigit... yes
+checking for isxdigit... yes
+checking for malloc... (cached) yes
+checking for realloc... yes
+checking for memchr... (cached) yes
+checking for memcpy... (cached) yes
+checking for memmove... (cached) yes
+checking for memset... (cached) yes
+checking for strcpy... yes
+checking for strlen... (cached) yes
+checking for strcmp... yes
+checking for strncmp... (cached) yes
+checking for strstr... (cached) yes
+checking for apache2ctl... no
+checking for apachectl... /usr/local/sbin/apachectl
+checking target Apache version... 2.x
+checking for Apache version... ok
+checking for DSO enabled... ok
+checking for grep... (cached) /usr/bin/grep
+checking for sed... (cached) /usr/bin/sed
+checking for ruby... ruby
+checking for rst2html... rst2html
+checking for doxygen... doxygen
+checking for dot... dot
+checking for ps2pdf... /usr/local/bin/ps2pdf
+checking for svn... svn
+checking for find... /usr/bin/find
+checking for cat... /bin/cat
+checking for tar... /usr/bin/tar
+checking for tee... /usr/bin/tee
+checking for nkf... nkf
+checking for grep... (cached) /usr/bin/grep
+checking for wc... /usr/bin/wc
+checking for ipcs... /usr/bin/ipcs
+checking for ipcrm... /usr/bin/ipcrm
+checking for awk... /usr/bin/awk
+checking for diff... /usr/bin/diff
+checking for env... /usr/bin/env
+checking for dot... (cached) dot
+checking for xargs... /usr/bin/xargs
+checking for gdb... gdb
+checking for valgrind... valgrind
+checking for lsb_release... lsb_release
+checking for whether to accept empty comment... no
+checking for whether to accept empty password... no
+checking for whether to remove files based on popularity... no
+checking for whether to enable making thumbnail... no
+checking for whether to use numbered file name... no
+checking for whether to omit dynamic template checking... no
+checking for write method... BasicFileWriter
+checking for whether to use use Content-Encoding: gzip... no
+checking for debugging... off
+configure: creating ./config.status
+config.status: creating conf/apache.conf
+config.status: creating conf/en/apache.conf
+config.status: creating conf/cgi.apache.conf
+config.status: creating conf/cgi.conf
+config.status: creating conf/stand.conf
+config.status: creating test/conf/sample.conf
+config.status: creating GNUmakefile
+config.status: creating GNUmakefile.apache
+config.status: creating GNUmakefile.dist
+config.status: creating src/GNUmakefile.dep
+config.status: creating src/GNUmakefile.arg
+config.status: creating src/GNUmakefile.tst
+config.status: creating src/GNUmakefile.cln
+config.status: creating src/GNUmakefile
+config.status: creating src/GNUmakefile.win32
+config.status: creating include/MultipartMessageParser.h
+config.status: creating include/RFC1867Parser.h
+config.status: creating include/Base64FileWriter.h
+config.status: creating include/ZipFileWriter.h
+config.status: creating src/ZipFileWriter.cpp
+config.status: creating doc/GNUmakefile
+config.status: creating doc/doxygen.conf
+config.status: creating tmpl/index.htm
+config.status: creating tmpl/index_swf.htm
+config.status: creating tmpl/info.htm
+config.status: creating tmpl/progress.htm
+config.status: creating tmpl/download.htm
+config.status: creating tmpl/thumbnail.htm
+config.status: creating tmpl/admin.htm
+config.status: creating tmpl/error.htm
+config.status: creating tmpl/en/index.htm
+config.status: creating tmpl/en/info.htm
+config.status: creating tmpl/en/progress.htm
+config.status: creating tmpl/en/download.htm
+config.status: creating tmpl/en/thumbnail.htm
+config.status: creating tmpl/en/admin.htm
+config.status: creating tmpl/en/error.htm
+config.status: creating util/mod_uploader.rc
+config.status: creating util/UploaderConfigSetup/UploaderConfigSetup.vdproj
+config.status: creating util/UploaderConfig/Properties/AssemblyInfo.cs
+config.status: creating util/mod_uploader.spec
+config.status: creating debian/files
+config.status: creating include/mod_uploader_config.h
+
+Configuration:
+    * Enviorment            :   FreeBSD
+        - apxs              :   /usr/local/sbin/apxs
+        - apachectl         :   /usr/local/sbin/apachectl
+        - apr-config        :   /usr/local/bin/apr-1-config
+
+    * Compiler              :   c++
+        - march             :   
+        - mcpu              :   
+
+    * Libtool               :   /usr/local/bin/libtool
+
+    * Thumbnail             :   off
+
+    * Debug                 :   off
+
+/usr/bin/sed -i.bak -e 's|^SHELL=.*|SHELL=/bin/sh|' <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/GNUmakefile
+===>  Building for ap24-mod_uploader-3.2.0_5
+cd src && /usr/local/bin/gmake -f GNUmakefile
+cd src && /usr/local/bin/gmake -f GNUmakefile password-tool
+gmake[1]: �ǥ��쥯�ȥ� '<test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src' ������ޤ�
+gmake[1]: �ǥ��쥯�ȥ� '<test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src' ������ޤ�
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -L/usr/lib   -Wall    -o password_tool ../util/password_tool.cpp -lcrypto -lm  -L/usr/local/lib -lapr-1 -lcrypt  -lpthread   -L /usr/local/lib
+[0;36mCompiling [1;36mmod_uploader.cpp[0m
+[0;36mCompiling [1;36mUploaderConfig.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o mod_uploader.o mod_uploader.cpp
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o UploaderConfig.o UploaderConfig.cpp
+[0;36mCompiling [1;36mUploadItem.cpp[0m
+[0;36mCompiling [1;36mUploadItemList.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o UploadItem.o UploadItem.cpp
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o UploadItemList.o UploadItemList.cpp
+[0;36mCompiling [1;36mUploadItemListReader.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o UploadItemListReader.o UploadItemListReader.cpp
+[0;36mCompiling [1;36mUploadItemIO.cpp[0m
+[0;36mCompiling [1;36mUploadItemWriter.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o UploadItemIO.o UploadItemIO.cpp
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o UploadItemWriter.o UploadItemWriter.cpp
+mod_uploader.cpp:435:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  435 |     DIRECTIVE_ENTRY(BASE_URL, base_url),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:436:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  436 |     DIRECTIVE_ENTRY(DATA_DIRECTORY, data_dir_path),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:437:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  437 |     DIRECTIVE_ENTRY(FILE_DIRECTORY, file_dir_path),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:438:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  438 |     DIRECTIVE_ENTRY(THUMB_DIRECTORY, thumb_dir_path),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:439:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  439 |     DIRECTIVE_ENTRY(TEMP_DIRECTORY, temp_dir_path),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:441:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  441 |     DIRECTIVE_ENTRY(TOTAL_FILE_SIZE, total_file_size_limit),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:442:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  442 |     DIRECTIVE_ENTRY(TOTAL_FILE_NUMBER, total_file_number_limit),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:443:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  443 |     DIRECTIVE_ENTRY(FILE_SIZE_LIMIT, file_size_limit),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:444:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  444 |     DIRECTIVE_ENTRY(PER_PAGE_ITEM_NUMBER, per_page_item_number),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:446:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  446 |     DIRECTIVE_ENTRY(INDEX_VIEW_TEMPLATE, INDEX_VIEW),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:447:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  447 |     DIRECTIVE_ENTRY(INFO_VIEW_TEMPLATE, INFO_VIEW),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:448:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  448 |     DIRECTIVE_ENTRY(PROGRESS_VIEW_TEMPLATE, PROGRESS_VIEW),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:449:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  449 |     DIRECTIVE_ENTRY(DOWNLOAD_VIEW_TEMPLATE, DOWNLOAD_VIEW),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:450:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  450 |     DIRECTIVE_ENTRY(THUMBNAIL_VIEW_TEMPLATE, THUMBNAIL_VIEW),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:451:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  451 |     DIRECTIVE_ENTRY(ADMIN_VIEW_TEMPLATE, ADMIN_VIEW),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:452:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  452 |     DIRECTIVE_ENTRY(ERROR_VIEW_TEMPLATE, ERROR_VIEW),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:488:1: warning: missing field 'flags' initializer [-Wmissing-field-initializers]
+  488 | };
+      | ^
+In file included from mod_uploader.cpp:65:
+./uploader_handler.cpp:1249:55: warning: instantiation of variable 'UploadItemRss<ApacheResponseWriter>::CONTENT_TYPE' required here, but no definition is available [-Wundefined-var-template]
+ 1249 |         (r, UploadItemRss<typename Response::Writer>::CONTENT_TYPE);
+      |                                                       ^
+./uploader_handler.cpp:1444:16: note: in instantiation of function template specialization 'rss<ApacheResponse>' requested here
+ 1444 |         return rss<Response>(r, config, arg);
+      |                ^
+mod_uploader.cpp:394:16: note: in instantiation of function template specialization 'uploader_command_handler<ApacheResponse>' requested here
+  394 |         return uploader_command_handler<ApacheResponse>(r, config,
+      |                ^
+../include/UploadItemRss.h:51:23: note: forward declaration of template entity is here
+   51 |     static const char CONTENT_TYPE[];
+      |                       ^
+./uploader_handler.cpp:1249:55: note: add an explicit instantiation declaration to suppress this warning if 'UploadItemRss<ApacheResponseWriter>::CONTENT_TYPE' is explicitly instantiated in another translation unit
+ 1249 |         (r, UploadItemRss<typename Response::Writer>::CONTENT_TYPE);
+      |                                                       ^
+[0;36mCompiling [1;36mApacheLogger.cpp[0m
+[0;36mCompiling [1;36mTemporaryFile.cpp[0m
+[0;36mCompiling [1;36mUploadItemReader.cpp[0m
+[0;36mCompiling [1;36mAuxiliary.cpp[0m
+[0;36mCompiling [1;36mUploadItemManager.cpp[0m
+[0;36mCompiling [1;36mSourceInfo.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o Auxiliary.o Auxiliary.cpp
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o ApacheLogger.o ApacheLogger.cpp
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o SourceInfo.o SourceInfo.cpp
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o TemporaryFile.o TemporaryFile.cpp
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o UploadItemManager.o UploadItemManager.cpp
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o UploadItemReader.o UploadItemReader.cpp
+gmake[1]: �ǥ��쥯�ȥ� '<test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src' ����Фޤ�
+[0;36mCompiling [1;36mUploaderTemplate.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o UploaderTemplate.o UploaderTemplate.cpp
+18 warnings generated.
+[0;36mCompiling [1;36mTemplateParser.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o TemplateParser.o TemplateParser.cpp
+[0;36mCompiling [1;36mTemplateLexer.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o TemplateLexer.o TemplateLexer.cpp
+[0;36mCompiling [1;36mTemplateVariableCreator.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o TemplateVariableCreator.o TemplateVariableCreator.cpp
+[0;36mCompiling [1;36mThumbnailList.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o ThumbnailList.o ThumbnailList.cpp
+[0;36mCompiling [1;36mThumbnailIterator.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o ThumbnailIterator.o ThumbnailIterator.cpp
+[0;36mCompiling [1;36mThumbnailVariableCreator.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o ThumbnailVariableCreator.o ThumbnailVariableCreator.cpp
+[0;36mCompiling [1;36mTemplateVariable.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o TemplateVariable.o TemplateVariable.cpp
+[0;36mCompiling [1;36mApacheTemplateExecutor.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o ApacheTemplateExecutor.o ApacheTemplateExecutor.cpp
+[0;36mCompiling [1;36mApacheRFC1867Parser.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o ApacheRFC1867Parser.o ApacheRFC1867Parser.cpp
+[0;36mCompiling [1;36muploader_util.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o uploader_util.o uploader_util.cpp
+[0;36mCompiling [1;36mApacheRequestReader.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o ApacheRequestReader.o ApacheRequestReader.cpp
+[0;36mCompiling [1;36mRequestReader.cpp[0m
+[0;36mCompiling [1;36mMultipartMessageParserBuffer.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o MultipartMessageParserBuffer.o MultipartMessageParserBuffer.cpp
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o RequestReader.o RequestReader.cpp
+[0;36mCompiling [1;36mMultipartMessageParser.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o MultipartMessageParser.o MultipartMessageParser.cpp
+[0;36mCompiling [1;36mDirectoryCleaner.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o DirectoryCleaner.o DirectoryCleaner.cpp
+[0;36mCompiling [1;36mMessageDigest5.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o MessageDigest5.o MessageDigest5.cpp
+[0;36mCompiling [1;36mImageFile.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o ImageFile.o ImageFile.cpp
+[0;36mCompiling [1;36mPostDataChecker.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o PostDataChecker.o PostDataChecker.cpp
+[0;36mCompiling [1;36mPostFlowController.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o PostFlowController.o PostFlowController.cpp
+[0;36mCompiling [1;36mPostProgressList.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o PostProgressList.o PostProgressList.cpp
+ApacheRequestReader.cpp:115:43: warning: cast from 'char *' to 'struct apr_bucket *' increases required alignment from 1 to 8 [-Wcast-align]
+  115 |         if (bucket_ == NULL || bucket_ == APR_BRIGADE_SENTINEL(brigade_)) {
+      |                                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_buckets.h:331:33: note: expanded from macro 'APR_BRIGADE_SENTINEL'
+  331 | #define APR_BRIGADE_SENTINEL(b) APR_RING_SENTINEL(&(b)->list, apr_bucket, link)
+      |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_ring.h:160:5: note: expanded from macro 'APR_RING_SENTINEL'
+  160 |     (struct elem *)((char *)(&(hp)->next) - APR_OFFSETOF(struct elem, link))
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ApacheRequestReader.cpp:118:17: warning: cast from 'char *' to 'struct apr_bucket *' increases required alignment from 1 to 8 [-Wcast-align]
+  118 |             if (APR_BRIGADE_EMPTY(brigade_)) THROW(MESSAGE_POST_READ_FAILED);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_buckets.h:338:30: note: expanded from macro 'APR_BRIGADE_EMPTY'
+  338 | #define APR_BRIGADE_EMPTY(b)    APR_RING_EMPTY(&(b)->list, apr_bucket, link)
+      |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_ring.h:205:30: note: expanded from macro 'APR_RING_EMPTY'
+  205 |     (APR_RING_FIRST((hp)) == APR_RING_SENTINEL((hp), elem, link))
+      |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_ring.h:160:5: note: expanded from macro 'APR_RING_SENTINEL'
+  160 |     (struct elem *)((char *)(&(hp)->next) - APR_OFFSETOF(struct elem, link))
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[0;36mCompiling [1;36mDownloadFlowController.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o DownloadFlowController.o DownloadFlowController.cpp
+2 warnings generated.
+[0;36mCompiling [1;36mUploadItemVariableCreator.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o UploadItemVariableCreator.o UploadItemVariableCreator.cpp
+[0;36mCompiling [1;36mUploadItemIterator.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o UploadItemIterator.o UploadItemIterator.cpp
+[0;36mCompiling [1;36mApacheResponseWriter.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o ApacheResponseWriter.o ApacheResponseWriter.cpp
+[0;36mCompiling [1;36mCharCodeConverter.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o CharCodeConverter.o CharCodeConverter.cpp
+[0;36mCompiling [1;36mApacheUploadItemRss.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o ApacheUploadItemRss.o ApacheUploadItemRss.cpp
+[0;36mCompiling [1;36mApacheRFC2822Parser.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o ApacheRFC2822Parser.o ApacheRFC2822Parser.cpp
+[0;36mCompiling [1;36mFileWriter.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o FileWriter.o FileWriter.cpp
+[0;36mCompiling [1;36mReadWriteLocker.cpp[0m
+c++ -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I/usr/include -DLIBICONV_PLUG -I../include -I /usr/local/include/apache24  -isystem /usr/local/include/apr-1 -isystem /usr/local/include -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing  -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -fPIC -O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing -DLIBICONV_PLUG  -std=c++11 -o ReadWriteLocker.o ReadWriteLocker.cpp
+ApacheResponseWriter.cpp:162:5: warning: cast from 'char *' to 'struct apr_bucket *' increases required alignment from 1 to 8 [-Wcast-align]
+  162 |     APR_BRIGADE_INSERT_TAIL(brigade_, b);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_buckets.h:371:2: note: expanded from macro 'APR_BRIGADE_INSERT_TAIL'
+  371 |         APR_RING_INSERT_TAIL(&(b)->list, ap__b, apr_bucket, link);      \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_ring.h:329:2: note: expanded from macro 'APR_RING_INSERT_TAIL'
+  329 |         APR_RING_SPLICE_TAIL((hp), (nep), (nep), elem, link)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_ring.h:303:31: note: expanded from macro 'APR_RING_SPLICE_TAIL'
+  303 |         APR_RING_NEXT((epN), link) = APR_RING_SENTINEL((hp), elem, link);\
+      |                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_ring.h:160:5: note: expanded from macro 'APR_RING_SENTINEL'
+  160 |     (struct elem *)((char *)(&(hp)->next) - APR_OFFSETOF(struct elem, link))
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ApacheResponseWriter.cpp:201:13: warning: cast from 'char *' to 'struct apr_bucket *' increases required alignment from 1 to 8 [-Wcast-align]
+  201 |             APR_BRIGADE_INSERT_TAIL(brigade, bucket);
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_buckets.h:371:2: note: expanded from macro 'APR_BRIGADE_INSERT_TAIL'
+  371 |         APR_RING_INSERT_TAIL(&(b)->list, ap__b, apr_bucket, link);      \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_ring.h:329:2: note: expanded from macro 'APR_RING_INSERT_TAIL'
+  329 |         APR_RING_SPLICE_TAIL((hp), (nep), (nep), elem, link)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_ring.h:303:31: note: expanded from macro 'APR_RING_SPLICE_TAIL'
+  303 |         APR_RING_NEXT((epN), link) = APR_RING_SENTINEL((hp), elem, link);\
+      |                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_ring.h:160:5: note: expanded from macro 'APR_RING_SENTINEL'
+  160 |     (struct elem *)((char *)(&(hp)->next) - APR_OFFSETOF(struct elem, link))
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ApacheResponseWriter.cpp:218:5: warning: cast from 'char *' to 'struct apr_bucket *' increases required alignment from 1 to 8 [-Wcast-align]
+  218 |     APR_BRIGADE_INSERT_TAIL(brigade, file_bucket);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_buckets.h:371:2: note: expanded from macro 'APR_BRIGADE_INSERT_TAIL'
+  371 |         APR_RING_INSERT_TAIL(&(b)->list, ap__b, apr_bucket, link);      \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_ring.h:329:2: note: expanded from macro 'APR_RING_INSERT_TAIL'
+  329 |         APR_RING_SPLICE_TAIL((hp), (nep), (nep), elem, link)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_ring.h:303:31: note: expanded from macro 'APR_RING_SPLICE_TAIL'
+  303 |         APR_RING_NEXT((epN), link) = APR_RING_SENTINEL((hp), elem, link);\
+      |                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_ring.h:160:5: note: expanded from macro 'APR_RING_SENTINEL'
+  160 |     (struct elem *)((char *)(&(hp)->next) - APR_OFFSETOF(struct elem, link))
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ApacheResponseWriter.cpp:221:5: warning: cast from 'char *' to 'struct apr_bucket *' increases required alignment from 1 to 8 [-Wcast-align]
+  221 |     APR_BRIGADE_INSERT_TAIL(brigade, bucket);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_buckets.h:371:2: note: expanded from macro 'APR_BRIGADE_INSERT_TAIL'
+  371 |         APR_RING_INSERT_TAIL(&(b)->list, ap__b, apr_bucket, link);      \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_ring.h:329:2: note: expanded from macro 'APR_RING_INSERT_TAIL'
+  329 |         APR_RING_SPLICE_TAIL((hp), (nep), (nep), elem, link)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_ring.h:303:31: note: expanded from macro 'APR_RING_SPLICE_TAIL'
+  303 |         APR_RING_NEXT((epN), link) = APR_RING_SENTINEL((hp), elem, link);\
+      |                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_ring.h:160:5: note: expanded from macro 'APR_RING_SENTINEL'
+  160 |     (struct elem *)((char *)(&(hp)->next) - APR_OFFSETOF(struct elem, link))
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+4 warnings generated.
+[1;34mGenerating [1;31mmod_uploader.so[0m
+c++ -fPIC -shared -L/usr/lib   -Wall    -o mod_uploader.so ApacheLogger.o ApacheRFC1867Parser.o ApacheRFC2822Parser.o ApacheRequestReader.o ApacheResponseWriter.o ApacheTemplateExecutor.o ApacheUploadItemRss.o Auxiliary.o CharCodeConverter.o DirectoryCleaner.o DownloadFlowController.o FileWriter.o ImageFile.o MessageDigest5.o MultipartMessageParser.o MultipartMessageParserBuffer.o PostDataChecker.o PostFlowController.o PostProgressList.o ReadWriteLocker.o RequestReader.o SourceInfo.o TemplateLexer.o TemplateParser.o TemplateVariable.o TemplateVariableCreator.o TemporaryFile.o ThumbnailIterator.o ThumbnailList.o ThumbnailVariableCreator.o UploadItem.o UploadItemIO.o UploadItemIterator.o UploadItemList.o UploadItemListReader.o UploadItemManager.o UploadItemReader.o UploadItemVariableCreator.o UploadItemWriter.o UploaderConfig.o UploaderTemplate.o mod_uploader.o uploader_util.o -lcrypto -lm  -L/usr/local/lib -lapr-1 -lcrypt  -lpthread   -L /usr/local/lib
+gmake[1]: �ǥ��쥯�ȥ� '<test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src' ����Фޤ�
+cp -f src/mod_uploader.so ./
+===>  Staging for ap24-mod_uploader-3.2.0_5
+===>   ap24-mod_uploader-3.2.0_5 depends on file: /usr/local/sbin/apxs - found
+===>   ap24-mod_uploader-3.2.0_5 depends on file: /usr/local/bin/python3.11 - found
+===>   Generating temporary packing list
+/bin/mkdir -p <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/stage/usr/local/libexec/apache24
+install  -s -m 0644 <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/mod_uploader.so <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/stage/usr/local/libexec/apache24/
+/bin/mkdir -p <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/stage/usr/local/libexec/mod_uploader
+install  -s -m 555 <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/password_tool <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/stage/usr/local/libexec/mod_uploader/
+install  -m 555 <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/util/migrate_passwords.py <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/stage/usr/local/libexec/mod_uploader/
+/bin/mkdir -p <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/stage/usr/local/etc/mod_uploader <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/stage/usr/local/share/mod_uploader/tmpl/en
+install  -m 0644 <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/COPYING <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/MODIFICATIONS <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/docs/SECURITY-MIGRATION-ja.md <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/stage/usr/local/share/mod_uploader/
+install  -m 0644 <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader.conf <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/stage/usr/local/etc/mod_uploader/mod_uploader.conf.sample
+install  -m 0644 <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/tmpl/*.htm <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/stage/usr/local/share/mod_uploader/tmpl/
+install  -m 0644 <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/tmpl/en/*.htm <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/stage/usr/local/share/mod_uploader/tmpl/en/
+(cd <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac && /bin/sh -c '(/usr/bin/find -Ed $1 $3 | /usr/bin/cpio -dumpl $2 >/dev/null 2>&1) &&  /usr/bin/find -Ed $1 $3 \(   -type d -exec /bin/sh -c '\''cd '\''$2'\'' && chmod 755 "$@"'\'' . {} +  -o -type f -exec /bin/sh -c '\''cd '\''$2'\'' && chmod 0644 "$@"'\'' . {} + \)' COPYTREE_SHARE css <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/stage/usr/local/share/mod_uploader)
+(cd <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac && /bin/sh -c '(/usr/bin/find -Ed $1 $3 | /usr/bin/cpio -dumpl $2 >/dev/null 2>&1) &&  /usr/bin/find -Ed $1 $3 \(   -type d -exec /bin/sh -c '\''cd '\''$2'\'' && chmod 755 "$@"'\'' . {} +  -o -type f -exec /bin/sh -c '\''cd '\''$2'\'' && chmod 0644 "$@"'\'' . {} + \)' COPYTREE_SHARE img <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/stage/usr/local/share/mod_uploader)
+(cd <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac && /bin/sh -c '(/usr/bin/find -Ed $1 $3 | /usr/bin/cpio -dumpl $2 >/dev/null 2>&1) &&  /usr/bin/find -Ed $1 $3 \(   -type d -exec /bin/sh -c '\''cd '\''$2'\'' && chmod 755 "$@"'\'' . {} +  -o -type f -exec /bin/sh -c '\''cd '\''$2'\'' && chmod 0644 "$@"'\'' . {} + \)' COPYTREE_SHARE js <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/stage/usr/local/share/mod_uploader)
+/bin/mkdir -p <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/stage/var/db/mod_uploader
+/bin/mkdir -p <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/stage/var/db/mod_uploader/data
+/bin/mkdir -p <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/stage/var/db/mod_uploader/file
+/bin/mkdir -p <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/stage/var/db/mod_uploader/thumb
+/bin/mkdir -p <test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/stage/var/db/mod_uploader/temp
+====> Compressing man pages (compress-man)

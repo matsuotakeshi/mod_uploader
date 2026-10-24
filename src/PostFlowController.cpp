@@ -132,6 +132,7 @@ void PostFlowController::poster_list_add(apr_sockaddr_t *sockaddr)
 
     strncpy(poster_list_[poster_top_].paddress, get_paddress(sockaddr),
             MAX_PADDRESS_SIZE - 1);
+    poster_list_[poster_top_].paddress[MAX_PADDRESS_SIZE - 1] = '\0';
     poster_list_[poster_top_].time = apr_time_now();
 }
 

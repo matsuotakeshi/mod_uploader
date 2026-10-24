@@ -1,0 +1,2 @@
+audit-http: 20 checks passed (invalid-upload retention, NUL/duplicates/encoding, protected thumbnail, missing payload, corrupt metadata, capacity, concurrency)
+Disposable fixtures retained: <test-dir>/audit-http-msrqiahd

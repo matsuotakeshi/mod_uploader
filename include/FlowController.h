@@ -43,7 +43,7 @@
 class FlowController: public Uncopyable
 {
 protected:
-    static const apr_size_t MAX_ADDRESS_SIZE          = 40;
+    static const apr_size_t MAX_ADDRESS_SIZE          = 64;
     static const apr_size_t MAX_PADDRESS_SIZE         = MAX_ADDRESS_SIZE + 1;
 
     static const char *get_address(apr_sockaddr_t *sockaddr)
@@ -60,18 +60,18 @@ protected:
     {
         const char *address;
         char *paddress;
-        char address_length;
+        apr_size_t address_length;
 
         address = get_address(sockaddr);
-        address_length = static_cast<char>(strlen(address));
+        address_length = strlen(address);
 
-        if (address_length == 0) {
+        if (address_length <= 0 || static_cast<apr_size_t>(address_length) >= MAX_ADDRESS_SIZE) {
             THROW(MESSAGE_BUG_FOUND);
         }
 
         APR_PALLOC(paddress, char *, sockaddr->pool, address_length + 1 + 1);
 
-        paddress[0] = address_length;
+        paddress[0] = static_cast<char>(address_length);
         memcpy(paddress + 1, address, address_length);
         paddress[1 + address_length] = '\0';
 

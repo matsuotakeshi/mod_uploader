@@ -41,6 +41,7 @@
 
 #include "RequestResponseImpl.h"
 #include "PasswordHash.h"
+#include "HtmlSafety.h"
 #include "AuthenticationThrottle.h"
 #if defined(UPLOADER_TYPE_APACHE) && AP_SERVER_MAJORVERSION_NUMBER >= 2
 #include "ApacheSecurity.h"
@@ -177,7 +178,7 @@ static int redirect(typename Response::Handle *r, typename Response::Writer& o,
     o.write("  <meta http-equiv=\"content-type\" "
              "content=\"application/xhtml+xml\" />\n");
     o.write("  <meta http-equiv=\"refresh\" content=\"0;url=");
-    o.write(url);
+    o.write(HtmlSafety::escape(url).c_str());
     o.write("\" />\n");
     o.write("  <title>" PACKAGE_NAME "</title>\n");
     o.write(" </head>\n");
@@ -195,7 +196,7 @@ static int error_without_template(typename Response::Handle *r,
                                   UploaderConfig *config, const char *message)
 {
     o.write("<div class=\"warning\">ERROR: ");
-    o.write(message);
+    o.write(HtmlSafety::escape(message).c_str());
     o.write("</div>\n");
     o.finish();
 
@@ -219,7 +220,7 @@ static int error(typename Response::Handle *r,
 
         var_creator.create(BASE_URL_VAR_NAME, config->base_url);
         var_creator.create("CSRF_TOKEN", csrf_token<Response>(r));
-        var_creator.create(ERROR_MESSAGE_VAR_NAME, message);
+        var_creator.create(ERROR_MESSAGE_VAR_NAME, apr_pstrdup(r->pool, HtmlSafety::escape(message).c_str()));
 
         TemplateExecutor<typename Response::Writer> executor(r->pool, o);
 
@@ -524,6 +525,9 @@ static int thumbnail_view(typename Response::Handle *r, UploaderConfig *config,
         (apr_atoi64(get_word(r->pool, &item_id_str, FILE_EXT_SEPARATOR[0])));
 
     try {
+        // A public thumbnail must not bypass the original file's download password.
+        UploadItem *protected_item = config->get_item_manager()->get_item(r->pool, item_id);
+        if (*protected_item->get_download_pass()) return HTTP_FORBIDDEN;
         const char  *thumb_file_path;
 
         Response::set_content_type(r, get_image_mime(file_name));
@@ -806,6 +810,11 @@ template<class Response>
 static int mail_upload(typename Response::Handle *r, UploaderConfig *config,
                        const char *arg)
 {
+#if defined(UPLOADER_TYPE_APACHE) && AP_SERVER_MAJORVERSION_NUMBER >= 2
+    if (!r->user || !*r->user || !r->ap_auth_type || !*r->ap_auth_type) return HTTP_FORBIDDEN;
+#else
+    return HTTP_FORBIDDEN;
+#endif
     int status;
 
     const char *file_name;
@@ -1133,10 +1142,9 @@ static int download(typename Response::Handle *r, UploaderConfig *config,
         }
 
         item_file = config->get_item_manager()
-            ->get_item_file(r->pool, item_id,
+            ->get_item_file(r->pool, uitem,
                             Response::Writer::is_sendfile_enabled(r));
 
-        config->get_item_manager()->update_atime(item_id);
 
         if (is_view_mode) {
             // 表示

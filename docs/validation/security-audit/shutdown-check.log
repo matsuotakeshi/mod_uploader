@@ -1,0 +1,1 @@
+All final HTTP suites passed with shutdown exit-code assertions. No configuration-finalization failure in final fixture logs. Pre-fix core file is byte-identical and was not updated by final tests.

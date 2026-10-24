@@ -1,6 +1,6 @@
 PORTNAME=	mod_uploader
 PORTVERSION=	3.2.0
-PORTREVISION=	4
+PORTREVISION=	5
 CATEGORIES=	www
 PKGNAMEPREFIX=	${APACHE_PKGNAMEPREFIX}
 
@@ -47,26 +47,38 @@ pre-patch:
 		${WRKSRC}/configure \
 		${WRKSRC}/configure.ac \
 		${WRKSRC}/include/ApacheResponse.h \
+		${WRKSRC}/include/FlowController.h \
 		${WRKSRC}/include/Locker.h \
 		${WRKSRC}/include/MultipartMessageParser.h.in \
 		${WRKSRC}/include/MultipartMessageParserBuffer.h \
+		${WRKSRC}/include/ReadLocker.h \
 		${WRKSRC}/include/UploadItem.h \
+		${WRKSRC}/include/UploadItemList.h \
+		${WRKSRC}/include/UploadItemManager.h \
+		${WRKSRC}/include/WriteLocker.h \
 		${WRKSRC}/include/uploader_util.h \
 		${WRKSRC}/src/ApacheRequestReader.cpp \
 		${WRKSRC}/src/CGIConfigReader.cpp \
+		${WRKSRC}/src/CharCodeConverter.cpp \
 		${WRKSRC}/src/ConfigReader.cpp \
 		${WRKSRC}/src/DirectoryCleaner.cpp \
+		${WRKSRC}/src/DownloadFlowController.cpp \
 		${WRKSRC}/src/GNUmakefile.dep.in \
 		${WRKSRC}/src/GNUmakefile.in \
 		${WRKSRC}/src/ImageFile.cpp \
 		${WRKSRC}/src/MultipartMessageParser.cpp \
 		${WRKSRC}/src/MultipartMessageParserBuffer.cpp \
 		${WRKSRC}/src/PostDataChecker.cpp \
+		${WRKSRC}/src/PostFlowController.cpp \
 		${WRKSRC}/src/RFC1867Parser.cpp \
+		${WRKSRC}/src/RFC2822Parser.cpp \
 		${WRKSRC}/src/StandConfigReader.cpp \
 		${WRKSRC}/src/TemplateLexer.cpp \
 		${WRKSRC}/src/TemplateParser.cpp \
 		${WRKSRC}/src/UploadItem.cpp \
+		${WRKSRC}/src/UploadItemList.cpp \
+		${WRKSRC}/src/UploadItemListReader.cpp \
+		${WRKSRC}/src/UploadItemManager.cpp \
 		${WRKSRC}/src/UploadItemReader.cpp \
 		${WRKSRC}/src/UploaderConfig.cpp \
 		${WRKSRC}/src/UploaderTemplate.cpp \

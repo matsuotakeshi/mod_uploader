@@ -182,7 +182,13 @@ static apr_status_t uploader_finalize_dir_config(void *data)
     UploaderConfig *config;
 
     config = AS_UCONFIG(data);
-    config->finalize();
+    try {
+        config->finalize();
+    } catch (...) {
+        // A C cleanup callback must never propagate a C++ exception through APR.
+        fprintf(stderr, "mod_uploader: configuration finalization failed\n");
+        return APR_EGENERAL;
+    }
 
     return APR_SUCCESS;
 }

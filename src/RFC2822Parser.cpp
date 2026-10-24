@@ -257,6 +257,8 @@ void RFC2822Parser<R, W>::parse_header()
         THROW(MESSAGE_RFC2822_CONTENT_TYPE_INVALID);
     }
 
+    if (!*boundary || strlen(boundary) > 70 || strpbrk(boundary, "\r\n"))
+        THROW(MESSAGE_RFC2822_CONTENT_TYPE_INVALID);
     M::boundary_ = boundary;
     M::boundary_len_ = strlen(M::boundary_);
     M::barrier_len_ = M::boundary_len_ + strlen(M::CR_LF) +

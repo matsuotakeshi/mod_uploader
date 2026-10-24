@@ -1,3 +1,4 @@
+// Altered source: fail closed on timeout; never steal a live lock.
 /******************************************************************************
  * Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
  *
@@ -74,23 +75,7 @@ public:
                 }
             } else if (((try_count++ & TIMEOUT_CHECK_MASK) == 0) &&
                        should_timeout(curr_status)) {
-                // タイムアウトしたら age を増やす
-                new_status = (curr_status & (~READ_COUNT_MASK)) | READ_COUNT_UINIT;
-                new_status += AGE_UINIT;
-                prev_status = apr_atomic_cas(lock, new_status, curr_status);
-                init(lock, new_status
-#ifdef DEBUG_ReadWriteLocker
-                     , mutex
-#endif
-                     );
-                if (prev_status == curr_status) {
-                    log_try_count("ReadLock(TIME OUT)",
-                                  try_count, curr_status, new_status);
-#ifdef DEBUG_ReadWriteLocker
-                    is_process_timeout_ = true;
-#endif
-                    return;
-                }
+                throw "Shared storage lock timed out; restart Apache after investigating the lock owner";
             }
 
             yield();
