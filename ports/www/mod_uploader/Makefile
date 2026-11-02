@@ -1,6 +1,6 @@
 PORTNAME=	mod_uploader
 PORTVERSION=	3.2.0
-PORTREVISION=	5
+PORTREVISION=	6
 CATEGORIES=	www
 PKGNAMEPREFIX=	${APACHE_PKGNAMEPREFIX}
 
@@ -30,7 +30,7 @@ LDFLAGS+=	-L${OPENSSLLIB}
 MAKE_ARGS=	LANG=ja_JP.eucJP
 MAKEFILE=	GNUmakefile
 ALL_TARGET=	apache-module password-tool
-SUB_FILES=	mod_uploader.conf pkg-message
+SUB_FILES=	mod_uploader.conf mod_uploader-root.conf pkg-message
 SUB_LIST=	APACHEMODDIR=${APACHEMODDIR}
 
 OPTIONS_DEFINE=	THUMBNAIL
@@ -88,11 +88,15 @@ pre-patch:
 		${WRKSRC}/tmpl/download.htm.in \
 		${WRKSRC}/tmpl/en/admin.htm.in \
 		${WRKSRC}/tmpl/en/download.htm.in \
+		${WRKSRC}/tmpl/en/error.htm.in \
 		${WRKSRC}/tmpl/en/index.htm.in \
 		${WRKSRC}/tmpl/en/info.htm.in \
+		${WRKSRC}/tmpl/en/thumbnail.htm.in \
+		${WRKSRC}/tmpl/error.htm.in \
 		${WRKSRC}/tmpl/index.htm.in \
 		${WRKSRC}/tmpl/index_swf.htm.in \
-		${WRKSRC}/tmpl/info.htm.in
+		${WRKSRC}/tmpl/info.htm.in \
+		${WRKSRC}/tmpl/thumbnail.htm.in
 
 post-patch:
 	${REINPLACE_CMD} -e '1s|.*|#!${PYTHON_CMD}|' ${WRKSRC}/util/migrate_passwords.py
@@ -107,8 +111,9 @@ do-install:
 	${INSTALL_PROGRAM} ${WRKSRC}/src/password_tool ${STAGEDIR}${PREFIX}/libexec/mod_uploader/
 	${INSTALL_SCRIPT} ${WRKSRC}/util/migrate_passwords.py ${STAGEDIR}${PREFIX}/libexec/mod_uploader/
 	${MKDIR} ${STAGEDIR}${ETCDIR} ${STAGEDIR}${DATADIR}/tmpl/en
-	${INSTALL_DATA} ${WRKSRC}/COPYING ${WRKSRC}/MODIFICATIONS ${WRKSRC}/docs/SECURITY-MIGRATION-ja.md ${STAGEDIR}${DATADIR}/
+	${INSTALL_DATA} ${WRKSRC}/COPYING ${WRKSRC}/MODIFICATIONS ${WRKSRC}/docs/SECURITY-MIGRATION-ja.md ${WRKSRC}/docs/ROOT-DEPLOYMENT-ja.md ${STAGEDIR}${DATADIR}/
 	${INSTALL_DATA} ${WRKDIR}/mod_uploader.conf ${STAGEDIR}${ETCDIR}/mod_uploader.conf.sample
+	${INSTALL_DATA} ${WRKDIR}/mod_uploader-root.conf ${STAGEDIR}${ETCDIR}/mod_uploader-root.conf.sample
 	${INSTALL_DATA} ${WRKSRC}/tmpl/*.htm ${STAGEDIR}${DATADIR}/tmpl/
 	${INSTALL_DATA} ${WRKSRC}/tmpl/en/*.htm ${STAGEDIR}${DATADIR}/tmpl/en/
 .for dir in css img js

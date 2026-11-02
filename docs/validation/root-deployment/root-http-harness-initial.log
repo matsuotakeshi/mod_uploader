@@ -1,0 +1,22 @@
+Traceback (most recent call last):
+  File "<test-dir>/src/tests/root_http_test.py", line 145, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "<test-dir>/src/tests/root_http_test.py", line 143, in main
+    count=sum(exercise(args,*case) for case in cases)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<test-dir>/src/tests/root_http_test.py", line 143, in <genexpr>
+    count=sum(exercise(args,*case) for case in cases)
+              ^^^^^^^^^^^^^^^^^^^^
+  File "<test-dir>/src/tests/root_http_test.py", line 79, in exercise
+    server.start()
+  File "<test-dir>/src/tests/security_http_test.py", line 48, in start
+    raise AssertionError((self.root/'process.log').read_text(errors='replace')+(self.root/'error.log').read_text(errors='replace'))
+                                                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '<test-dir>/root-http-hq7gp4t0/error.log'

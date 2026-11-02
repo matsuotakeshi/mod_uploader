@@ -90,7 +90,7 @@ LIBS        := -lcrypto -lm $(shell @APRCONF@ --link-ld --libs ) \
 ifneq ($(findstring freebsd,@target_os@),)
 # iconv 用
 INCLUDES    += -isystem /usr/local/include
-LIBS        += -L /usr/local/lib
+LIBS        += -L/usr/local/lib
 endif
 
 # gzip 圧縮

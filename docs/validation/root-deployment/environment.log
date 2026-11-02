@@ -1,0 +1,158 @@
+$ date -u
+Mon Nov  2 03:29:30 UTC 2026
+
+$ uname -rms
+FreeBSD 15.1-RELEASE amd64
+
+$ clang --version
+FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)
+Target: x86_64-unknown-freebsd15.1
+Thread model: posix
+InstalledDir: /usr/bin
+
+$ /usr/local/sbin/httpd -v
+Server version: Apache/2.4.69 (FreeBSD)
+Server built:   unknown
+
+$ /usr/bin/openssl version
+OpenSSL 3.5.6 7 Apr 2026 (Library: OpenSSL 3.5.6 7 Apr 2026)
+
+$ python3 --version
+Python 3.12.15
+
+$ pkg info ImageMagick6
+ImageMagick6-6.9.13.50_1,1
+Name           : ImageMagick6
+Version        : 6.9.13.50_1,1
+Installed on   : Sat Oct 24 03:50:42 2026 JST
+Origin         : graphics/ImageMagick6
+Architecture   : FreeBSD:15:amd64
+Prefix         : /usr/local
+Categories     : graphics perl5
+Licenses       : APACHE20
+Maintainer     : desktop@FreeBSD.org
+WWW            : https://legacy.imagemagick.org/
+Comment        : Image processing tools (legacy version)
+Options        :
+	16BIT_PIXEL    : on
+	BZIP2          : on
+	DJVU           : off
+	DOCS           : on
+	FFMPEG         : off
+	FFTW           : on
+	FONTCONFIG     : on
+	FPX            : off
+	FREETYPE       : on
+	GRAPHVIZ       : off
+	GSLIB          : off
+	HDRI           : off
+	HEIF           : on
+	JBIG           : on
+	JPEG           : on
+	JPEG2000       : on
+	LCMS2          : on
+	LQR            : on
+	LZMA           : on
+	MODULES        : on
+	OPENEXR        : off
+	OPENMP         : off
+	PANGO          : off
+	PDF            : on
+	PERL           : on
+	PNG            : on
+	RAQM           : on
+	RAW            : on
+	SVG            : on
+	TESTS          : off
+	THREADS        : on
+	TIFF           : on
+	WEBP           : on
+	WMF            : on
+Shared Libs required:
+	libICE.so.6
+	libSM.so.6
+	libX11.so.6
+	libXext.so.6
+	libXt.so.6
+	libbz2.so.4
+	libc++.so.1
+	libc.so.7
+	libcairo.so.2
+	libcxxrt.so.1
+	libfftw3.so.3
+	libfontconfig.so.1
+	libfreetype.so.6
+	libgcc_s.so.1
+	libgdk_pixbuf-2.0.so.0
+	libgio-2.0.so.0
+	libglib-2.0.so.0
+	libgobject-2.0.so.0
+	libheif.so.1
+	libintl.so.8
+	libjbig.so.2
+	libjpeg.so.8
+	liblcms2.so.2
+	liblcms2_fast_float.so.2
+	liblcms2_threaded.so.2
+	liblqr-1.so.0
+	libltdl.so.7
+	liblzma.so.5
+	libm.so.5
+	libopenjp2.so.7
+	libperl.so.5.42
+	libpng16.so.16
+	libraqm.so.0
+	libraw_r.so.25
+	librsvg-2.so.2
+	libthr.so.3
+	libtiff.so.6
+	libwebp.so.7
+	libwebpdemux.so.2
+	libwebpmux.so.3
+	libwmflite-0.2.so.7
+	libxml2.so.16
+	libz.so.6
+Shared Libs provided:
+	libMagick++-6.so.9
+	libMagickCore-6.so.7
+	libMagickWand-6.so.7
+Annotations    :
+	FreeBSD_version: 1501000
+	build_timestamp: 2026-10-20T02:08:20+0000
+	built_by       : poudriere-git-3.4.8-3-gd92fb7c0
+	cpe            : cpe:2.3:a:imagemagick:imagemagick:6.9.13.50:::::freebsd15:x64:1
+	flavor         : x11
+	port_checkout_unclean: no
+	port_git_hash  : 46cf3d9696491c61d91ecd22db11c7f7c1e62c24
+	ports_top_checkout_unclean: no
+	ports_top_git_hash: cbf8f9f507b4577b81b65df2aa4736b5b1d8a3ae
+	repo_type      : binary
+	repository     : FreeBSD-ports
+Flat size      : 27.5MiB
+Description    :
+ImageMagick is a package for display and interactive manipulation of
+images. The package includes tools for image conversion, annotation,
+compositing, animation, and creating montages. ImageMagick can read and
+write many of the more popular image formats (e.g. JPEG, TIFF, PNM, XPM,
+Photo CD, etc.).
+
+The package can be built _without_ the GUI (X11) support at all -- it
+will not have the display, import, and animate functionality, but remain
+extremely useful for image manipulation.
+
+The optional "display" utility conflicts with the utility of the
+same name from the misc/display port/package.
+
+While ImageMagick 6 is labeled by upstream as "legacy", this means that
+it will only receive bug fixes. New features will only be added in
+ImageMagick 7.
+
+There is currently no plan of stopping support for ImageMagick 6 upstream.
+
+$ /usr/local/bin/convert -version
+Version: ImageMagick 6.9.13-50 (Beta) Q16 amd64 19422 https://legacy.imagemagick.org
+Copyright: (C) 1999 ImageMagick Studio LLC
+License: https://imagemagick.org/license/
+Features: Cipher DPC Modules 
+Delegates (built-in): bzlib cairo fftw fontconfig freetype heic jbig jng jp2 jpeg lcms lqr ltdl lzma png raqm raw rsvg tiff webp wmf x xml zlib
+

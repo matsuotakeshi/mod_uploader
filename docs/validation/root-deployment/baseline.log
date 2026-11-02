@@ -1,0 +1,2 @@
+baseline reproduced: root request renders the environment error instead of the index
+root-http: 1 checks passed across 1 VirtualHost configurations

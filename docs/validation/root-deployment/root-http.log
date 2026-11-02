@@ -1,0 +1,8 @@
+mount='/' trailing=True tls=False thumbnail=False: 119 checks passed; <test-dir>/root-http-i3zsxng1
+mount='/' trailing=False tls=False thumbnail=False: 119 checks passed; <test-dir>/root-http-4c3j6xa7
+mount='/up' trailing=False tls=False thumbnail=False: 121 checks passed; <test-dir>/root-http-pxrq3tai
+mount='/up' trailing=True tls=False thumbnail=False: 121 checks passed; <test-dir>/root-http-jxq8jqjr
+mount='/board/up' trailing=True tls=False thumbnail=False: 121 checks passed; <test-dir>/root-http-gmhlwamm
+mount='/' trailing=True tls=True thumbnail=False: 119 checks passed; <test-dir>/root-http-81bsidpx
+mount='/up' trailing=True tls=True thumbnail=False: 121 checks passed; <test-dir>/root-http-0ce16sin
+root-http: 841 checks passed across 7 VirtualHost configurations

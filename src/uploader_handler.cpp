@@ -37,6 +37,7 @@
 
 #include "uploader_handler.h"
 #include "RequestOrigin.h"
+#include "UrlRouting.h"
 #include "uploader_util.h"
 
 #include "RequestResponseImpl.h"
@@ -219,6 +220,8 @@ static int error(typename Response::Handle *r,
         TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
 
         var_creator.create(BASE_URL_VAR_NAME, config->base_url);
+        var_creator.create("ASSET_BASE_URL", apr_pstrdup(r->pool,
+                           UrlRouting::asset_base(config->base_url).c_str()));
         var_creator.create("CSRF_TOKEN", csrf_token<Response>(r));
         var_creator.create(ERROR_MESSAGE_VAR_NAME, apr_pstrdup(r->pool, HtmlSafety::escape(message).c_str()));
 
@@ -310,6 +313,8 @@ static int index(typename Response::Handle *r, UploaderConfig *config,
         TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
 
         var_creator.create(BASE_URL_VAR_NAME, config->base_url);
+        var_creator.create("ASSET_BASE_URL", apr_pstrdup(r->pool,
+                           UrlRouting::asset_base(config->base_url).c_str()));
         var_creator.create("CSRF_TOKEN", csrf_token<Response>(r));
         var_creator.create(COMMAND_VAR_NAME, INDEX_COMMAND);
 
@@ -391,6 +396,8 @@ static int sort(typename Response::Handle *r, UploaderConfig *config,
         TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
 
         var_creator.create(BASE_URL_VAR_NAME, config->base_url);
+        var_creator.create("ASSET_BASE_URL", apr_pstrdup(r->pool,
+                           UrlRouting::asset_base(config->base_url).c_str()));
         var_creator.create("CSRF_TOKEN", csrf_token<Response>(r));
         var_creator.create
             (COMMAND_VAR_NAME,
@@ -447,6 +454,8 @@ static int info(typename Response::Handle *r, UploaderConfig *config,
         TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
 
         var_creator.create(BASE_URL_VAR_NAME, config->base_url);
+        var_creator.create("ASSET_BASE_URL", apr_pstrdup(r->pool,
+                           UrlRouting::asset_base(config->base_url).c_str()));
         var_creator.create("CSRF_TOKEN", csrf_token<Response>(r));
 
         var_creator.create
@@ -621,6 +630,8 @@ static int thumbnail(typename Response::Handle *r, UploaderConfig *config,
         TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
 
         var_creator.create(BASE_URL_VAR_NAME, config->base_url);
+        var_creator.create("ASSET_BASE_URL", apr_pstrdup(r->pool,
+                           UrlRouting::asset_base(config->base_url).c_str()));
         var_creator.create("CSRF_TOKEN", csrf_token<Response>(r));
 
         var_creator.create
@@ -890,6 +901,8 @@ static int input_pass(typename Response::Handle *r, UploaderConfig *config,
         TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
 
         var_creator.create(BASE_URL_VAR_NAME, config->base_url);
+        var_creator.create("ASSET_BASE_URL", apr_pstrdup(r->pool,
+                           UrlRouting::asset_base(config->base_url).c_str()));
         var_creator.create("CSRF_TOKEN", csrf_token<Response>(r));
 
         var_creator.create
@@ -1348,6 +1361,8 @@ static int admin(typename Response::Handle *r, UploaderConfig *config,
         TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
 
         var_creator.create(BASE_URL_VAR_NAME, config->base_url);
+        var_creator.create("ASSET_BASE_URL", apr_pstrdup(r->pool,
+                           UrlRouting::asset_base(config->base_url).c_str()));
         var_creator.create("CSRF_TOKEN", csrf_token<Response>(r));
 
         var_creator.create
@@ -1385,6 +1400,18 @@ int uploader_command_handler(typename Response::Handle *r, UploaderConfig *confi
     const char *request_uri;
 
 #if defined(UPLOADER_TYPE_APACHE) && AP_SERVER_MAJORVERSION_NUMBER >= 2
+    request_uri = Response::get_request_uri(r);
+    const UrlRouting::Status route = UrlRouting::resolve(config->base_url, request_uri, arg, &arg);
+    if (route == UrlRouting::INVALID) return HTTP_BAD_REQUEST;
+    if (route == UrlRouting::COLLISION)
+        return error<Response>(r, config, MESSAGE_ENVIRONMENT_LOCATION_DIR_EXIST);
+    if (route == UrlRouting::REDIRECT) {
+        Response::set_location(r, apr_pstrcat(r->pool, config->base_url, "/", NULL));
+        return HTTP_TEMPORARY_REDIRECT;
+    }
+#endif
+
+#if defined(UPLOADER_TYPE_APACHE) && AP_SERVER_MAJORVERSION_NUMBER >= 2
     if (Response::is_post_method(r)) {
         const char *site = apr_table_get(r->headers_in, "Sec-Fetch-Site");
         const char *origin = apr_table_get(r->headers_in, "Origin");
@@ -1400,12 +1427,14 @@ int uploader_command_handler(typename Response::Handle *r, UploaderConfig *confi
     if (Response::is_post_method(r)) return HTTP_FORBIDDEN;
 #endif
 
+    if (arg == NULL) return HTTP_BAD_REQUEST;
     if (UNLIKELY(strlen(arg) > HDL_MAX_PATH_INFO_SIZE)) {
         THROW(MESSAGE_HANDLER_PATH_INFO_TOO_LONG);
     }
 
     if (UNLIKELY(*arg == '\0')) {
         request_uri = Response::get_request_uri(r);
+        if (request_uri == NULL || *request_uri == '\0') return HTTP_BAD_REQUEST;
 
         if (UNLIKELY(*(request_uri + strlen(request_uri) - 1) ==
                      ARG_SEPARATE_STR[0])) {
@@ -1418,6 +1447,7 @@ int uploader_command_handler(typename Response::Handle *r, UploaderConfig *confi
 
         return HTTP_TEMPORARY_REDIRECT;
     } else {
+        if (*arg != '/') return HTTP_BAD_REQUEST;
         arg++;
     }
 

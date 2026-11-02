@@ -1,0 +1,42 @@
+Traceback (most recent call last):
+  File "<test-dir>/src/tests/root_http_test.py", line 81, in exercise
+    _,_,body=c.request('/up/')
+             ^^^^^^^^^^^^^^^^^
+  File "<test-dir>/src/tests/root_http_test.py", line 18, in request
+    return super().request(path,fields,h,cookie)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<test-dir>/src/tests/security_http_test.py", line 86, in request
+    c.request(method,path,body=body,headers=h);response=c.getresponse();data=response.read();status=response.status;rh=dict(response.getheaders())
+                                                        ^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/http/client.py", line 1478, in getresponse
+    response.begin()
+  File "/usr/local/lib/python3.12/http/client.py", line 343, in begin
+    version, status, reason = self._read_status()
+                              ^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/http/client.py", line 304, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/socket.py", line 720, in readinto
+    return self._sock.recv_into(b)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [Errno 54] Connection reset by peer
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<test-dir>/src/tests/root_http_test.py", line 145, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "<test-dir>/src/tests/root_http_test.py", line 143, in main
+    count=sum(exercise(args,*case) for case in cases)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<test-dir>/src/tests/root_http_test.py", line 143, in <genexpr>
+    count=sum(exercise(args,*case) for case in cases)
+              ^^^^^^^^^^^^^^^^^^^^
+  File "<test-dir>/src/tests/root_http_test.py", line 136, in exercise
+    finally:server.stop()
+            ^^^^^^^^^^^^^
+  File "<test-dir>/src/tests/security_http_test.py", line 62, in stop
+    assert self.proc.returncode==0, 'Apache shutdown failed: '+str(self.proc.returncode)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Apache shutdown failed: 1

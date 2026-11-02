@@ -28,3 +28,6 @@ Port revision 4: require Apache-authenticated administration; bound per-IP passw
 
 Port revision 5: audit fixes validate before eviction, serialize capacity changes, reject malformed text/metadata and unsafe lock takeover, close mail/thumbnail authorization gaps, handle missing payloads and cleanup failures, and escape error/redirect output.
 The audit also fixes generation checks, concurrent identifiers, shared-state alignment and synchronization, and configuration-pool lifetime across Apache DSO unloading.
+
+Port revision 6: support root and subpath VirtualHost mounts with validated URI routing, normalize BaseUrl once, and provide canonical static URLs and explicit static-handler examples. Password format, authentication, upload limits and thumbnail implementation are retained.
+Correct the FreeBSD -L flag spelling for direct libtool builds, including ImageMagick-enabled configurations.

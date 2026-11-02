@@ -31,6 +31,11 @@ LoadModule uploader_module %%PREFIX%%/%%APACHEMODDIR%%/mod_uploader.so
 <Location /up/mail>
     Require all denied
 </Location>
+# Root mounts also need an explicit static handler; Alias alone does not reset SetHandler.
+<LocationMatch "^/up_(img|css|js|swf)(/|$)">
+    SetHandler default-handler
+    Require all granted
+</LocationMatch>
 Alias /up_css "%%DATADIR%%/css"
 Alias /up_js "%%DATADIR%%/js"
 Alias /up_img "%%DATADIR%%/img"

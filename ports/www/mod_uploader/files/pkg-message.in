@@ -12,6 +12,9 @@ production data or automatically enable the module.
 Use HTTPS with the correct UploaderBaseUrl. Existing templates and scripted
 clients must send the session cookie and CSRF token on POST.
 Keep admin/mail restricted and storage outside DocumentRoot/Alias.
+Root and subpath VirtualHosts are supported. Read
+%%DATADIR%%/ROOT-DEPLOYMENT-ja.md and update the bundled templates together.
+For root mounts, static Alias URLs need an explicit default-handler exception.
 EOM
 }
 ]

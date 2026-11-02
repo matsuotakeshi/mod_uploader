@@ -1,0 +1,7 @@
+<test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/MessageDigest5.cpp:92:9: warning: Value stored to 'read_size' is never read [deadcode.DeadStores]
+   92 |         read_size = 0;
+      |         ^           ~
+<test-dir>/work<test-dir>/src/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/MessageDigest5.cpp:92:9: note: Value stored to 'read_size' is never read
+   92 |         read_size = 0;
+      |         ^           ~
+1 warning generated.

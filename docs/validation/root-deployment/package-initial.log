@@ -1,0 +1,7 @@
+===>  Building packages for ap24-mod_uploader-3.2.0_6
+===>   Building ap24-mod_uploader-3.2.0_6
+pkg-static: pkg_checksum_hash_blake2_file(read failed): Is a directory
+*** Error code 1
+
+Stop.
+make: stopped making "package" in <test-dir>/src/ports/www/mod_uploader

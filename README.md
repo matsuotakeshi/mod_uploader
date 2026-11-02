@@ -50,4 +50,10 @@ No production data is automatically migrated by installing or loading this modul
 
 Validation logs are checked in under `docs/validation/`.
 
+Port revision 6 supports VirtualHost root (`/`) and subpath (`/up`) deployments.
+Base URLs with or without a trailing slash are normalized, and bundled templates
+use canonical static-resource URLs. See [the root/subpath configuration guide](docs/ROOT-DEPLOYMENT-ja.md)
+for static handlers, administration, TLS, migration and rollback, and
+[the revision 6 validation report](docs/ROOT-VALIDATION-ja.md) for measured coverage.
+
 管理画面はApacheでの独立した認証が必須です。Portの初期設定では閉鎖しています。IP別のパスワード処理回数と、プロセス間の同時実行数も制限します。設定・制限値は[セキュリティと移行手順](docs/SECURITY-MIGRATION-ja.md)を参照してください。

@@ -1,0 +1,2 @@
+static-analysis: 43 configured module translation units; 1 diagnostics; 0 compile errors
+{"source": "MessageDigest5.cpp", "exit": 0, "warnings": 1, "errors": 0}

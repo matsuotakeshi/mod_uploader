@@ -1,0 +1,80 @@
+====> Checking for pkg-plist issues (check-plist)
+===> Parsing plist
+===> Checking for items in STAGEDIR missing from pkg-plist
+Error: Orphaned: %%ETCDIR%%/mod_%%AP_NAME%%-root.conf.sample
+Error: Orphaned: %%ETCDIR%%/mod_%%AP_NAME%%.conf.sample
+Error: Orphaned: %%APACHEMODDIR%%/%%AP_MODULE%%
+Error: Orphaned: libexec/mod_%%AP_NAME%%/migrate_passwords.py
+Error: Orphaned: libexec/mod_%%AP_NAME%%/password_tool
+Error: Orphaned: %%DATADIR%%/COPYING
+Error: Orphaned: %%DATADIR%%/MODIFICATIONS
+Error: Orphaned: %%DATADIR%%/ROOT-DEPLOYMENT-ja.md
+Error: Orphaned: %%DATADIR%%/SECURITY-MIGRATION-ja.md
+Error: Orphaned: %%DATADIR%%/css/default.css
+Error: Orphaned: %%DATADIR%%/img/bar_back.png
+Error: Orphaned: %%DATADIR%%/img/bar_fore.png
+Error: Orphaned: %%DATADIR%%/img/favicon.ico
+Error: Orphaned: %%DATADIR%%/img/icon_download.png
+Error: Orphaned: %%DATADIR%%/img/icon_error.png
+Error: Orphaned: %%DATADIR%%/img/icon_feed.png
+Error: Orphaned: %%DATADIR%%/img/icon_valid_css.png
+Error: Orphaned: %%DATADIR%%/img/icon_valid_xhtml.png
+Error: Orphaned: %%DATADIR%%/img/title.png
+Error: Orphaned: %%DATADIR%%/js/progress.js
+Error: Orphaned: %%DATADIR%%/tmpl/admin.htm
+Error: Orphaned: %%DATADIR%%/tmpl/download.htm
+Error: Orphaned: %%DATADIR%%/tmpl/en/admin.htm
+Error: Orphaned: %%DATADIR%%/tmpl/en/download.htm
+Error: Orphaned: %%DATADIR%%/tmpl/en/error.htm
+Error: Orphaned: %%DATADIR%%/tmpl/en/index.htm
+Error: Orphaned: %%DATADIR%%/tmpl/en/info.htm
+Error: Orphaned: %%DATADIR%%/tmpl/en/progress.htm
+Error: Orphaned: %%DATADIR%%/tmpl/en/thumbnail.htm
+Error: Orphaned: %%DATADIR%%/tmpl/error.htm
+Error: Orphaned: %%DATADIR%%/tmpl/index.htm
+Error: Orphaned: %%DATADIR%%/tmpl/index_swf.htm
+Error: Orphaned: %%DATADIR%%/tmpl/info.htm
+Error: Orphaned: %%DATADIR%%/tmpl/progress.htm
+Error: Orphaned: %%DATADIR%%/tmpl/thumbnail.htm
+===> Checking for items in pkg-plist which are not in STAGEDIR
+Error: Missing: 
+Error: Missing: %%ETCDIR%%/mod_%%AP_NAME%%-root.conf.sample
+Error: Missing: %%ETCDIR%%/mod_%%AP_NAME%%.conf.sample
+Error: Missing: %%APACHEMODDIR%%/%%AP_MODULE%%
+Error: Missing: libexec/mod_%%AP_NAME%%/migrate_passwords.py
+Error: Missing: libexec/mod_%%AP_NAME%%/password_tool
+Error: Missing: %%DATADIR%%/COPYING
+Error: Missing: %%DATADIR%%/MODIFICATIONS
+Error: Missing: %%DATADIR%%/ROOT-DEPLOYMENT-ja.md
+Error: Missing: %%DATADIR%%/SECURITY-MIGRATION-ja.md
+Error: Missing: %%DATADIR%%/css/default.css
+Error: Missing: %%DATADIR%%/img/bar_back.png
+Error: Missing: %%DATADIR%%/img/bar_fore.png
+Error: Missing: %%DATADIR%%/img/favicon.ico
+Error: Missing: %%DATADIR%%/img/icon_download.png
+Error: Missing: %%DATADIR%%/img/icon_error.png
+Error: Missing: %%DATADIR%%/img/icon_feed.png
+Error: Missing: %%DATADIR%%/img/icon_valid_css.png
+Error: Missing: %%DATADIR%%/img/icon_valid_xhtml.png
+Error: Missing: %%DATADIR%%/img/title.png
+Error: Missing: %%DATADIR%%/js/progress.js
+Error: Missing: %%DATADIR%%/tmpl/admin.htm
+Error: Missing: %%DATADIR%%/tmpl/download.htm
+Error: Missing: %%DATADIR%%/tmpl/en/admin.htm
+Error: Missing: %%DATADIR%%/tmpl/en/download.htm
+Error: Missing: %%DATADIR%%/tmpl/en/error.htm
+Error: Missing: %%DATADIR%%/tmpl/en/index.htm
+Error: Missing: %%DATADIR%%/tmpl/en/info.htm
+Error: Missing: %%DATADIR%%/tmpl/en/progress.htm
+Error: Missing: %%DATADIR%%/tmpl/en/thumbnail.htm
+Error: Missing: %%DATADIR%%/tmpl/error.htm
+Error: Missing: %%DATADIR%%/tmpl/index.htm
+Error: Missing: %%DATADIR%%/tmpl/index_swf.htm
+Error: Missing: %%DATADIR%%/tmpl/info.htm
+Error: Missing: %%DATADIR%%/tmpl/progress.htm
+Error: Missing: %%DATADIR%%/tmpl/thumbnail.htm
+===> Error: Plist issues found.
+*** Error code 1
+
+Stop.
+make: stopped making "check-plist" in <test-dir>/src/ports/www/mod_uploader

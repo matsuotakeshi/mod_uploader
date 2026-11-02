@@ -1,0 +1,54 @@
+cd src && gmake -f GNUmakefile
+gmake[1]: �ǥ��쥯�ȥ� '<test-dir>/thumbnail/src' ������ޤ�
+[1;34mGenerating [1;31mmod_uploader.so[0m
+/usr/local/bin/libtool --silent --mode=link --tag=CXX clang++ -Wall   -L/usr/local/lib -lMagick++-6 -lMagickWand-6 -lMagickCore-6 -lcrypto -lm  -L/usr/local/lib -lapr-1 -lcrypt  -lpthread -L/usr/local/lib -lMagick++-6 -lMagickWand-6 -lMagickCore-6  -L/usr/local/lib \
+	-export-dynamic -module -avoid-version \
+	-rpath /usr/local/libexec/apache24 \
+	-o mod_uploader.la ApacheLogger.lo ApacheRFC1867Parser.lo ApacheRFC2822Parser.lo ApacheRequestReader.lo ApacheResponseWriter.lo ApacheTemplateExecutor.lo ApacheUploadItemRss.lo Auxiliary.lo CharCodeConverter.lo DirectoryCleaner.lo DownloadFlowController.lo FileWriter.lo ImageFile.lo MessageDigest5.lo MultipartMessageParser.lo MultipartMessageParserBuffer.lo PostDataChecker.lo PostFlowController.lo PostProgressList.lo ReadWriteLocker.lo RequestReader.lo SourceInfo.lo TemplateLexer.lo TemplateParser.lo TemplateVariable.lo TemplateVariableCreator.lo TemporaryFile.lo ThumbnailIterator.lo ThumbnailList.lo ThumbnailVariableCreator.lo UploadItem.lo UploadItemIO.lo UploadItemIterator.lo UploadItemList.lo UploadItemListReader.lo UploadItemManager.lo UploadItemReader.lo UploadItemVariableCreator.lo UploadItemWriter.lo UploaderConfig.lo UploaderTemplate.lo mod_uploader.lo uploader_util.lo
+c++: warning: argument unused during compilation: '-pthread' [-Wunused-command-line-argument]
+gmake[1]: �ǥ��쥯�ȥ� '<test-dir>/thumbnail/src' ����Фޤ�
+cp -f src/mod_uploader.so ./
+cd src && gmake -f GNUmakefile password-tool
+gmake[1]: �ǥ��쥯�ȥ� '<test-dir>/thumbnail/src' ������ޤ�
+clang++ -DLOCALE_JA -DCONV_CHAR_CODE -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -Wall   -L/usr/local/lib -lMagick++-6 -lMagickWand-6 -lMagickCore-6 -o password_tool ../util/password_tool.cpp -lcrypto -lm  -L/usr/local/lib -lapr-1 -lcrypt  -lpthread -L/usr/local/lib -lMagick++-6 -lMagickWand-6 -lMagickCore-6  -L/usr/local/lib
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from ../util/password_tool.cpp:3:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from ../util/password_tool.cpp:3:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from ../util/password_tool.cpp:3:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+In file included from ../util/password_tool.cpp:5:
+../include/PasswordHash.h:17:48: warning: implicit conversion changes signedness: 'const value_type' (aka 'const char') to 'unsigned char' [-Wsign-conversion]
+   17 |     for(size_t i=0;i<n*2;++i) {unsigned char c=s[i];int v=c>='0'&&c<='9'?c-'0':c>='a'&&c<='f'?c-'a'+10:-1;
+      |                                              ~ ^~~~
+../util/password_tool.cpp:20:34: warning: implicit conversion changes signedness: 'size_type' (aka 'unsigned long') to 'streamsize' (aka 'long') [-Wsign-conversion]
+   20 |     if(!in.read(data.data(),data.size()))throw "Cannot read metadata";return data;
+      |            ~~~~             ~~~~~^~~~~~
+../util/password_tool.cpp:63:57: warning: implicit conversion changes signedness: 'ssize_t' (aka 'long') to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   63 |         if(count<=0){close(fd);throw "Write failed";}n+=count;}
+      |                                                       ~~^~~~~
+9 warnings generated.
+gmake[1]: �ǥ��쥯�ȥ� '<test-dir>/thumbnail/src' ����Фޤ�

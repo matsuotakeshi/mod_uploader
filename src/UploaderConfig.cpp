@@ -26,6 +26,7 @@
  *****************************************************************************/
 
 #include "Environment.h"
+#include "UrlRouting.h"
 
 #include <cstring>
 
@@ -278,6 +279,7 @@ void UploaderConfig::check()
     if (base_url == NULL) {
         THROW(MESSAGE_CONF_PARAM_COMPULSORY_NOT_SPECIFIED);
     }
+    base_url = apr_pstrdup(pool_, UrlRouting::normalize_base(base_url).c_str());
 
     if (per_page_item_number == 0 || total_file_number_limit == 0 ||
         total_file_number_limit > 1000000 || total_file_size_limit == 0 || file_size_limit == 0)
