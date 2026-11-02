@@ -1,0 +1,2239 @@
+cd src && gmake -f GNUmakefile
+gmake[1]: �ǥ��쥯�ȥ� '<zip-test-dir>/mod_uploader-3.2.0_6/src' ������ޤ�
+[0;36mCompiling [1;36mmod_uploader.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o mod_uploader.o mod_uploader.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from mod_uploader.cpp:45:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from mod_uploader.cpp:45:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from mod_uploader.cpp:45:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+In file included from mod_uploader.cpp:58:
+../include/ApacheResponse.h:131:16: warning: implicit conversion changes signedness: 'apr_int64_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  131 |         return apr_atoi64(content_size);
+      |         ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from mod_uploader.cpp:65:
+In file included from ./uploader_handler.cpp:41:
+../include/uploader_util.h:149:57: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  149 |     *comment = apr_pstrmemdup(pool, line_start, line_end-line_start);
+      |                ~~~~~~~~~~~~~~                   ~~~~~~~~^~~~~~~~~~~
+../include/uploader_util.h:158:61: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  158 |     *remove_pass = apr_pstrmemdup(pool, line_start, line_end-line_start);
+      |                    ~~~~~~~~~~~~~~                   ~~~~~~~~^~~~~~~~~~~
+../include/uploader_util.h:167:63: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  167 |     *download_pass = apr_pstrmemdup(pool, line_start, line_end-line_start);
+      |                      ~~~~~~~~~~~~~~                   ~~~~~~~~^~~~~~~~~~~
+In file included from mod_uploader.cpp:65:
+In file included from ./uploader_handler.cpp:44:
+../include/PasswordHash.h:17:48: warning: implicit conversion changes signedness: 'const value_type' (aka 'const char') to 'unsigned char' [-Wsign-conversion]
+   17 |     for(size_t i=0;i<n*2;++i) {unsigned char c=s[i];int v=c>='0'&&c<='9'?c-'0':c>='a'&&c<='f'?c-'a'+10:-1;
+      |                                              ~ ^~~~
+In file included from mod_uploader.cpp:65:
+In file included from ./uploader_handler.cpp:48:
+In file included from ../include/ApacheSecurity.h:4:
+../include/SecurityTokens.h:27:117: warning: implicit conversion changes signedness: 'const value_type' (aka 'const char') to 'uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+   27 |     for(size_t i=0;i<dot;++i) {if(token[i]<'0'||token[i]>'9' || stamp>(UINT64_MAX-9)/10)return false;stamp=stamp*10+token[i]-'0';}
+      |                                                                                                                    ~^~~~~~~~
+In file included from mod_uploader.cpp:65:
+In file included from ./uploader_handler.cpp:48:
+../include/ApacheSecurity.h:20:81: warning: implicit conversion changes signedness: 'ssize_t' (aka 'long') to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   20 |             if(n<0 && errno==EINTR)continue;if(n<=0){good=false;break;}written+=n;
+      |                                                                               ~~^
+../include/ApacheSecurity.h:36:68: warning: implicit conversion changes signedness: 'ssize_t' (aka 'long') to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   36 |         if(n<=0){close(fd);throw "Cannot read CSRF secret";}count+=n;}
+      |                                                                  ~~^
+mod_uploader.cpp:421:58: warning: implicit conversion changes signedness: 'apr_int64_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  421 | DIRECTIVE_HANDLER(total_file_size_limit, apr_atoi64(arg) * 1024);
+      | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+mod_uploader.cpp:151:26: note: expanded from macro 'DIRECTIVE_HANDLER'
+  151 |         config->member = value;                                         \
+      |                        ~ ^~~~~
+mod_uploader.cpp:422:44: warning: implicit conversion changes signedness: 'int' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  422 | DIRECTIVE_HANDLER(total_file_number_limit, atoi(arg));
+      | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+mod_uploader.cpp:151:26: note: expanded from macro 'DIRECTIVE_HANDLER'
+  151 |         config->member = value;                                         \
+      |                        ~ ^~~~~
+mod_uploader.cpp:423:52: warning: implicit conversion changes signedness: 'apr_int64_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  423 | DIRECTIVE_HANDLER(file_size_limit, apr_atoi64(arg) * 1024);
+      | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+mod_uploader.cpp:151:26: note: expanded from macro 'DIRECTIVE_HANDLER'
+  151 |         config->member = value;                                         \
+      |                        ~ ^~~~~
+mod_uploader.cpp:424:41: warning: implicit conversion changes signedness: 'int' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  424 | DIRECTIVE_HANDLER(per_page_item_number, atoi(arg));
+      | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+mod_uploader.cpp:151:26: note: expanded from macro 'DIRECTIVE_HANDLER'
+  151 |         config->member = value;                                         \
+      |                        ~ ^~~~~
+mod_uploader.cpp:435:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  435 |     DIRECTIVE_ENTRY(BASE_URL, base_url),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:436:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  436 |     DIRECTIVE_ENTRY(DATA_DIRECTORY, data_dir_path),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:437:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  437 |     DIRECTIVE_ENTRY(FILE_DIRECTORY, file_dir_path),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:438:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  438 |     DIRECTIVE_ENTRY(THUMB_DIRECTORY, thumb_dir_path),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:439:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  439 |     DIRECTIVE_ENTRY(TEMP_DIRECTORY, temp_dir_path),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:441:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  441 |     DIRECTIVE_ENTRY(TOTAL_FILE_SIZE, total_file_size_limit),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:442:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  442 |     DIRECTIVE_ENTRY(TOTAL_FILE_NUMBER, total_file_number_limit),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:443:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  443 |     DIRECTIVE_ENTRY(FILE_SIZE_LIMIT, file_size_limit),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:444:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  444 |     DIRECTIVE_ENTRY(PER_PAGE_ITEM_NUMBER, per_page_item_number),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:446:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  446 |     DIRECTIVE_ENTRY(INDEX_VIEW_TEMPLATE, INDEX_VIEW),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:447:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  447 |     DIRECTIVE_ENTRY(INFO_VIEW_TEMPLATE, INFO_VIEW),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:448:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  448 |     DIRECTIVE_ENTRY(PROGRESS_VIEW_TEMPLATE, PROGRESS_VIEW),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:449:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  449 |     DIRECTIVE_ENTRY(DOWNLOAD_VIEW_TEMPLATE, DOWNLOAD_VIEW),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:450:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  450 |     DIRECTIVE_ENTRY(THUMBNAIL_VIEW_TEMPLATE, THUMBNAIL_VIEW),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:451:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  451 |     DIRECTIVE_ENTRY(ADMIN_VIEW_TEMPLATE, ADMIN_VIEW),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:452:5: warning: cast from 'const char *(*)(cmd_parms *, void *, char *)' (aka 'const char *(*)(cmd_parms_struct *, void *, char *)') to 'const char *(*)()' converts to incompatible function type [-Wcast-function-type-mismatch]
+  452 |     DIRECTIVE_ENTRY(ERROR_VIEW_TEMPLATE, ERROR_VIEW),
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mod_uploader.cpp:139:19: note: expanded from macro 'DIRECTIVE_ENTRY'
+  138 |     AP_INIT_TAKE1(UploaderConfig::directive.param,                      \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  139 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  140 |                   NULL, ACCESS_CONF, UploaderConfig::directive.desc)
+      |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apache24/http_config.h:177:18: note: expanded from macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:488:1: warning: missing field 'flags' initializer [-Wmissing-field-initializers]
+  488 | };
+      | ^
+In file included from mod_uploader.cpp:65:
+./uploader_handler.cpp:940:32: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  940 |         r->finfo.size = uitem->get_file_size();
+      |                       ~ ~~~~~~~^~~~~~~~~~~~~~~
+./uploader_handler.cpp:1039:18: note: in instantiation of function template specialization 'download_set_header<ApacheResponse>' requested here
+ 1039 |         status = download_set_header<Response>(r, uitem, NULL);
+      |                  ^
+./uploader_handler.cpp:1143:28: note: in instantiation of function template specialization 'download_prep<ApacheResponse>' requested here
+ 1143 |                     return download_prep<Response>(r, config, uitem);
+      |                            ^
+./uploader_handler.cpp:1470:16: note: in instantiation of function template specialization 'download<ApacheResponse>' requested here
+ 1470 |         return download<Response>(r, config, arg);
+      |                ^
+mod_uploader.cpp:394:16: note: in instantiation of function template specialization 'uploader_command_handler<ApacheResponse>' requested here
+  394 |         return uploader_command_handler<ApacheResponse>(r, config,
+      |                ^
+In file included from mod_uploader.cpp:65:
+./uploader_handler.cpp:1262:55: warning: instantiation of variable 'UploadItemRss<ApacheResponseWriter>::CONTENT_TYPE' required here, but no definition is available [-Wundefined-var-template]
+ 1262 |         (r, UploadItemRss<typename Response::Writer>::CONTENT_TYPE);
+      |                                                       ^
+./uploader_handler.cpp:1474:16: note: in instantiation of function template specialization 'rss<ApacheResponse>' requested here
+ 1474 |         return rss<Response>(r, config, arg);
+      |                ^
+mod_uploader.cpp:394:16: note: in instantiation of function template specialization 'uploader_command_handler<ApacheResponse>' requested here
+  394 |         return uploader_command_handler<ApacheResponse>(r, config,
+      |                ^
+../include/UploadItemRss.h:51:23: note: forward declaration of template entity is here
+   51 |     static const char CONTENT_TYPE[];
+      |                       ^
+./uploader_handler.cpp:1262:55: note: add an explicit instantiation declaration to suppress this warning if 'UploadItemRss<ApacheResponseWriter>::CONTENT_TYPE' is explicitly instantiated in another translation unit
+ 1262 |         (r, UploadItemRss<typename Response::Writer>::CONTENT_TYPE);
+      |                                                       ^
+In file included from mod_uploader.cpp:65:
+In file included from ./uploader_handler.cpp:41:
+../include/uploader_util.h:149:57: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  149 |     *comment = apr_pstrmemdup(pool, line_start, line_end-line_start);
+      |                ~~~~~~~~~~~~~~                   ~~~~~~~~^~~~~~~~~~~
+./uploader_handler.cpp:865:9: note: in instantiation of function template specialization 'get_mail_upload_param<ApacheRequestReader>' requested here
+  865 |         get_mail_upload_param<typename Response::Reader>
+      |         ^
+./uploader_handler.cpp:1476:16: note: in instantiation of function template specialization 'mail_upload<ApacheResponse>' requested here
+ 1476 |         return mail_upload<Response>(r, config, arg);
+      |                ^
+mod_uploader.cpp:394:16: note: in instantiation of function template specialization 'uploader_command_handler<ApacheResponse>' requested here
+  394 |         return uploader_command_handler<ApacheResponse>(r, config,
+      |                ^
+In file included from mod_uploader.cpp:65:
+In file included from ./uploader_handler.cpp:41:
+../include/uploader_util.h:158:61: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  158 |     *remove_pass = apr_pstrmemdup(pool, line_start, line_end-line_start);
+      |                    ~~~~~~~~~~~~~~                   ~~~~~~~~^~~~~~~~~~~
+../include/uploader_util.h:167:63: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  167 |     *download_pass = apr_pstrmemdup(pool, line_start, line_end-line_start);
+      |                      ~~~~~~~~~~~~~~                   ~~~~~~~~^~~~~~~~~~~
+40 warnings generated.
+[0;36mCompiling [1;36mUploaderConfig.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o UploaderConfig.o UploaderConfig.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from UploaderConfig.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from UploaderConfig.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from UploaderConfig.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+6 warnings generated.
+[0;36mCompiling [1;36mUploadItem.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o UploadItem.o UploadItem.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from UploadItem.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from UploadItem.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from UploadItem.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+In file included from UploadItem.cpp:37:
+../include/PasswordHash.h:17:48: warning: implicit conversion changes signedness: 'const value_type' (aka 'const char') to 'unsigned char' [-Wsign-conversion]
+   17 |     for(size_t i=0;i<n*2;++i) {unsigned char c=s[i];int v=c>='0'&&c<='9'?c-'0':c>='a'&&c<='f'?c-'a'+10:-1;
+      |                                              ~ ^~~~
+7 warnings generated.
+[0;36mCompiling [1;36mUploadItemList.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o UploadItemList.o UploadItemList.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from UploadItemList.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from UploadItemList.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from UploadItemList.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+6 warnings generated.
+[0;36mCompiling [1;36mUploadItemListReader.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o UploadItemListReader.o UploadItemListReader.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from UploadItemListReader.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from UploadItemListReader.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from UploadItemListReader.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+6 warnings generated.
+[0;36mCompiling [1;36mUploadItemIO.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o UploadItemIO.o UploadItemIO.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from UploadItemIO.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from UploadItemIO.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from UploadItemIO.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+6 warnings generated.
+[0;36mCompiling [1;36mUploadItemWriter.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o UploadItemWriter.o UploadItemWriter.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from UploadItemWriter.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from UploadItemWriter.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from UploadItemWriter.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+6 warnings generated.
+[0;36mCompiling [1;36mUploadItemReader.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o UploadItemReader.o UploadItemReader.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from UploadItemReader.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from UploadItemReader.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from UploadItemReader.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+In file included from UploadItemReader.cpp:36:
+../include/PasswordHash.h:17:48: warning: implicit conversion changes signedness: 'const value_type' (aka 'const char') to 'unsigned char' [-Wsign-conversion]
+   17 |     for(size_t i=0;i<n*2;++i) {unsigned char c=s[i];int v=c>='0'&&c<='9'?c-'0':c>='a'&&c<='f'?c-'a'+10:-1;
+      |                                              ~ ^~~~
+UploadItemReader.cpp:145:41: warning: implicit conversion changes signedness: 'int' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  145 |     version = (uitem->get_version())[0] - '0';
+      |             ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+8 warnings generated.
+[0;36mCompiling [1;36mUploadItemManager.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o UploadItemManager.o UploadItemManager.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from UploadItemManager.cpp:29:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from UploadItemManager.cpp:29:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from UploadItemManager.cpp:29:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+6 warnings generated.
+[0;36mCompiling [1;36mTemporaryFile.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o TemporaryFile.o TemporaryFile.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from TemporaryFile.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from TemporaryFile.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from TemporaryFile.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+6 warnings generated.
+[0;36mCompiling [1;36mAuxiliary.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o Auxiliary.o Auxiliary.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from Auxiliary.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from Auxiliary.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from Auxiliary.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+Auxiliary.cpp:82:37: warning: implicit conversion changes signedness: 'const char' to 'const unsigned char' [-Wsign-conversion]
+   82 |             const unsigned char c = *str;
+      |                                 ~   ^~~~
+Auxiliary.cpp:458:15: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  458 |     cmask = c | (c << 8);
+      |           ~ ~~^~~~~~~~~~
+8 warnings generated.
+[0;36mCompiling [1;36mSourceInfo.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o SourceInfo.o SourceInfo.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from SourceInfo.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from SourceInfo.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from SourceInfo.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+6 warnings generated.
+[0;36mCompiling [1;36mApacheLogger.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o ApacheLogger.o ApacheLogger.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from ApacheLogger.cpp:31:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from ApacheLogger.cpp:31:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from ApacheLogger.cpp:31:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+In file included from ApacheLogger.cpp:35:
+In file included from ../include/ApacheLogger.h:38:
+../include/ApacheResponse.h:131:16: warning: implicit conversion changes signedness: 'apr_int64_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  131 |         return apr_atoi64(content_size);
+      |         ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~~~~
+7 warnings generated.
+[0;36mCompiling [1;36mUploaderTemplate.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o UploaderTemplate.o UploaderTemplate.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from UploaderTemplate.cpp:29:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from UploaderTemplate.cpp:29:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from UploaderTemplate.cpp:29:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+6 warnings generated.
+[0;36mCompiling [1;36mTemplateParser.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o TemplateParser.o TemplateParser.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from TemplateParser.cpp:29:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from TemplateParser.cpp:29:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from TemplateParser.cpp:29:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+TemplateParser.cpp:1029:20: warning: implicit conversion changes signedness: 'int' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+ 1029 |             return i;
+      |             ~~~~~~ ^
+7 warnings generated.
+[0;36mCompiling [1;36mTemplateLexer.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o TemplateLexer.o TemplateLexer.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from TemplateLexer.cpp:29:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from TemplateLexer.cpp:29:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from TemplateLexer.cpp:29:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+TemplateLexer.cpp:294:67: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  294 |     APR_PALLOC(str_start, char *, pool_, input_.top - quote_start + 1);
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+../include/Macro.h:102:67: note: expanded from macro 'APR_PALLOC'
+  102 |     if (UNLIKELY((value = reinterpret_cast<type>(apr_palloc(pool, size))) == NULL)) { \
+      |                                                  ~~~~~~~~~~       ^~~~
+../include/Macro.h:85:41: note: expanded from macro 'UNLIKELY'
+   85 | #define UNLIKELY(x) __builtin_expect(!!(x), false)
+      |                                         ^
+TemplateLexer.cpp:303:52: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  303 |     push_token(create_str_token(str_start, str_end - str_start));
+      |                ~~~~~~~~~~~~~~~~            ~~~~~~~~^~~~~~~~~~~
+TemplateLexer.cpp:325:59: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  325 |     push_token(create_ident_token(ident_start, input_.top - ident_start));
+      |                ~~~~~~~~~~~~~~~~~~              ~~~~~~~~~~~^~~~~~~~~~~~~
+TemplateLexer.cpp:433:59: warning: implicit conversion changes signedness: 'long' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+  433 |     str_end = AS_CONST_CHAR(memmem(input_.top, input_.end - input_.top,
+      |                             ~~~~~~             ~~~~~~~~~~~^~~~~~~~~~~~
+../include/Macro.h:233:63: note: expanded from macro 'AS_CONST_CHAR'
+  233 | #define AS_CONST_CHAR(pointer) reinterpret_cast<const char *>(pointer)
+      |                                                               ^~~~~~~
+TemplateLexer.cpp:447:54: warning: implicit conversion changes signedness: 'long' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+  447 |            ((var_start = strnchr(input_.top, str_end - input_.top,
+      |                          ~~~~~~~             ~~~~~~~~^~~~~~~~~~~~
+TemplateLexer.cpp:451:75: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  451 |             push_token(create_str_token(input_.top, var_start - input_.top-1));
+      |                        ~~~~~~~~~~~~~~~~             ~~~~~~~~~~~~~~~~~~~~~~^~
+TemplateLexer.cpp:460:59: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  460 |         push_token(create_str_token(input_.top, var_start - input_.top));
+      |                    ~~~~~~~~~~~~~~~~             ~~~~~~~~~~^~~~~~~~~~~~
+TemplateLexer.cpp:473:53: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  473 |     push_token(create_str_token(input_.top, str_end - input_.top));
+      |                ~~~~~~~~~~~~~~~~             ~~~~~~~~^~~~~~~~~~~~
+TemplateLexer.cpp:504:52: warning: implicit conversion changes signedness: 'long' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+  504 |         if ((var_end = strnchr(input_.top, str_end - input_.top,
+      |                        ~~~~~~~             ~~~~~~~~^~~~~~~~~~~~
+TemplateLexer.cpp:525:61: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  525 |         push_token(create_ident_token(var_start, input_.top - var_start));
+      |                    ~~~~~~~~~~~~~~~~~~            ~~~~~~~~~~~^~~~~~~~~~~
+TemplateLexer.cpp:537:20: warning: implicit conversion changes signedness: 'int' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  537 |             return i;
+      |             ~~~~~~ ^
+17 warnings generated.
+[0;36mCompiling [1;36mTemplateVariableCreator.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o TemplateVariableCreator.o TemplateVariableCreator.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from TemplateVariableCreator.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from TemplateVariableCreator.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from TemplateVariableCreator.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+TemplateVariableCreator.cpp:126:43: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  126 |     size = sizeof(char *) * (array->nelts + 1);
+      |                           ~  ~~~~~~~~~~~~~^~~
+TemplateVariableCreator.cpp:133:24: warning: implicit conversion changes signedness: 'int' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  133 |         size = (size & ~3) + 4;
+      |                      ~ ^~
+8 warnings generated.
+[0;36mCompiling [1;36mThumbnailList.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o ThumbnailList.o ThumbnailList.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from ThumbnailList.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from ThumbnailList.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from ThumbnailList.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+6 warnings generated.
+[0;36mCompiling [1;36mThumbnailIterator.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o ThumbnailIterator.o ThumbnailIterator.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from ThumbnailIterator.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from ThumbnailIterator.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from ThumbnailIterator.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+6 warnings generated.
+[0;36mCompiling [1;36mThumbnailVariableCreator.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o ThumbnailVariableCreator.o ThumbnailVariableCreator.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from ThumbnailVariableCreator.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from ThumbnailVariableCreator.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from ThumbnailVariableCreator.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+6 warnings generated.
+[0;36mCompiling [1;36mTemplateVariable.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o TemplateVariable.o TemplateVariable.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from TemplateVariable.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from TemplateVariable.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from TemplateVariable.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+6 warnings generated.
+[0;36mCompiling [1;36mApacheTemplateExecutor.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o ApacheTemplateExecutor.o ApacheTemplateExecutor.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from ApacheTemplateExecutor.cpp:30:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from ApacheTemplateExecutor.cpp:30:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from ApacheTemplateExecutor.cpp:30:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+In file included from ApacheTemplateExecutor.cpp:32:
+In file included from ../include/ApacheTemplateExecutor.h:34:
+In file included from ../include/ApacheResponseWriter.h:41:
+../include/ApacheResponse.h:131:16: warning: implicit conversion changes signedness: 'apr_int64_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  131 |         return apr_atoi64(content_size);
+      |         ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~~~~
+7 warnings generated.
+[0;36mCompiling [1;36mApacheRFC1867Parser.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o ApacheRFC1867Parser.o ApacheRFC1867Parser.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from ApacheRFC1867Parser.cpp:28:
+In file included from ../include/ApacheRFC1867Parser.h:31:
+In file included from ../include/ApacheRequestReader.h:38:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from ApacheRFC1867Parser.cpp:28:
+In file included from ../include/ApacheRFC1867Parser.h:31:
+In file included from ../include/ApacheRequestReader.h:38:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from ApacheRFC1867Parser.cpp:28:
+In file included from ../include/ApacheRFC1867Parser.h:31:
+In file included from ../include/ApacheRequestReader.h:38:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+In file included from ApacheRFC1867Parser.cpp:28:
+In file included from ../include/ApacheRFC1867Parser.h:31:
+In file included from ../include/ApacheRequestReader.h:45:
+../include/ApacheResponse.h:131:16: warning: implicit conversion changes signedness: 'apr_int64_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  131 |         return apr_atoi64(content_size);
+      |         ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from ApacheRFC1867Parser.cpp:35:
+./RFC1867Parser.cpp:166:36: warning: implicit conversion changes signedness: 'long' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+  166 |     if (memchr(start, 0, header_end-start) != NULL)
+      |         ~~~~~~           ~~~~~~~~~~^~~~~~
+In file included from ApacheRFC1867Parser.cpp:41:
+./MmapFileWriter.cpp:46:51: warning: implicit conversion changes signedness: 'int' to 'const apr_size_t' (aka 'const unsigned long') [-Wsign-conversion]
+   46 | const apr_size_t MmapFileWriter::PAGE_SIZE      = getpagesize();
+      |                                  ~~~~~~~~~        ^~~~~~~~~~~~~
+In file included from ApacheRFC1867Parser.cpp:34:
+./MultipartMessageParser.cpp:210:56: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  210 |             apr_size_t tail = end - buffer_.get_data() - 4;
+      |                        ~~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+ApacheRFC1867Parser.cpp:46:16: note: in instantiation of member function 'MultipartMessageParser<ApacheRequestReader>::get_text_content' requested here
+   46 | template class MultipartMessageParser<ApacheRequestReader>;
+      |                ^
+In file included from ApacheRFC1867Parser.cpp:34:
+./MultipartMessageParser.cpp:216:31: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  216 |             buffer_.erase(end - buffer_.get_data() + boundary_len_);
+      |                           ~~~~^~~~~~~~~~~~~~~~~~~~ ~
+./MultipartMessageParser.cpp:282:26: warning: implicit conversion changes signedness: 'long' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+  282 |         write_size = end - buffer_.get_data() -
+      |                      ~~~~^~~~~~~~~~~~~~~~~~~~ ~
+ApacheRFC1867Parser.cpp:46:16: note: in instantiation of member function 'MultipartMessageParser<ApacheRequestReader>::get_file_content' requested here
+   46 | template class MultipartMessageParser<ApacheRequestReader>;
+      |                ^
+In file included from ApacheRFC1867Parser.cpp:34:
+./MultipartMessageParser.cpp:291:23: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  291 |     buffer_.erase(end - buffer_.get_data());
+      |             ~~~~~ ~~~~^~~~~~~~~~~~~~~~~~~~
+./MultipartMessageParser.cpp:376:45: warning: implicit conversion changes signedness: 'long' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+  376 |         end = strnchr(input_start, input_end-input_start, QUOTE);
+      |               ~~~~~~~              ~~~~~~~~~^~~~~~~~~~~~
+ApacheRFC1867Parser.cpp:46:16: note: in instantiation of member function 'MultipartMessageParser<ApacheRequestReader>::get_param' requested here
+   46 | template class MultipartMessageParser<ApacheRequestReader>;
+      |                ^
+In file included from ApacheRFC1867Parser.cpp:34:
+./MultipartMessageParser.cpp:382:62: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  381 |         *value = static_cast<const char *>(apr_pstrmemdup(pool_, input_start,
+      |                                            ~~~~~~~~~~~~~~
+  382 |                                                           end-input_start));
+      |                                                           ~~~^~~~~~~~~~~~
+./MultipartMessageParser.cpp:390:62: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  389 |         *value = static_cast<const char *>(apr_pstrmemdup(pool_, input_start,
+      |                                            ~~~~~~~~~~~~~~
+  390 |                                                           end-input_start));
+      |                                                           ~~~^~~~~~~~~~~~
+In file included from ApacheRFC1867Parser.cpp:35:
+./RFC1867Parser.cpp:129:28: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  129 |     M::buffer_.erase(start - M::buffer_.get_data());
+      |                ~~~~~ ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+ApacheRFC1867Parser.cpp:47:16: note: in instantiation of member function 'RFC1867Parser<ApacheRequestReader>::parse' requested here
+   47 | template class RFC1867Parser<ApacheRequestReader>;
+      |                ^
+In file included from ApacheRFC1867Parser.cpp:35:
+./RFC1867Parser.cpp:166:36: warning: implicit conversion changes signedness: 'long' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+  166 |     if (memchr(start, 0, header_end-start) != NULL)
+      |         ~~~~~~           ~~~~~~~~~~^~~~~~
+ApacheRFC1867Parser.cpp:47:16: note: in instantiation of member function 'RFC1867Parser<ApacheRequestReader>::get_content' requested here
+   47 | template class RFC1867Parser<ApacheRequestReader>;
+      |                ^
+In file included from ApacheRFC1867Parser.cpp:35:
+./RFC1867Parser.cpp:186:32: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  186 |         M::buffer_.erase(start - M::buffer_.get_data());
+      |                    ~~~~~ ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+./RFC1867Parser.cpp:198:53: warning: implicit conversion changes signedness: 'long' to 'unsigned long' [-Wsign-conversion]
+  198 |                                            line_end - start -
+      |                                            ~~~~~~~~~^~~~~~~ ~
+../include/Macro.h:233:63: note: expanded from macro 'AS_CONST_CHAR'
+  233 | #define AS_CONST_CHAR(pointer) reinterpret_cast<const char *>(pointer)
+      |                                                               ^~~~~~~
+In file included from ApacheRFC1867Parser.cpp:35:
+./RFC1867Parser.cpp:202:32: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  202 |         M::buffer_.erase(start - M::buffer_.get_data());
+      |                    ~~~~~ ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+21 warnings generated.
+[0;36mCompiling [1;36muploader_util.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o uploader_util.o uploader_util.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from uploader_util.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from uploader_util.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from uploader_util.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+In file included from uploader_util.cpp:33:
+../include/uploader_util.h:149:57: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  149 |     *comment = apr_pstrmemdup(pool, line_start, line_end-line_start);
+      |                ~~~~~~~~~~~~~~                   ~~~~~~~~^~~~~~~~~~~
+../include/uploader_util.h:158:61: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  158 |     *remove_pass = apr_pstrmemdup(pool, line_start, line_end-line_start);
+      |                    ~~~~~~~~~~~~~~                   ~~~~~~~~^~~~~~~~~~~
+../include/uploader_util.h:167:63: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  167 |     *download_pass = apr_pstrmemdup(pool, line_start, line_end-line_start);
+      |                      ~~~~~~~~~~~~~~                   ~~~~~~~~^~~~~~~~~~~
+uploader_util.cpp:64:48: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+   64 |         return apr_pstrmemdup(pool, start, end - start);
+      |                ~~~~~~~~~~~~~~              ~~~~^~~~~~~
+10 warnings generated.
+[0;36mCompiling [1;36mApacheRequestReader.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o ApacheRequestReader.o ApacheRequestReader.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from ApacheRequestReader.cpp:29:
+In file included from ../include/ApacheRequestReader.h:38:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from ApacheRequestReader.cpp:29:
+In file included from ../include/ApacheRequestReader.h:38:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from ApacheRequestReader.cpp:29:
+In file included from ../include/ApacheRequestReader.h:38:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+In file included from ApacheRequestReader.cpp:29:
+In file included from ../include/ApacheRequestReader.h:45:
+../include/ApacheResponse.h:131:16: warning: implicit conversion changes signedness: 'apr_int64_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  131 |         return apr_atoi64(content_size);
+      |         ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~~~~
+ApacheRequestReader.cpp:115:43: warning: cast from 'apr_bucket *volatile *' to 'char *' drops volatile qualifier [-Wcast-qual]
+  115 |         if (bucket_ == NULL || bucket_ == APR_BRIGADE_SENTINEL(brigade_)) {
+      |                                           ^
+/usr/local/include/apr-1/apr_buckets.h:331:33: note: expanded from macro 'APR_BRIGADE_SENTINEL'
+  331 | #define APR_BRIGADE_SENTINEL(b) APR_RING_SENTINEL(&(b)->list, apr_bucket, link)
+      |                                 ^
+/usr/local/include/apr-1/apr_ring.h:160:29: note: expanded from macro 'APR_RING_SENTINEL'
+  160 |     (struct elem *)((char *)(&(hp)->next) - APR_OFFSETOF(struct elem, link))
+      |                             ^
+ApacheRequestReader.cpp:115:43: warning: cast from 'char *' to 'struct apr_bucket *' increases required alignment from 1 to 8 [-Wcast-align]
+  115 |         if (bucket_ == NULL || bucket_ == APR_BRIGADE_SENTINEL(brigade_)) {
+      |                                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_buckets.h:331:33: note: expanded from macro 'APR_BRIGADE_SENTINEL'
+  331 | #define APR_BRIGADE_SENTINEL(b) APR_RING_SENTINEL(&(b)->list, apr_bucket, link)
+      |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_ring.h:160:5: note: expanded from macro 'APR_RING_SENTINEL'
+  160 |     (struct elem *)((char *)(&(hp)->next) - APR_OFFSETOF(struct elem, link))
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ApacheRequestReader.cpp:118:17: warning: cast from 'apr_bucket *volatile *' to 'char *' drops volatile qualifier [-Wcast-qual]
+  118 |             if (APR_BRIGADE_EMPTY(brigade_)) THROW(MESSAGE_POST_READ_FAILED);
+      |                 ^
+/usr/local/include/apr-1/apr_buckets.h:338:30: note: expanded from macro 'APR_BRIGADE_EMPTY'
+  338 | #define APR_BRIGADE_EMPTY(b)    APR_RING_EMPTY(&(b)->list, apr_bucket, link)
+      |                                 ^
+/usr/local/include/apr-1/apr_ring.h:205:30: note: expanded from macro 'APR_RING_EMPTY'
+  205 |     (APR_RING_FIRST((hp)) == APR_RING_SENTINEL((hp), elem, link))
+      |                              ^
+/usr/local/include/apr-1/apr_ring.h:160:29: note: expanded from macro 'APR_RING_SENTINEL'
+  160 |     (struct elem *)((char *)(&(hp)->next) - APR_OFFSETOF(struct elem, link))
+      |                             ^
+ApacheRequestReader.cpp:118:17: warning: cast from 'char *' to 'struct apr_bucket *' increases required alignment from 1 to 8 [-Wcast-align]
+  118 |             if (APR_BRIGADE_EMPTY(brigade_)) THROW(MESSAGE_POST_READ_FAILED);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_buckets.h:338:30: note: expanded from macro 'APR_BRIGADE_EMPTY'
+  338 | #define APR_BRIGADE_EMPTY(b)    APR_RING_EMPTY(&(b)->list, apr_bucket, link)
+      |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_ring.h:205:30: note: expanded from macro 'APR_RING_EMPTY'
+  205 |     (APR_RING_FIRST((hp)) == APR_RING_SENTINEL((hp), elem, link))
+      |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_ring.h:160:5: note: expanded from macro 'APR_RING_SENTINEL'
+  160 |     (struct elem *)((char *)(&(hp)->next) - APR_OFFSETOF(struct elem, link))
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ApacheRequestReader.cpp:160:49: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  159 |     if (UNLIKELY(ap_get_brigade(request_->input_filters, brigade_, AP_MODE_READBYTES,
+      |                  ~~~~~~~~~~~~~~
+  160 |                                 APR_BLOCK_READ, get_block_size()) != APR_SUCCESS)) {
+      |                                                 ^~~~~~~~~~~~~~~~
+../include/Macro.h:85:41: note: expanded from macro 'UNLIKELY'
+   85 | #define UNLIKELY(x) __builtin_expect(!!(x), false)
+      |                                         ^
+12 warnings generated.
+[0;36mCompiling [1;36mRequestReader.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o RequestReader.o RequestReader.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from RequestReader.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from RequestReader.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from RequestReader.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+6 warnings generated.
+[0;36mCompiling [1;36mMultipartMessageParserBuffer.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o MultipartMessageParserBuffer.o MultipartMessageParserBuffer.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from MultipartMessageParserBuffer.cpp:29:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from MultipartMessageParserBuffer.cpp:29:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from MultipartMessageParserBuffer.cpp:29:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+6 warnings generated.
+[0;36mCompiling [1;36mMultipartMessageParser.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o MultipartMessageParser.o MultipartMessageParser.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from MultipartMessageParser.cpp:30:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from MultipartMessageParser.cpp:30:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from MultipartMessageParser.cpp:30:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+6 warnings generated.
+[0;36mCompiling [1;36mDirectoryCleaner.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o DirectoryCleaner.o DirectoryCleaner.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from DirectoryCleaner.cpp:29:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from DirectoryCleaner.cpp:29:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from DirectoryCleaner.cpp:29:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+6 warnings generated.
+[0;36mCompiling [1;36mMessageDigest5.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o MessageDigest5.o MessageDigest5.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from MessageDigest5.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from MessageDigest5.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from MessageDigest5.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+6 warnings generated.
+[0;36mCompiling [1;36mImageFile.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o ImageFile.o ImageFile.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from ImageFile.cpp:29:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from ImageFile.cpp:29:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from ImageFile.cpp:29:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+In file included from ImageFile.cpp:46:
+In file included from /usr/local/include/ImageMagick-6/Magick++.h:10:
+In file included from /usr/local/include/ImageMagick-6/Magick++/Include.h:45:
+In file included from /usr/local/include/ImageMagick-6/magick/MagickCore.h:135:
+/usr/local/include/ImageMagick-6/magick/pixel-accessor.h:173:57: warning: implicit conversion from 'const QuantumAny' (aka 'const unsigned long long') to 'MagickRealType' (aka 'double') may lose precision [-Wimplicit-int-float-conversion]
+  173 |     (((MagickRealType) range*pixel)/QuantumRange+0.5)))/range+0.5);
+      |                                                        ~^~~~~
+/usr/local/include/ImageMagick-6/magick/pixel-accessor.h:172:54: warning: implicit conversion from 'QuantumAny' (aka 'unsigned long long') to 'MagickRealType' (aka 'double') may lose precision [-Wimplicit-int-float-conversion]
+  172 |   quantum=(Quantum) (((MagickRealType) QuantumRange*((QuantumAny)
+      |                                                    ~ ^~~~~~~~~~~~
+  173 |     (((MagickRealType) range*pixel)/QuantumRange+0.5)))/range+0.5);
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from ImageFile.cpp:46:
+In file included from /usr/local/include/ImageMagick-6/Magick++.h:15:
+/usr/local/include/ImageMagick-6/Magick++/STL.h:1941:29: warning: implicit conversion changes signedness: '::ssize_t' (aka 'long') to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+ 1941 |       current->scene = scene++;
+      |                      ~ ~~~~~^~
+9 warnings generated.
+[0;36mCompiling [1;36mPostDataChecker.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o PostDataChecker.o PostDataChecker.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from PostDataChecker.cpp:29:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from PostDataChecker.cpp:29:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from PostDataChecker.cpp:29:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+6 warnings generated.
+[0;36mCompiling [1;36mPostFlowController.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o PostFlowController.o PostFlowController.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from PostFlowController.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from PostFlowController.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from PostFlowController.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+6 warnings generated.
+[0;36mCompiling [1;36mPostProgressList.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o PostProgressList.o PostProgressList.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from PostProgressList.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from PostProgressList.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from PostProgressList.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+6 warnings generated.
+[0;36mCompiling [1;36mDownloadFlowController.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o DownloadFlowController.o DownloadFlowController.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from DownloadFlowController.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from DownloadFlowController.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from DownloadFlowController.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+6 warnings generated.
+[0;36mCompiling [1;36mUploadItemVariableCreator.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o UploadItemVariableCreator.o UploadItemVariableCreator.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from UploadItemVariableCreator.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from UploadItemVariableCreator.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from UploadItemVariableCreator.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+6 warnings generated.
+[0;36mCompiling [1;36mUploadItemIterator.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o UploadItemIterator.o UploadItemIterator.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from UploadItemIterator.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from UploadItemIterator.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from UploadItemIterator.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+6 warnings generated.
+[0;36mCompiling [1;36mApacheResponseWriter.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o ApacheResponseWriter.o ApacheResponseWriter.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from ApacheResponseWriter.cpp:36:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from ApacheResponseWriter.cpp:36:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from ApacheResponseWriter.cpp:36:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+In file included from ApacheResponseWriter.cpp:46:
+In file included from ../include/ApacheResponseWriter.h:41:
+../include/ApacheResponse.h:131:16: warning: implicit conversion changes signedness: 'apr_int64_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  131 |         return apr_atoi64(content_size);
+      |         ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~~~~
+ApacheResponseWriter.cpp:162:5: warning: cast from 'apr_bucket *volatile *' to 'char *' drops volatile qualifier [-Wcast-qual]
+  162 |     APR_BRIGADE_INSERT_TAIL(brigade_, b);
+      |     ^
+/usr/local/include/apr-1/apr_buckets.h:371:2: note: expanded from macro 'APR_BRIGADE_INSERT_TAIL'
+  371 |         APR_RING_INSERT_TAIL(&(b)->list, ap__b, apr_bucket, link);      \
+      |         ^
+/usr/local/include/apr-1/apr_ring.h:329:2: note: expanded from macro 'APR_RING_INSERT_TAIL'
+  329 |         APR_RING_SPLICE_TAIL((hp), (nep), (nep), elem, link)
+      |         ^
+/usr/local/include/apr-1/apr_ring.h:303:31: note: expanded from macro 'APR_RING_SPLICE_TAIL'
+  303 |         APR_RING_NEXT((epN), link) = APR_RING_SENTINEL((hp), elem, link);\
+      |                                      ^
+/usr/local/include/apr-1/apr_ring.h:160:29: note: expanded from macro 'APR_RING_SENTINEL'
+  160 |     (struct elem *)((char *)(&(hp)->next) - APR_OFFSETOF(struct elem, link))
+      |                             ^
+ApacheResponseWriter.cpp:162:5: warning: cast from 'char *' to 'struct apr_bucket *' increases required alignment from 1 to 8 [-Wcast-align]
+  162 |     APR_BRIGADE_INSERT_TAIL(brigade_, b);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_buckets.h:371:2: note: expanded from macro 'APR_BRIGADE_INSERT_TAIL'
+  371 |         APR_RING_INSERT_TAIL(&(b)->list, ap__b, apr_bucket, link);      \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_ring.h:329:2: note: expanded from macro 'APR_RING_INSERT_TAIL'
+  329 |         APR_RING_SPLICE_TAIL((hp), (nep), (nep), elem, link)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_ring.h:303:31: note: expanded from macro 'APR_RING_SPLICE_TAIL'
+  303 |         APR_RING_NEXT((epN), link) = APR_RING_SENTINEL((hp), elem, link);\
+      |                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_ring.h:160:5: note: expanded from macro 'APR_RING_SENTINEL'
+  160 |     (struct elem *)((char *)(&(hp)->next) - APR_OFFSETOF(struct elem, link))
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ApacheResponseWriter.cpp:201:13: warning: cast from 'apr_bucket *volatile *' to 'char *' drops volatile qualifier [-Wcast-qual]
+  201 |             APR_BRIGADE_INSERT_TAIL(brigade, bucket);
+      |             ^
+/usr/local/include/apr-1/apr_buckets.h:371:2: note: expanded from macro 'APR_BRIGADE_INSERT_TAIL'
+  371 |         APR_RING_INSERT_TAIL(&(b)->list, ap__b, apr_bucket, link);      \
+      |         ^
+/usr/local/include/apr-1/apr_ring.h:329:2: note: expanded from macro 'APR_RING_INSERT_TAIL'
+  329 |         APR_RING_SPLICE_TAIL((hp), (nep), (nep), elem, link)
+      |         ^
+/usr/local/include/apr-1/apr_ring.h:303:31: note: expanded from macro 'APR_RING_SPLICE_TAIL'
+  303 |         APR_RING_NEXT((epN), link) = APR_RING_SENTINEL((hp), elem, link);\
+      |                                      ^
+/usr/local/include/apr-1/apr_ring.h:160:29: note: expanded from macro 'APR_RING_SENTINEL'
+  160 |     (struct elem *)((char *)(&(hp)->next) - APR_OFFSETOF(struct elem, link))
+      |                             ^
+ApacheResponseWriter.cpp:201:13: warning: cast from 'char *' to 'struct apr_bucket *' increases required alignment from 1 to 8 [-Wcast-align]
+  201 |             APR_BRIGADE_INSERT_TAIL(brigade, bucket);
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_buckets.h:371:2: note: expanded from macro 'APR_BRIGADE_INSERT_TAIL'
+  371 |         APR_RING_INSERT_TAIL(&(b)->list, ap__b, apr_bucket, link);      \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_ring.h:329:2: note: expanded from macro 'APR_RING_INSERT_TAIL'
+  329 |         APR_RING_SPLICE_TAIL((hp), (nep), (nep), elem, link)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_ring.h:303:31: note: expanded from macro 'APR_RING_SPLICE_TAIL'
+  303 |         APR_RING_NEXT((epN), link) = APR_RING_SENTINEL((hp), elem, link);\
+      |                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_ring.h:160:5: note: expanded from macro 'APR_RING_SENTINEL'
+  160 |     (struct elem *)((char *)(&(hp)->next) - APR_OFFSETOF(struct elem, link))
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ApacheResponseWriter.cpp:218:5: warning: cast from 'apr_bucket *volatile *' to 'char *' drops volatile qualifier [-Wcast-qual]
+  218 |     APR_BRIGADE_INSERT_TAIL(brigade, file_bucket);
+      |     ^
+/usr/local/include/apr-1/apr_buckets.h:371:2: note: expanded from macro 'APR_BRIGADE_INSERT_TAIL'
+  371 |         APR_RING_INSERT_TAIL(&(b)->list, ap__b, apr_bucket, link);      \
+      |         ^
+/usr/local/include/apr-1/apr_ring.h:329:2: note: expanded from macro 'APR_RING_INSERT_TAIL'
+  329 |         APR_RING_SPLICE_TAIL((hp), (nep), (nep), elem, link)
+      |         ^
+/usr/local/include/apr-1/apr_ring.h:303:31: note: expanded from macro 'APR_RING_SPLICE_TAIL'
+  303 |         APR_RING_NEXT((epN), link) = APR_RING_SENTINEL((hp), elem, link);\
+      |                                      ^
+/usr/local/include/apr-1/apr_ring.h:160:29: note: expanded from macro 'APR_RING_SENTINEL'
+  160 |     (struct elem *)((char *)(&(hp)->next) - APR_OFFSETOF(struct elem, link))
+      |                             ^
+ApacheResponseWriter.cpp:218:5: warning: cast from 'char *' to 'struct apr_bucket *' increases required alignment from 1 to 8 [-Wcast-align]
+  218 |     APR_BRIGADE_INSERT_TAIL(brigade, file_bucket);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_buckets.h:371:2: note: expanded from macro 'APR_BRIGADE_INSERT_TAIL'
+  371 |         APR_RING_INSERT_TAIL(&(b)->list, ap__b, apr_bucket, link);      \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_ring.h:329:2: note: expanded from macro 'APR_RING_INSERT_TAIL'
+  329 |         APR_RING_SPLICE_TAIL((hp), (nep), (nep), elem, link)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_ring.h:303:31: note: expanded from macro 'APR_RING_SPLICE_TAIL'
+  303 |         APR_RING_NEXT((epN), link) = APR_RING_SENTINEL((hp), elem, link);\
+      |                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_ring.h:160:5: note: expanded from macro 'APR_RING_SENTINEL'
+  160 |     (struct elem *)((char *)(&(hp)->next) - APR_OFFSETOF(struct elem, link))
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ApacheResponseWriter.cpp:221:5: warning: cast from 'apr_bucket *volatile *' to 'char *' drops volatile qualifier [-Wcast-qual]
+  221 |     APR_BRIGADE_INSERT_TAIL(brigade, bucket);
+      |     ^
+/usr/local/include/apr-1/apr_buckets.h:371:2: note: expanded from macro 'APR_BRIGADE_INSERT_TAIL'
+  371 |         APR_RING_INSERT_TAIL(&(b)->list, ap__b, apr_bucket, link);      \
+      |         ^
+/usr/local/include/apr-1/apr_ring.h:329:2: note: expanded from macro 'APR_RING_INSERT_TAIL'
+  329 |         APR_RING_SPLICE_TAIL((hp), (nep), (nep), elem, link)
+      |         ^
+/usr/local/include/apr-1/apr_ring.h:303:31: note: expanded from macro 'APR_RING_SPLICE_TAIL'
+  303 |         APR_RING_NEXT((epN), link) = APR_RING_SENTINEL((hp), elem, link);\
+      |                                      ^
+/usr/local/include/apr-1/apr_ring.h:160:29: note: expanded from macro 'APR_RING_SENTINEL'
+  160 |     (struct elem *)((char *)(&(hp)->next) - APR_OFFSETOF(struct elem, link))
+      |                             ^
+ApacheResponseWriter.cpp:221:5: warning: cast from 'char *' to 'struct apr_bucket *' increases required alignment from 1 to 8 [-Wcast-align]
+  221 |     APR_BRIGADE_INSERT_TAIL(brigade, bucket);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_buckets.h:371:2: note: expanded from macro 'APR_BRIGADE_INSERT_TAIL'
+  371 |         APR_RING_INSERT_TAIL(&(b)->list, ap__b, apr_bucket, link);      \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_ring.h:329:2: note: expanded from macro 'APR_RING_INSERT_TAIL'
+  329 |         APR_RING_SPLICE_TAIL((hp), (nep), (nep), elem, link)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_ring.h:303:31: note: expanded from macro 'APR_RING_SPLICE_TAIL'
+  303 |         APR_RING_NEXT((epN), link) = APR_RING_SENTINEL((hp), elem, link);\
+      |                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/include/apr-1/apr_ring.h:160:5: note: expanded from macro 'APR_RING_SENTINEL'
+  160 |     (struct elem *)((char *)(&(hp)->next) - APR_OFFSETOF(struct elem, link))
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+15 warnings generated.
+[0;36mCompiling [1;36mCharCodeConverter.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o CharCodeConverter.o CharCodeConverter.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from CharCodeConverter.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from CharCodeConverter.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from CharCodeConverter.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+6 warnings generated.
+[0;36mCompiling [1;36mApacheUploadItemRss.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o ApacheUploadItemRss.o ApacheUploadItemRss.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from ApacheUploadItemRss.cpp:30:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from ApacheUploadItemRss.cpp:30:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from ApacheUploadItemRss.cpp:30:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+In file included from ApacheUploadItemRss.cpp:32:
+In file included from ../include/ApacheUploadItemRss.h:34:
+In file included from ../include/ApacheResponseWriter.h:41:
+../include/ApacheResponse.h:131:16: warning: implicit conversion changes signedness: 'apr_int64_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  131 |         return apr_atoi64(content_size);
+      |         ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~~~~
+7 warnings generated.
+[0;36mCompiling [1;36mApacheRFC2822Parser.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o ApacheRFC2822Parser.o ApacheRFC2822Parser.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from ApacheRFC2822Parser.cpp:28:
+In file included from ../include/ApacheRFC2822Parser.h:31:
+In file included from ../include/ApacheRequestReader.h:38:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from ApacheRFC2822Parser.cpp:28:
+In file included from ../include/ApacheRFC2822Parser.h:31:
+In file included from ../include/ApacheRequestReader.h:38:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from ApacheRFC2822Parser.cpp:28:
+In file included from ../include/ApacheRFC2822Parser.h:31:
+In file included from ../include/ApacheRequestReader.h:38:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+In file included from ApacheRFC2822Parser.cpp:28:
+In file included from ../include/ApacheRFC2822Parser.h:31:
+In file included from ../include/ApacheRequestReader.h:45:
+../include/ApacheResponse.h:131:16: warning: implicit conversion changes signedness: 'apr_int64_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  131 |         return apr_atoi64(content_size);
+      |         ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from ApacheRFC2822Parser.cpp:34:
+./Base64FileWriter.cpp:95:50: warning: implicit conversion changes signedness: 'char' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+   95 |         decode_buffer_ = (decode_buffer_ << 6) | alphabet_value_[c];
+      |                                                ~ ^~~~~~~~~~~~~~~~~~
+ApacheRFC2822Parser.cpp:40:16: note: in instantiation of member function 'Base64FileWriter<>::write_impl' requested here
+   40 | template class Base64FileWriter<>;
+      |                ^
+In file included from ApacheRFC2822Parser.cpp:35:
+./MultipartMessageParser.cpp:210:56: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  210 |             apr_size_t tail = end - buffer_.get_data() - 4;
+      |                        ~~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+ApacheRFC2822Parser.cpp:41:16: note: in instantiation of member function 'MultipartMessageParser<ApacheRequestReader, Base64FileWriter<>>::get_text_content' requested here
+   41 | template class MultipartMessageParser<ApacheRequestReader, Base64FileWriter<> >;
+      |                ^
+In file included from ApacheRFC2822Parser.cpp:35:
+./MultipartMessageParser.cpp:216:31: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  216 |             buffer_.erase(end - buffer_.get_data() + boundary_len_);
+      |                           ~~~~^~~~~~~~~~~~~~~~~~~~ ~
+./MultipartMessageParser.cpp:282:26: warning: implicit conversion changes signedness: 'long' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+  282 |         write_size = end - buffer_.get_data() -
+      |                      ~~~~^~~~~~~~~~~~~~~~~~~~ ~
+ApacheRFC2822Parser.cpp:41:16: note: in instantiation of member function 'MultipartMessageParser<ApacheRequestReader, Base64FileWriter<>>::get_file_content' requested here
+   41 | template class MultipartMessageParser<ApacheRequestReader, Base64FileWriter<> >;
+      |                ^
+In file included from ApacheRFC2822Parser.cpp:35:
+./MultipartMessageParser.cpp:291:23: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  291 |     buffer_.erase(end - buffer_.get_data());
+      |             ~~~~~ ~~~~^~~~~~~~~~~~~~~~~~~~
+./MultipartMessageParser.cpp:376:45: warning: implicit conversion changes signedness: 'long' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+  376 |         end = strnchr(input_start, input_end-input_start, QUOTE);
+      |               ~~~~~~~              ~~~~~~~~~^~~~~~~~~~~~
+ApacheRFC2822Parser.cpp:41:16: note: in instantiation of member function 'MultipartMessageParser<ApacheRequestReader, Base64FileWriter<>>::get_param' requested here
+   41 | template class MultipartMessageParser<ApacheRequestReader, Base64FileWriter<> >;
+      |                ^
+In file included from ApacheRFC2822Parser.cpp:35:
+./MultipartMessageParser.cpp:382:62: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  381 |         *value = static_cast<const char *>(apr_pstrmemdup(pool_, input_start,
+      |                                            ~~~~~~~~~~~~~~
+  382 |                                                           end-input_start));
+      |                                                           ~~~^~~~~~~~~~~~
+./MultipartMessageParser.cpp:390:62: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  389 |         *value = static_cast<const char *>(apr_pstrmemdup(pool_, input_start,
+      |                                            ~~~~~~~~~~~~~~
+  390 |                                                           end-input_start));
+      |                                                           ~~~^~~~~~~~~~~~
+In file included from ApacheRFC2822Parser.cpp:36:
+./RFC2822Parser.cpp:107:58: warning: implicit conversion changes signedness: 'long' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+  107 |     M::buffer_.erase(M::skip_line(M::buffer_.get_data()) -
+      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+  108 |                      M::buffer_.get_data() - strlen(M::CR_LF));
+      |                      ~~~~~~~~~~~~~~~~~~~~~ ~
+ApacheRFC2822Parser.cpp:42:16: note: in instantiation of member function 'RFC2822Parser<ApacheRequestReader>::parse' requested here
+   42 | template class RFC2822Parser<ApacheRequestReader>;
+      |                ^
+In file included from ApacheRFC2822Parser.cpp:36:
+./RFC2822Parser.cpp:157:34: warning: implicit conversion changes signedness: 'long' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+  157 |                             start-content_type-strlen(M::CONTENT_TYPE)));
+      |                             ~~~~~^~~~~~~~~~~~~~
+../include/Macro.h:233:63: note: expanded from macro 'AS_CONST_CHAR'
+  233 | #define AS_CONST_CHAR(pointer) reinterpret_cast<const char *>(pointer)
+      |                                                               ^~~~~~~
+ApacheRFC2822Parser.cpp:42:16: note: in instantiation of member function 'RFC2822Parser<ApacheRequestReader>::get_content' requested here
+   42 | template class RFC2822Parser<ApacheRequestReader>;
+      |                ^
+In file included from ApacheRFC2822Parser.cpp:36:
+./RFC2822Parser.cpp:185:62: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  185 |         M::buffer_.erase(M::skip_line(M::buffer_.get_data()) -
+      |                    ~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+  186 |                          M::buffer_.get_data());
+      |                          ~~~~~~~~~~~~~~~~~~~~~
+ApacheRFC2822Parser.cpp:42:16: note: in instantiation of member function 'RFC2822Parser<ApacheRequestReader>::skip_header' requested here
+   42 | template class RFC2822Parser<ApacheRequestReader>;
+      |                ^
+In file included from ApacheRFC2822Parser.cpp:36:
+./RFC2822Parser.cpp:206:54: warning: implicit conversion changes signedness: 'long' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+  206 |                                             line_end - line_start -
+      |                                             ~~~~~~~~~^~~~~~~~~~~~ ~
+ApacheRFC2822Parser.cpp:42:16: note: in instantiation of member function 'RFC2822Parser<ApacheRequestReader>::get_one_header' requested here
+   42 | template class RFC2822Parser<ApacheRequestReader>;
+      |                ^
+In file included from ApacheRFC2822Parser.cpp:36:
+./RFC2822Parser.cpp:216:31: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  216 |     M::buffer_.erase(line_end - M::buffer_.get_data());
+      |                ~~~~~ ~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+./RFC2822Parser.cpp:247:32: warning: implicit conversion changes signedness: 'long' to 'apr_size_t' (aka 'unsigned long') [-Wsign-conversion]
+  247 |         M::buffer_.erase(start - M::buffer_.get_data());
+      |                    ~~~~~ ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+ApacheRFC2822Parser.cpp:42:16: note: in instantiation of member function 'RFC2822Parser<ApacheRequestReader>::parse_header' requested here
+   42 | template class RFC2822Parser<ApacheRequestReader>;
+      |                ^
+21 warnings generated.
+[0;36mCompiling [1;36mFileWriter.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o FileWriter.o FileWriter.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from FileWriter.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from FileWriter.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from FileWriter.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+6 warnings generated.
+[0;36mCompiling [1;36mReadWriteLocker.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -o ReadWriteLocker.o ReadWriteLocker.cpp
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from ReadWriteLocker.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from ReadWriteLocker.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from ReadWriteLocker.cpp:28:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+6 warnings generated.
+[1;34mGenerating [1;31mmod_uploader.so[0m
+/usr/local/bin/libtool --silent --mode=link --tag=CXX clang++ -Wall   -L/usr/local/lib -lMagick++-6 -lMagickWand-6 -lMagickCore-6 -lcrypto -lm  -L/usr/local/lib -lapr-1 -lcrypt  -lpthread -L/usr/local/lib -lMagick++-6 -lMagickWand-6 -lMagickCore-6  -L/usr/local/lib \
+	-export-dynamic -module -avoid-version \
+	-rpath /usr/local/libexec/apache24 \
+	-o mod_uploader.la ApacheLogger.lo ApacheRFC1867Parser.lo ApacheRFC2822Parser.lo ApacheRequestReader.lo ApacheResponseWriter.lo ApacheTemplateExecutor.lo ApacheUploadItemRss.lo Auxiliary.lo CharCodeConverter.lo DirectoryCleaner.lo DownloadFlowController.lo FileWriter.lo ImageFile.lo MessageDigest5.lo MultipartMessageParser.lo MultipartMessageParserBuffer.lo PostDataChecker.lo PostFlowController.lo PostProgressList.lo ReadWriteLocker.lo RequestReader.lo SourceInfo.lo TemplateLexer.lo TemplateParser.lo TemplateVariable.lo TemplateVariableCreator.lo TemporaryFile.lo ThumbnailIterator.lo ThumbnailList.lo ThumbnailVariableCreator.lo UploadItem.lo UploadItemIO.lo UploadItemIterator.lo UploadItemList.lo UploadItemListReader.lo UploadItemManager.lo UploadItemReader.lo UploadItemVariableCreator.lo UploadItemWriter.lo UploaderConfig.lo UploaderTemplate.lo mod_uploader.lo uploader_util.lo
+c++: warning: argument unused during compilation: '-pthread' [-Wunused-command-line-argument]
+gmake[1]: �ǥ��쥯�ȥ� '<zip-test-dir>/mod_uploader-3.2.0_6/src' ����Фޤ�
+cp -f src/mod_uploader.so ./
+cd src && gmake -f GNUmakefile password-tool
+gmake[1]: �ǥ��쥯�ȥ� '<zip-test-dir>/mod_uploader-3.2.0_6/src' ������ޤ�
+clang++ -DLOCALE_JA -DCONV_CHAR_CODE -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -g -O2 -std=c++11 -Wall   -L/usr/local/lib -lMagick++-6 -lMagickWand-6 -lMagickCore-6 -o password_tool ../util/password_tool.cpp -lcrypto -lm  -L/usr/local/lib -lapr-1 -lcrypt  -lpthread -L/usr/local/lib -lMagick++-6 -lMagickWand-6 -lMagickCore-6  -L/usr/local/lib
+clang++: warning: optimization flag '-ftracer' is not supported [-Wignored-optimization-argument]
+In file included from ../util/password_tool.cpp:3:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:38:
+../include/File.h:209:44: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  209 |         if (apr_mmap_create(&mmap_, file_, offset,
+      |             ~~~~~~~~~~~~~~~                ^~~~~~
+../include/File.h:285:23: warning: implicit conversion changes signedness: 'apr_uint64_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  285 |         seek_offset = offset;
+      |                     ~ ^~~~~~
+../include/File.h:313:21: warning: implicit conversion changes signedness: 'apr_off_t' (aka 'long') to 'apr_uint64_t' (aka 'unsigned long') [-Wsign-conversion]
+  313 |         return info.size;
+      |         ~~~~~~ ~~~~~^~~~
+../include/File.h:378:35: warning: implicit conversion changes signedness: 'apr_size_t' (aka 'unsigned long') to 'apr_off_t' (aka 'long') [-Wsign-conversion]
+  378 |         if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+      |             ~~~~~~~~~~~~~~        ^~~~
+In file included from ../util/password_tool.cpp:3:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:50:
+In file included from ../include/PostFlowController.h:40:
+../include/FlowController.h:87:57: warning: implicit conversion changes signedness: 'const char' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   87 |         return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+      |                 ~~~~~~~                                 ^~~~~~~~~~~~~
+In file included from ../util/password_tool.cpp:3:
+In file included from ../include/Environment.h:83:
+In file included from ../include/All.h:56:
+../include/TemplateParser.h:197:46: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  197 |         return sizeof(node_t) * token_array->nelts * 2;
+      |                               ~ ~~~~~~~~~~~~~^~~~~
+In file included from ../util/password_tool.cpp:5:
+../include/PasswordHash.h:17:48: warning: implicit conversion changes signedness: 'const value_type' (aka 'const char') to 'unsigned char' [-Wsign-conversion]
+   17 |     for(size_t i=0;i<n*2;++i) {unsigned char c=s[i];int v=c>='0'&&c<='9'?c-'0':c>='a'&&c<='f'?c-'a'+10:-1;
+      |                                              ~ ^~~~
+../util/password_tool.cpp:20:34: warning: implicit conversion changes signedness: 'size_type' (aka 'unsigned long') to 'streamsize' (aka 'long') [-Wsign-conversion]
+   20 |     if(!in.read(data.data(),data.size()))throw "Cannot read metadata";return data;
+      |            ~~~~             ~~~~~^~~~~~
+../util/password_tool.cpp:63:57: warning: implicit conversion changes signedness: 'ssize_t' (aka 'long') to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+   63 |         if(count<=0){close(fd);throw "Write failed";}n+=count;}
+      |                                                       ~~^~~~~
+9 warnings generated.
+gmake[1]: �ǥ��쥯�ȥ� '<zip-test-dir>/mod_uploader-3.2.0_6/src' ����Фޤ�

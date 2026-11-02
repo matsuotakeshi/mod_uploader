@@ -1,0 +1,12 @@
+FreeBSD 15.1-RELEASE amd64
+FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)
+Target: x86_64-unknown-freebsd15.1
+Thread model: posix
+InstalledDir: /usr/bin
+Server version: Apache/2.4.69 (FreeBSD)
+Server built:   unknown
+Version: ImageMagick 6.9.13-50 (Beta) Q16 amd64 19422 https://legacy.imagemagick.org
+Copyright: (C) 1999 ImageMagick Studio LLC
+License: https://imagemagick.org/license/
+Features: Cipher DPC Modules 
+Delegates (built-in): bzlib cairo fftw fontconfig freetype heic jbig jng jp2 jpeg lcms lqr ltdl lzma png raqm raw rsvg tiff webp wmf x xml zlib

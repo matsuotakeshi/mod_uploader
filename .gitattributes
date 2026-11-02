@@ -1,3 +1,13 @@
+# Unix build scripts must remain executable after a Windows checkout or archive.
+configure text eol=lf
+configure.ac text eol=lf
+*.m4 text eol=lf
+build/** text eol=lf
+GNUmakefile* text eol=lf
+*.sh text eol=lf
+*.pl text eol=lf
+*.py text eol=lf
+
 ports/** text eol=lf
 ports/**/files/patch-* -text -whitespace
 tests/** text eol=lf
@@ -10,3 +20,4 @@ docs/validation/security-audit/**/*.log -whitespace
 docs/validation/security-audit/*.log -whitespace
 docs/validation/root-deployment/**/*.log -whitespace
 docs/validation/root-deployment/*.log -whitespace
+docs/validation/archive-lf/*.log -whitespace
