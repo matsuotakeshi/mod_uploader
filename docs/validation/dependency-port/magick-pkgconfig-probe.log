@@ -1,0 +1,2 @@
+-I/usr/local/include/ImageMagick-7 -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16 -DMAGICKCORE_CHANNEL_MASK_DEPTH=32
+-L/usr/local/lib -lMagick++-7 -lMagickWand-7 -lMagickCore-7

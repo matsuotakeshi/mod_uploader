@@ -1,0 +1,179 @@
+build started at Tue Nov  3 22:10:35 JST 2026
+port directory: /usr/ports/www/mod_uploader
+package name: ap24-mod_uploader-3.2.0_7
+building for: FreeBSD uploader151-uploaderq4-plain 15.1-RELEASE-p6 FreeBSD 15.1-RELEASE-p6 amd64
+maintained by: takeshi@ysni.org
+Makefile datestamp: -rw-r--r--  1 root wheel 5248 Nov  3 12:49 /usr/ports/www/mod_uploader/Makefile
+Ports top last git commit: 33445545dd3a920c6340bfe4efa7035c5129afdf
+Ports top unclean checkout: no
+Port dir last git commit:
+Port dir unclean checkout: no
+Poudriere version: poudriere-git-3.4.8
+Host OSVERSION: 1501000
+Jail OSVERSION: 1501000
+Job Id:
+
+---Begin Environment---
+SHELL=/bin/sh
+OSVERSION=1501000
+UNAME_v=FreeBSD 15.1-RELEASE-p6
+UNAME_r=15.1-RELEASE-p6
+BLOCKSIZE=K
+MAIL=/var/mail/root
+MM_CHARSET=UTF-8
+LANG=C.UTF-8
+WARNING_WAIT=0
+POUDRIERE_ETC=<admin-root>/poudriere-etc
+STATUS=1
+HOME=/root
+PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin:/root/bin
+MAKE_OBJDIR_CHECK_WRITABLE=0
+LOCALBASE=/usr/local
+USER=root
+POUDRIERE_NAME=poudriere-git
+TRYBROKEN=yes
+LIBEXECPREFIX=/usr/local/libexec/poudriere
+POUDRIERE_VERSION=3.4.8
+MASTERMNT=<admin-root>/poudriere/data/.m/uploader151-uploaderq4-plain/ref
+DEV_WARNING_WAIT=0
+LC_COLLATE=C
+POUDRIERE_BUILD_TYPE=bulk
+PACKAGE_BUILDING=yes
+SAVED_TERM=dumb
+GID=0
+OUTPUT_REDIRECTED_STDERR=4
+OUTPUT_REDIRECTED=1
+UID=0
+PWD=<admin-root>/poudriere/data/.m/uploader151-uploaderq4-plain/ref/.p
+OUTPUT_REDIRECTED_STDOUT=3
+NO_WARNING_PKG_INSTALL_EOL=yes
+P_PORTS_FEATURES=FLAVORS SUBPACKAGES SELECTED_OPTIONS
+MASTERNAME=uploader151-uploaderq4-plain
+SCRIPTPREFIX=/usr/local/share/poudriere
+SCRIPTNAME=testport.sh
+OLDPWD=<admin-root>/poudriere/data/.m/uploader151-uploaderq4-plain/ref/.p/pool
+POUDRIERE_PKGNAME=poudriere-git-3.4.8
+SCRIPTPATH=/usr/local/share/poudriere/testport.sh
+POUDRIEREPATH=/usr/local/bin/poudriere
+---End Environment---
+
+---Begin Poudriere Port Flags/Env---
+PORT_FLAGS=
+PKGENV=PACKAGES=/tmp/pkgs PKGREPOSITORY=/tmp/pkgs PKGLATESTREPOSITORY=/tmp/pkgs/Latest
+FLAVOR=
+MAKE_ARGS=
+---End Poudriere Port Flags/Env---
+
+---Begin OPTIONS List---
+===> The following configuration options are available for ap24-mod_uploader-3.2.0_7:
+     THUMBNAIL=off: Enable ImageMagick raster thumbnails (configure resource policy first)
+===> Use 'make config' to modify these settings
+---End OPTIONS List---
+
+--MAINTAINER--
+takeshi@ysni.org
+--End MAINTAINER--
+
+--CONFIGURE_ARGS--
+--with-apxs=/usr/local/sbin/apxs  --with-aprconf=/usr/local/bin/apr-1-config  --with-libtool=/usr/local/bin/libtool  --with-writer=basic --prefix=/usr/local ${_LATE_CONFIGURE_ARGS}
+--End CONFIGURE_ARGS--
+
+--CONFIGURE_ENV--
+MAKE=/usr/local/bin/gmake ac_cv_path_PERL=/usr/local/bin/perl ac_cv_path_PERL_PATH=/usr/local/bin/perl  PERL_USE_UNSAFE_INC=1 PYTHON="/usr/local/bin/python3.12" XDG_DATA_HOME=/wrkdirs/usr/ports/www/mod_uploader/work  XDG_CONFIG_HOME=/wrkdirs/usr/ports/www/mod_uploader/work  XDG_CACHE_HOME=/wrkdirs/usr/ports/www/mod_uploader/work/.cache  HOME=/wrkdirs/usr/ports/www/mod_uploader/work TMPDIR="/tmp" PATH=/wrkdirs/usr/ports/www/mod_uploader/work/.bin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin:/root/bin PKG_CONFIG_LIBDIR=/wrkdirs/usr/ports/www/mod_uploader/work/.pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/share/pkgconfig:/usr/libdata/pkgconfig SHELL=/bin/sh CONFIG_SHELL=/bin/sh CONFIG_SITE=/usr/ports/Templates/config.site lt_cv_sys_max_cmd_len=524288
+--End CONFIGURE_ENV--
+
+--MAKE_ENV--
+PERL_USE_UNSAFE_INC=1 OPENSSLBASE=/usr OPENSSLDIR=/etc/ssl OPENSSLINC=/usr/include OPENSSLLIB=/usr/lib XDG_DATA_HOME=/wrkdirs/usr/ports/www/mod_uploader/work  XDG_CONFIG_HOME=/wrkdirs/usr/ports/www/mod_uploader/work  XDG_CACHE_HOME=/wrkdirs/usr/ports/www/mod_uploader/work/.cache  HOME=/wrkdirs/usr/ports/www/mod_uploader/work TMPDIR="/tmp" PATH=/wrkdirs/usr/ports/www/mod_uploader/work/.bin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin:/root/bin PKG_CONFIG_LIBDIR=/wrkdirs/usr/ports/www/mod_uploader/work/.pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/share/pkgconfig:/usr/libdata/pkgconfig MK_DEBUG_FILES=no MK_KERNEL_SYMBOLS=no SHELL=/bin/sh NO_LINT=YES PREFIX=/usr/local  LOCALBASE=/usr/local  CC="cc" CFLAGS="-O2 -pipe  -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing "  CPP="cpp" CPPFLAGS="-I/usr/include -DLIBICONV_PLUG"  LDFLAGS=" -L/usr/lib  " LIBS=""  CXX="c++" CXXFLAGS="-O2 -pipe -DLIBICONV_PLUG -fstack-protector-strong -fno-strict-aliasing   -DLIBICONV_PLUG " BSD_INSTALL_PROGRAM="install  -s -m 555"  BSD_INSTALL_LIB="install  -s -m 0644"  BSD_INSTALL_SCRIPT="install  -m 555"  BSD_INSTALL_DATA="install  -m 0644"  BSD_INSTALL_MAN="install  -m 444"
+--End MAKE_ENV--
+
+--PLIST_SUB--
+ APACHEMODDIR="libexec/apache24"  APACHEINCLUDEDIR="include/apache24"  APACHEETCDIR="etc/apache24"  APACHE_VERSION="2.4" AP_NAME="uploader" AP_MODULE="mod_uploader.so" PYTHON_INCLUDEDIR=include/python3.12  PYTHON_LIBDIR=lib/python3.12  PYTHON_PLATFORM=freebsd15  PYTHON_SITELIBDIR=lib/python3.12/site-packages  PYTHON_SUFFIX=312  PYTHON_BASESUFFIX=312  PYTHON_TAG=.cpython-312  PYTHON_SOABI=.cpython-312  PYTHON_VER=3.12  PYTHON_BASEVER=3.12  PYTHON_VERSION=python3.12 PYTHON2="@comment " PYTHON3="" OSREL=15.1 PREFIX=%D LOCALBASE=/usr/local  RESETPREFIX=/usr/local LIB32DIR=lib AP_MOD_EN="-A" PERL_VERSION=5.42.3  PERL_VER=5.42  PERL5_MAN1=lib/perl5/site_perl/man/man1  PERL5_MAN3=lib/perl5/site_perl/man/man3  SITE_PERL=lib/perl5/site_perl  SITE_ARCH=lib/perl5/site_perl/mach/5.42 DOCSDIR="share/doc/mod_uploader"  EXAMPLESDIR="share/examples/mod_uploader"  DATADIR="share/mod_uploader"  WWWDIR="www/mod_uploader"  ETCDIR="etc/mod_uploader"
+--End PLIST_SUB--
+
+--SUB_LIST--
+APACHEMODDIR=libexec/apache24 APACHEMODDIR="libexec/apache24"  APACHEETCDIR="etc/apache24"  APACHE_VERSION="2.4" PYTHON_INCLUDEDIR=/usr/local/include/python3.12  PYTHON_LIBDIR=/usr/local/lib/python3.12  PYTHON_PLATFORM=freebsd15  PYTHON_SITELIBDIR=/usr/local/lib/python3.12/site-packages  PYTHON_SUFFIX=312  PYTHON_BASESUFFIX=312  PYTHON_TAG=.cpython-312  PYTHON_SOABI=.cpython-312  PYTHON_VER=3.12  PYTHON_BASEVER=3.12  PYTHON_VERSION=python3.12 PYTHON2="@comment " PYTHON3="" PREFIX=/usr/local LOCALBASE=/usr/local  DATADIR=/usr/local/share/mod_uploader DOCSDIR=/usr/local/share/doc/mod_uploader EXAMPLESDIR=/usr/local/share/examples/mod_uploader  WWWDIR=/usr/local/www/mod_uploader ETCDIR=/usr/local/etc/mod_uploader
+--End SUB_LIST--
+
+---Begin make.conf---
+USE_PACKAGE_DEPENDS=yes
+BATCH=yes
+WRKDIRPREFIX=/wrkdirs
+PORTSDIR=/usr/ports
+PACKAGES=/packages
+DISTDIR=/distfiles
+FORCE_PACKAGE=yes
+PACKAGE_BUILDING=yes
+PACKAGE_BUILDING_FLAVORS=yes
+####  ####
+MAKE_JOBS_NUMBER=2
+####  ####
+www_mod_uploader_UNSET=THUMBNAIL
+MAKE_JOBS_NUMBER=1
+#### Misc Poudriere ####
+.include "/etc/make.conf.ports_env"
+---End make.conf---
+--Resource limits--
+cpu time               (seconds, -t)  unlimited
+file size           (512-blocks, -f)  unlimited
+data seg size           (kbytes, -d)  33554432
+stack size              (kbytes, -s)  524288
+core file size      (512-blocks, -c)  unlimited
+max memory size         (kbytes, -m)  unlimited
+locked memory           (kbytes, -l)  unlimited
+max user processes              (-u)  5734
+open files                      (-n)  8192
+virtual mem size        (kbytes, -v)  unlimited
+swap limit              (kbytes, -w)  unlimited
+socket buffer size       (bytes, -b)  unlimited
+pseudo-terminals                (-p)  unlimited
+kqueues                         (-k)  unlimited
+umtx shared locks               (-o)  unlimited
+pipebuf                         (-y)  unlimited
+--End resource limits--
+=======================<phase: check-sanity   >============================
+===== env: DEVELOPER_MODE=yes DEVELOPER=1 STRICT_DEPENDS=yes USER=nobody UID=65534 GID=65534
+===>  License ZLIB accepted by the user
+===========================================================================
+=======================<phase: pkg-depends    >============================
+===== env: DEVELOPER_MODE=yes USE_PACKAGE_DEPENDS_ONLY=1 USER=root UID=0 GID=0
+===>   ap24-mod_uploader-3.2.0_7 depends on file: /usr/local/sbin/pkg - found
+===========================================================================
+=======================<phase: fetch-depends  >============================
+===== env: DEVELOPER_MODE=yes USE_PACKAGE_DEPENDS_ONLY=1 USER=root UID=0 GID=0
+===========================================================================
+=======================<phase: fetch          >============================
+===== env: DEVELOPER_MODE=yes STRICT_DEPENDS=yes USER=root UID=0 GID=0
+===>  License ZLIB accepted by the user
+===>   ap24-mod_uploader-3.2.0_7 depends on file: /usr/local/sbin/pkg - found
+===> Fetching all distfiles required by ap24-mod_uploader-3.2.0_7 for building
+===========================================================================
+=======================<phase: checksum       >============================
+===== env: DEVELOPER_MODE=yes STRICT_DEPENDS=yes USER=root UID=0 GID=0
+===>  License ZLIB accepted by the user
+===>   ap24-mod_uploader-3.2.0_7 depends on file: /usr/local/sbin/pkg - found
+===> Fetching all distfiles required by ap24-mod_uploader-3.2.0_7 for building
+=> SHA256 Checksum OK for kimata-mod_uploader-3.2.0-31632a29138b18b7adbf533416a0ec660f1b07ac_GH0.tar.gz.
+===========================================================================
+=======================<phase: extract-depends>============================
+===== env: DEVELOPER_MODE=yes USE_PACKAGE_DEPENDS_ONLY=1 USER=root UID=0 GID=0
+===========================================================================
+=======================<phase: extract        >============================
+===== env: DEVELOPER_MODE=yes STRICT_DEPENDS=yes USER=nobody UID=65534 GID=65534
+===>  License ZLIB accepted by the user
+===>   ap24-mod_uploader-3.2.0_7 depends on file: /usr/local/sbin/pkg - found
+===> Fetching all distfiles required by ap24-mod_uploader-3.2.0_7 for building
+===>  Extracting for ap24-mod_uploader-3.2.0_7
+=> SHA256 Checksum OK for kimata-mod_uploader-3.2.0-31632a29138b18b7adbf533416a0ec660f1b07ac_GH0.tar.gz.
+===========================================================================
+=======================<phase: patch-depends  >============================
+===== env: DEVELOPER_MODE=yes USE_PACKAGE_DEPENDS_ONLY=1 USER=root UID=0 GID=0
+===========================================================================
+=======================<phase: patch          >============================
+===== env: DEVELOPER_MODE=yes DEVELOPER=1 STRICT_DEPENDS=yes USER=nobody UID=65534 GID=65534
+===>  Patching for ap24-mod_uploader-3.2.0_7
+/usr/local/bin/perl -pi -e 's/\r\n/\n/g'  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/GNUmakefile.in  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/acinclude.m4  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/conf/en/apache.conf.in  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/configure  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/configure.ac  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/include/ApacheResponse.h  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/include/File.h  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/include/FlowController.h  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/include/Locker.h  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/include/MultipartMessageParser.h.in  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/include/MultipartMessageParserBuffer.h  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/include/ReadLocker.h  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/include/ReadWriteLocker.h  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/include/TemplateParser.h  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/include/UploadItem.h  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/include/UploadItemIO.h  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/include/UploadItemList.h  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/include/UploadItemManager.h  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/include/UploadItemWriter.h  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/include/WriteLocker.h  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/include/uploader_util.h  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/ApacheRequestReader.cpp  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/CGIConfigReader.cpp  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/CharCodeConverter.cpp  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/ConfigReader.cpp  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/DirectoryCleaner.cpp  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/DownloadFlowController.cpp  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/GNUmakefile.dep.in  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/GNUmakefile.in  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/ImageFile.cpp  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/MessageDigest5.cpp  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/MultipartMessageParser.cpp  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/MultipartMessageParserBuffer.cpp  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/PostDataChecker.cpp  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/PostFlowController.cpp  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/RFC1867Parser.cpp  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/RFC2822Parser.cpp  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/StandConfigReader.cpp  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/TemplateLexer.cpp  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/TemplateParser.cpp  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/UploadItem.cpp  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/UploadItemIO.cpp  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/UploadItemList.cpp  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/UploadItemListReader.cpp  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/UploadItemManager.cpp  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/UploadItemReader.cpp  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/UploadItemWriter.cpp  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/UploaderConfig.cpp  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/UploaderTemplate.cpp  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/mod_uploader.cpp  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/src/uploader_handler.cpp  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/tmpl/admin.htm.in  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/tmpl/download.htm.in  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/tmpl/en/admin.htm.in  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/tmpl/en/download.htm.in  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/tmpl/en/error.htm.in  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/tmpl/en/index.htm.in  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/tmpl/en/info.htm.in  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/tmpl/en/thumbnail.htm.in  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/tmpl/error.htm.in  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/tmpl/index.htm.in  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/tmpl/index_swf.htm.in  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/tmpl/info.htm.in  /wrkdirs/usr/ports/www/mod_uploader/work/mod_uploader-31632a29138b18b7adbf533416a0ec660f1b07ac/tmpl/thumbnail.htm.in
+/tmp/makebD3c34: /usr/local/bin/perl: not found
+*** Error code 127
+
+Stop.
+make: stopped making "patch" in /usr/ports/www/mod_uploader

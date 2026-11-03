@@ -1,0 +1,140 @@
+{
+  "checked_at": "2026-11-03T13:30:25.439406+00:00",
+  "scope": [
+    "apache24-2.4.69",
+    "apr-1.7.6.1.6.3",
+    "python312-3.12.15"
+  ],
+  "environment": {
+    "freebsd": {
+      "exit": 1,
+      "output": "freebsd-version: unable to locate kernel\n"
+    },
+    "openssl": {
+      "exit": 0,
+      "output": "OpenSSL 3.5.6 7 Apr 2026 (Library: OpenSSL 3.5.6 7 Apr 2026)\nbuilt on: reproducible build, date unspecified\nplatform: FreeBSD-amd64\noptions:  bn(64,64)\ncompiler: clang\nOPENSSLDIR: \"/etc/ssl\"\nENGINESDIR: \"/usr/lib/engines-3\"\nMODULESDIR: \"/usr/lib/ossl-modules\"\nSeeding source: os-specific\nCPUINFO: OPENSSL_ia32cap=0xfed83203078bffff:0x00405fc6f1bf07a9:0x0000002000000010:0x0000000000000000:0x0000000000000000\n"
+    },
+    "apache": {
+      "exit": 0,
+      "output": "Server version: Apache/2.4.69 (FreeBSD)\nServer built:   unknown\n"
+    }
+  },
+  "packages": [
+    {
+      "package": "apache24-2.4.69",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "apr-1.7.6.1.6.3",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "brotli-1.2.1,1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "curl-8.23.0",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "expat-2.9.0",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "gdbm-1.26",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "gettext-runtime-1.0_1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "indexinfo-0.3.1_1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "jansson-2.15.1_1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libffi-3.8.0",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libidn2-2.3.8",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "liblz4-1.10.0_2,1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libnghttp2-1.70.0",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libpsl-0.23.3",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libssh2-1.11.1_1,3",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libunistring-1.4.2",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libxml2-2.15.4",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "mpdecimal-4.0.1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "pcre2-10.49",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "perl5-5.42.3",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "python312-3.12.15",
+      "audit_exit": 1,
+      "vulnerable": true
+    },
+    {
+      "package": "readline-8.3.6",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "zstd-1.5.7_2",
+      "audit_exit": 0,
+      "vulnerable": false
+    }
+  ],
+  "limits": "pkg audit covers registered packages and published VuXML entries; base-system OpenSSL and private prefixes need separate advisory review."
+}

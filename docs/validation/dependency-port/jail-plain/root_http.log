@@ -1,0 +1,9 @@
+COMMAND: jexec -u nobody uploader151-uploaderq4-plain-n env PYTHONDONTWRITEBYTECODE=1 MAGICK_CONVERT=/usr/local/bin/magick /usr/local/bin/python3.12 /review/tests/root_http_test.py --build-root /review/installed --workdir /review/work
+mount='/' trailing=True tls=False thumbnail=False: 119 checks passed; /review/work/root-http-a5x92eiq
+mount='/' trailing=False tls=False thumbnail=False: 119 checks passed; /review/work/root-http-us_67ogi
+mount='/up' trailing=False tls=False thumbnail=False: 121 checks passed; /review/work/root-http-pe9nqd8j
+mount='/up' trailing=True tls=False thumbnail=False: 121 checks passed; /review/work/root-http-l0wtxd1m
+mount='/board/up' trailing=True tls=False thumbnail=False: 121 checks passed; /review/work/root-http-8h0yxrhg
+mount='/' trailing=True tls=True thumbnail=False: 119 checks passed; /review/work/root-http-shkb8y90
+mount='/up' trailing=True tls=True thumbnail=False: 121 checks passed; /review/work/root-http-uwt1wen_
+root-http: 841 checks passed across 7 VirtualHost configurations

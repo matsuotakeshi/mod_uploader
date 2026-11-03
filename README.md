@@ -12,7 +12,9 @@ following the build correction. The Port has now built and passed stage, check-p
 on FreeBSD 15.1 amd64 / Clang 19.1.7 / Apache 2.4.69 (THUMBNAIL off).
 Isolated real Apache HTTP/HTTPS, concurrent requests, migration and rollback tests
 also pass; their coverage and limits are recorded in docs/validation.
-Production package installation, poudriere and exhaustive HTTP behavior remain unverified.
+Production package installation and exhaustive HTTP behavior remain unverified.
+See the [dependency and poudriere report](docs/DEPENDENCY-PORT-VALIDATION-ja.md)
+for the additional package validation and remaining dependency warnings.
 
 ## Build
 
@@ -60,5 +62,9 @@ Port revision 7 adds verified offline backup/restore and recovery tools, journal
 upload/eviction, bounded raster thumbnail processing, dependency/capacity audits,
 and meaningful error HTTP statuses. See [the operations guide](docs/OPERATIONS-ja.md)
 and [revision 7 validation](docs/OPERATIONS-VALIDATION-ja.md) before upgrading.
+
+Port revision 8 declares Perl for the patch phase and supplies the FreeBSD
+pkg-config search path for ImageMagick 7 thumbnail builds. The module source,
+templates and password storage format are unchanged from revision 7.
 
 管理画面はApacheでの独立した認証が必須です。Portの初期設定では閉鎖しています。IP別のパスワード処理回数と、プロセス間の同時実行数も制限します。設定・制限値は[セキュリティと移行手順](docs/SECURITY-MIGRATION-ja.md)を参照してください。

@@ -1,0 +1,843 @@
+{
+  "checked_at": "2026-11-03T12:49:33.740377+00:00",
+  "scope": [
+    "ImageMagick6-6.9.13.59,1",
+    "apache24-2.4.69",
+    "apr-1.7.6.1.6.3",
+    "libiconv-1.18_1",
+    "python311-3.11.17",
+    "python312-3.12.15"
+  ],
+  "environment": {
+    "freebsd": {
+      "exit": 0,
+      "output": "15.1-RELEASE\n15.1-RELEASE\n"
+    },
+    "openssl": {
+      "exit": 0,
+      "output": "OpenSSL 3.5.6 7 Apr 2026 (Library: OpenSSL 3.5.6 7 Apr 2026)\nbuilt on: reproducible build, date unspecified\nplatform: FreeBSD-amd64\noptions:  bn(64,64)\ncompiler: clang\nOPENSSLDIR: \"/etc/ssl\"\nENGINESDIR: \"/usr/lib/engines-3\"\nMODULESDIR: \"/usr/lib/ossl-modules\"\nSeeding source: os-specific\nCPUINFO: OPENSSL_ia32cap=0xfed83203078bffff:0x00405fc6f1bf07a9:0x0000002000000010:0x0000000000000000:0x0000000000000000\n"
+    },
+    "apache": {
+      "exit": 0,
+      "output": "Server version: Apache/2.4.69 (FreeBSD)\nServer built:   unknown\n"
+    }
+  },
+  "packages": [
+    {
+      "package": "ImageMagick6-6.9.13.59,1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "Imath-3.2.3_1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "aom-3.15.1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "apache24-2.4.69",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "apr-1.7.6.1.6.3",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "avahi-app-0.8_6",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "bash-5.3.20",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "binutils-2.44,1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "boost-libs-1.92.0",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "brotli-1.2.1,1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "cairo-1.18.2,3",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "cups-2.4.20",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "curl-8.23.0",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "dav1d-1.5.4",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "dbus-1.16.2_4,1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "dbus-glib-0.116",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "expat-2.9.0",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "ffmpeg-9.0.2,1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "fftw3-3.3.11",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "fontconfig-2.17.1,1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "freetype2-2.14.3",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "fribidi-1.0.17",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "gcc14-14.2.0_7",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "gdbm-1.26",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "gdk-pixbuf2-2.44.1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "gettext-runtime-1.0",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "ghostscript10-10.08.0",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "giflib-6.1.3",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "glib-2.88.3,2",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "gmp-6.3.0",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "gnome_subr-1.0",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "gnutls-3.8.13",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "graphite2-1.3.15",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "gsfonts-8.11_8",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "harfbuzz-14.2.1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "highway-1.4.0",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "hwdata-0.411,1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "icu-76.1,1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "indexinfo-0.3.1_1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "jansson-2.15.1_1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "jbig2dec-0.20_1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "jbigkit-2.1_3",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "jpeg-turbo-3.1.4.1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "lame-4.0",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "lcms2-2.19.1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "lerc-4.2.0",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libICE-1.1.2,1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libSM-1.2.6,1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libX11-1.8.14,1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libXScrnSaver-1.2.5",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libXau-1.0.12",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libXcursor-1.2.3",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libXdamage-1.1.7",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libXdmcp-1.1.5",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libXext-1.3.7,1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libXfixes-6.0.2",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libXft-2.3.9",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libXi-1.8.4,1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libXrandr-1.5.5",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libXrender-0.9.13",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libXt-1.3.1,1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libXv-1.0.13,1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libXxf86vm-1.1.7",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libass-0.17.5",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libbluray-1.5.1,1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libdaemon-0.14_1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libdatrie-0.2.14_1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libdeflate-1.26",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libdisplay-info-0.4.0",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libdrm-2.4.134,1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libdvdnav-7.0.0",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libdvdread-7.1.1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libedit-3.1.20260512,1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libepoll-shim-0.0.20240608",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libevent-2.1.13",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libffi-3.5.1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libfontenc-1.1.9",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libgd-2.3.3_13,1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libglvnd-1.7.0",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libheif-1.23.6",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libiconv-1.18_1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libidn-1.44",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libidn2-2.3.8",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libjxl-0.12.0",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "liblqr-1-0.4.2",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libltdl-2.6.2",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "liblz4-1.10.0_2,1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libnghttp2-1.70.0",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libogg-1.3.6,4",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libpaper-1.1.28_1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libpciaccess-0.19",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libplacebo-7.360.1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libpsl-0.23.3",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libraqm-0.11.0",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libraw-0.22.2",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "librsvg2-rust-2.62.3_2",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libssh2-1.11.1_1,3",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libtasn1-4.21.0",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libthai-0.1.30",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libudev-devd-0.7.0",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libudfread-1.2.0",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libunibreak-7.0,1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libunistring-1.4.2",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libunwind-20250904",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libv4l-1.23.0_5",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libva-2.24.1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libvdpau-1.5",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libvorbis-1.3.7_2,3",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libvpx-1.17.0",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libwmf-0.2.16",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libx264-0.165.3223_1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libxcb-1.17.0",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libxkbcommon-1.13.2",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libxml2-2.15.2",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "libxshmfence-1.3.3",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "llvm19-19.1.7_4",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "lua53-5.3.6_1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "lzo2-2.10_2",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "mesa-libs-26.2.2",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "mkfontscale-1.2.4",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "mpc-1.4.1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "mpdecimal-4.0.1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "mpfr-4.2.2,1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "mpg123-1.33.7",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "nettle-3.10.2",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "openblas-0.3.34_1,2",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "openexr-3.4.16",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "openh264-2.6.0,2",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "openjpeg-2.5.4_2",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "openjph-0.32.0",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "opus-1.6.1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "p11-kit-0.26.5_1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "pango-1.57.1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "pcre2-10.49",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "perl5-5.42.2",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "pixman-0.46.4",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "pkgconf-3.0.7,1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "png-1.6.58",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "poppler-data-0.4.12",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "py312-boost-libs-1.92.0",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "py312-numpy-2.4.6_1,1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "py312-packaging-26.3",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "python311-3.11.17",
+      "audit_exit": 1,
+      "vulnerable": true
+    },
+    {
+      "package": "python312-3.12.15",
+      "audit_exit": 1,
+      "vulnerable": true
+    },
+    {
+      "package": "readline-8.3.3",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "sdl2-2.32.10_2",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "shaderc-2026.4",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "shared-mime-info-2.4_2",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "spirv-llvm-translator-llvm19-19.1.22",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "spirv-tools-2026.3",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "srt-1.5.7_1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "svt-av1-4.2.0",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "tiff-4.7.2",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "urw-base35-fonts-20200910",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "vmaf-3.2.1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "vulkan-loader-1.4.360",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "wayland-1.26.0",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "webp-1.6.0",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "x265-4.1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "xkeyboard-config-2.48",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "xorgproto-2025.1",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "xxhash-0.8.4",
+      "audit_exit": 0,
+      "vulnerable": false
+    },
+    {
+      "package": "zstd-1.5.7_2",
+      "audit_exit": 0,
+      "vulnerable": false
+    }
+  ],
+  "limits": "pkg audit covers registered packages and published VuXML entries; base-system OpenSSL and private prefixes need separate advisory review."
+}

@@ -1,0 +1,2 @@
+COMMAND: jexec -u nobody uploader151-uploaderq4-thumb-n env PYTHONDONTWRITEBYTECODE=1 MAGICK_CONVERT=/usr/local/bin/magick /usr/local/bin/python3.12 /review/tests/operations_http_test.py --build-root /review/installed --workdir /review/work --thumbnail --tools-root /usr/local/libexec/mod_uploader
+operations-http: 73 checks passed; thumbnail=True; fixtures retained: /review/work/operations-http-dgmfypa3

@@ -3598,7 +3598,7 @@
  
 --- /dev/null
 +++ b/MODIFICATIONS
-@@ -0,0 +1,38 @@
+@@ -0,0 +1,42 @@
 +mod_uploader 3.2.0 - altered FreeBSD / Apache 2.4 version
 +
 +Original software: Tetsuya Kimata.
@@ -3637,9 +3637,13 @@
 +capacity/dependency checks, reversible upload eviction with durable staging,
 +bounded raster-only thumbnails, explicit error statuses and reduced compiler warnings.
 +Metadata remains version 4. See docs/OPERATIONS-ja.md and OPERATIONS-VALIDATION-ja.md.
++
++Port revision 8: declare the patch-phase Perl dependency and the FreeBSD
++pkg-config search path for ImageMagick 7 thumbnail builds. Module source,
++templates and storage format are unchanged from revision 7.
 --- /dev/null
 +++ b/README.md
-@@ -0,0 +1,64 @@
+@@ -0,0 +1,70 @@
 +# mod_uploader 3.2.0: altered FreeBSD / Apache 2.4 version
 +
 +Original software by Tetsuya Kimata: https://github.com/kimata/mod_uploader
@@ -3654,7 +3658,9 @@
 +on FreeBSD 15.1 amd64 / Clang 19.1.7 / Apache 2.4.69 (THUMBNAIL off).
 +Isolated real Apache HTTP/HTTPS, concurrent requests, migration and rollback tests
 +also pass; their coverage and limits are recorded in docs/validation.
-+Production package installation, poudriere and exhaustive HTTP behavior remain unverified.
++Production package installation and exhaustive HTTP behavior remain unverified.
++See the [dependency and poudriere report](docs/DEPENDENCY-PORT-VALIDATION-ja.md)
++for the additional package validation and remaining dependency warnings.
 +
 +## Build
 +
@@ -3702,6 +3708,10 @@
 +upload/eviction, bounded raster thumbnail processing, dependency/capacity audits,
 +and meaningful error HTTP statuses. See [the operations guide](docs/OPERATIONS-ja.md)
 +and [revision 7 validation](docs/OPERATIONS-VALIDATION-ja.md) before upgrading.
++
++Port revision 8 declares Perl for the patch phase and supplies the FreeBSD
++pkg-config search path for ImageMagick 7 thumbnail builds. The module source,
++templates and password storage format are unchanged from revision 7.
 +
 +管理画面はApacheでの独立した認証が必須です。Portの初期設定では閉鎖しています。IP別のパスワード処理回数と、プロセス間の同時実行数も制限します。設定・制限値は[セキュリティと移行手順](docs/SECURITY-MIGRATION-ja.md)を参照してください。
 --- /dev/null
@@ -3825,7 +3835,7 @@
 +具体的な実行結果、試験件数、未検証範囲は `OPERATIONS-VALIDATION-ja.md` に記録します。
 --- /dev/null
 +++ b/docs/ROOT-DEPLOYMENT-ja.md
-@@ -0,0 +1,135 @@
+@@ -0,0 +1,137 @@
 +# VirtualHostルート・サブパス配置（Portリビジョン6）
 +
 +2026-11-02。近代化済み3.2.0_5を基にした変更です。保存形式4、パスワード・CSRF・投稿上限・サムネイル生成方式は継続します。特殊なRewriteは必要ありません。
@@ -3953,7 +3963,9 @@
 +
 +アップロードが上限に達した場合の古いファイル削除など、既存仕様は変わりません。サムネイルの保護・ImageMagickの資源制限など、[セキュリティ運用手順](SECURITY-MIGRATION-ja.md)も継続して適用してください。
 +
-+Portの既定値と今回作成した検証用パッケージは`THUMBNAIL=off`です。サムネイルを使う既存環境へ、そのまま入れ替えないでください。Portの`THUMBNAIL=on`はImageMagick 7を依存先とします。今回の実画像試験は、検証機に既存のImageMagick 6を利用した直接ビルドで行いました。ImageMagick 7有効のPortパッケージは未検証です。
++Portの既定値は`THUMBNAIL=off`です。サムネイルを使う既存環境では`THUMBNAIL=on`を選択してください。ImageMagick 7を依存先とします。両構成のpoudriere検証結果と依存更新状況は、リポジトリの`docs/DEPENDENCY-PORT-VALIDATION-ja.md`を参照してください。
++
++FreeBSDの公式ImageMagick 7を使って直接ビルドする場合、`Magick++-config --cppflags --libs`がヘッダ・ライブラリ指定を出力することを確認してください。`.pc`の検索に失敗する構成では、ビルド用シェルで`export PKG_CONFIG_PATH=/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig`を設定します。Port revision 8ではTHUMBNAIL有効時にこれをビルド環境へ設定します。
 +
 +## 参考
 +

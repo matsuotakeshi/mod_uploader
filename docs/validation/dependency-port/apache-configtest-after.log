@@ -1,0 +1,4 @@
+Performing sanity check on apache24 configuration:
+AH00557: httpd: apr_sockaddr_info_get() failed for validation-host
+AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 127.0.0.1. Set the 'ServerName' directive globally to suppress this message
+Syntax OK

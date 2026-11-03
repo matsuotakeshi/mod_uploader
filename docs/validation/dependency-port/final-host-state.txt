@@ -1,0 +1,26 @@
+$ freebsd-version -kru
+exit=0
+15.1-RELEASE
+15.1-RELEASE
+15.1-RELEASE
+
+$ /usr/bin/openssl version
+exit=0
+OpenSSL 3.5.6 7 Apr 2026 (Library: OpenSSL 3.5.6 7 Apr 2026)
+
+$ service apache24 onestatus
+exit=0
+apache24 is running as pid 1557.
+
+$ /usr/local/sbin/apachectl configtest
+exit=0
+Performing sanity check on apache24 configuration:
+AH00557: httpd: apr_sockaddr_info_get() failed for validation-host
+AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 127.0.0.1. Set the 'ServerName' directive globally to suppress this message
+Syntax OK
+
+$ jls -n name
+exit=0
+
+Production module unchanged: True
+module_sha256=91d42731a288cdee5b5a29209b73c659d8867778fd2d61299e8a1dd54ec5cead

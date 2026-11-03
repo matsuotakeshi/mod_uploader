@@ -1,0 +1,10 @@
+{
+  "ports/www/mod_uploader/Makefile": "297e05bb71c3d38eccb56d783f378b5160de1e5ae1ac542fa4506ab3bb49706f",
+  "ports/www/mod_uploader/distinfo": "464a2c9b8bbcde78b2f2e13dd510bcc724e5825cd590b56e87abcf768959d050",
+  "ports/www/mod_uploader/pkg-descr": "6525821f80703955642a336f6a6be8cdddb6c6d6d6fdeb46db1226eec78041c1",
+  "ports/www/mod_uploader/pkg-plist": "2f6bde1a6dbdd8a1f6ceea70dc3547ca2982a9018c2b0b16d28ba52eee9f5753",
+  "ports/www/mod_uploader/files/mod_uploader-root.conf.in": "8215f1c2db3da0de3206ee6845d46f1b9f3291258fd976c1dae55b6cb927fe1c",
+  "ports/www/mod_uploader/files/mod_uploader.conf.in": "92a50dce891e0a87c66944ffee20c4b52eee44cf3b938c20cbe30424da7409b8",
+  "ports/www/mod_uploader/files/patch-modern-freebsd": "c9cbfda0a3d9d6bfa02eaa5fdd653727d4b5ed5bef3548cd95518c4a9795ef87",
+  "ports/www/mod_uploader/files/pkg-message.in": "61780a64e4d1900829eec661bf7866c842fb5e5e863d4c139b5b59654797ab88"
+}

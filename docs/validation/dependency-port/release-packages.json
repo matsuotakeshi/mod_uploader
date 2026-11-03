@@ -1,0 +1,31 @@
+{
+  "plain": {
+    "package": "plain-ap24-mod_uploader-3.2.0_8.pkg",
+    "size": 205906,
+    "sha256": "630635539027975e0d2212740f235d6b1babbad04693593211c688f6e07eedb0",
+    "dependencies": [
+      "apache24-2.4.69",
+      "apr-1.7.6.1.6.3",
+      "python312-3.12.15"
+    ],
+    "options": [
+      "THUMBNAIL=off"
+    ],
+    "test_identity": "uid=65534(nobody) gid=65534(nobody) groups=65534(nobody)"
+  },
+  "thumb": {
+    "package": "thumb-ap24-mod_uploader-3.2.0_8.pkg",
+    "size": 210905,
+    "sha256": "258ca2f0e81c3b8ded2bc11d08da3e98d2d69890694d2c37ef59b458f2006663",
+    "dependencies": [
+      "ImageMagick7-nox11-7.1.2.34",
+      "apache24-2.4.69",
+      "apr-1.7.6.1.6.3",
+      "python312-3.12.15"
+    ],
+    "options": [
+      "THUMBNAIL=on"
+    ],
+    "test_identity": "uid=65534(nobody) gid=65534(nobody) groups=65534(nobody)"
+  }
+}

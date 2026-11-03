@@ -1,7 +1,8 @@
 # FreeBSD Port validation matrix
 
 Use a separate build host/jail and storage, never a running uploader's data.
-The results actually obtained are recorded in `docs/OPERATIONS-VALIDATION-ja.md`.
+The results actually obtained are recorded in `docs/OPERATIONS-VALIDATION-ja.md`
+and `docs/DEPENDENCY-PORT-VALIDATION-ja.md` (poudriere, both thumbnail options).
 
 For a current Ports tree, with dependencies already available:
 
@@ -35,6 +36,22 @@ poudriere testport -j uploader151 -p uploader -o www/mod_uploader
 Repeat in separately named poudriere option sets for THUMBNAIL off/on. Provisioning
 the jail, installing poudriere, and adjusting its options require administrator
 access. The command above is a procedure, not evidence that a jail test was run.
+
+For isolated configuration and official binary dependencies, the additional
+validation used `poudriere -e /private/poudriere-etc testport -j uploader151
+-p uploaderq4 -z thumb -b quarterly -J 1 -I -o www/mod_uploader`.
+Set `www_mod_uploader_SET=THUMBNAIL` in `thumb-make.conf`; use a separate set with
+`www_mod_uploader_UNSET=THUMBNAIL` for the default build. Inspect each phase log
+and verify the target package exists: the tested poudriere version returned zero
+with `-I` even after a failed target build and failed interactive installation.
+
+`-I` retains a jail with the installed package for HTTP testing. Run those tests
+as an unprivileged user; running as root invalidates permission-failure checks.
+Use an adapter pointing at the installed module, password tool, templates and
+static assets. The existing root HTTP test also expects a SWF fixture; the Port
+does not package SWF. Providing the source fixture tests static routing only,
+not a packaged SWF or browser Flash execution. Stop only the test jail afterward
+with the matching `poudriere -e ... jail -k -j ... -p ... -z ...` arguments.
 
 For each built module, run loopback tests with disposable directories:
 

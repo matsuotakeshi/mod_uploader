@@ -1,0 +1,17 @@
+15.1-RELEASE-p6
+uid=0(root) gid=0(wheel) groups=0(wheel),5(operator)
+ap24-mod_uploader-3.2.0_8
+apache24-2.4.69
+python312-3.12.15
+/usr/local/libexec/apache24/mod_uploader.so:
+	libcrypto.so.35 => /lib/libcrypto.so.35 (0x333976000000)
+	libm.so.5 => /lib/libm.so.5 (0x3339768af000)
+	libapr-1.so.0 => /usr/local/lib/libapr-1.so.0 (0x3339743cd000)
+	libcrypt.so.5 => /lib/libcrypt.so.5 (0x333976b35000)
+	libthr.so.3 => /lib/libthr.so.3 (0x333976b6f000)
+	libc++.so.1 => /lib/libc++.so.1 (0x333977430000)
+	libcxxrt.so.1 => /lib/libcxxrt.so.1 (0x333977b4e000)
+	libgcc_s.so.1 => /lib/libgcc_s.so.1 (0x3339786f4000)
+	libc.so.7 => /lib/libc.so.7 (0x3339739b0000)
+	libmd.so.7 => /lib/libmd.so.7 (0x333978f24000)
+	libsys.so.7 => /lib/libsys.so.7 (0x333973ed9000)

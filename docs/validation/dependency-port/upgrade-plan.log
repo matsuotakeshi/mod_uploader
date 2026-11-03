@@ -1,0 +1,16 @@
+The following 6 package(s) will be affected (of 0 checked):
+
+Installed packages to be UPGRADED:
+	ImageMagick6: 6.9.13.50_1,1 -> 6.9.13.59,1 [FreeBSD-ports]
+	brotli: 1.2.0,1 -> 1.2.1,1 [FreeBSD-ports]
+	curl: 8.22.0 -> 8.23.0 [FreeBSD-ports]
+	expat: 2.8.1 -> 2.9.0 [FreeBSD-ports]
+	libheif: 1.22.2_3 -> 1.23.6 [FreeBSD-ports]
+	python311: 3.11.15_2 -> 3.11.17 [FreeBSD-ports] (vulnerable!)
+
+Number of packages to be upgraded: 6
+
+The operation will free 3 MiB.
+38 MiB to be downloaded.
+
+WARNING: 1 package(s) have known vulnerabilities

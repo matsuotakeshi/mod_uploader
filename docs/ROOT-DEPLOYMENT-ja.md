@@ -125,7 +125,9 @@ DocumentRootには公開してよいchallengeファイルだけを置き、Direc
 
 アップロードが上限に達した場合の古いファイル削除など、既存仕様は変わりません。サムネイルの保護・ImageMagickの資源制限など、[セキュリティ運用手順](SECURITY-MIGRATION-ja.md)も継続して適用してください。
 
-Portの既定値と今回作成した検証用パッケージは`THUMBNAIL=off`です。サムネイルを使う既存環境へ、そのまま入れ替えないでください。Portの`THUMBNAIL=on`はImageMagick 7を依存先とします。今回の実画像試験は、検証機に既存のImageMagick 6を利用した直接ビルドで行いました。ImageMagick 7有効のPortパッケージは未検証です。
+Portの既定値は`THUMBNAIL=off`です。サムネイルを使う既存環境では`THUMBNAIL=on`を選択してください。ImageMagick 7を依存先とします。両構成のpoudriere検証結果と依存更新状況は、リポジトリの`docs/DEPENDENCY-PORT-VALIDATION-ja.md`を参照してください。
+
+FreeBSDの公式ImageMagick 7を使って直接ビルドする場合、`Magick++-config --cppflags --libs`がヘッダ・ライブラリ指定を出力することを確認してください。`.pc`の検索に失敗する構成では、ビルド用シェルで`export PKG_CONFIG_PATH=/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig`を設定します。Port revision 8ではTHUMBNAIL有効時にこれをビルド環境へ設定します。
 
 ## 参考
 

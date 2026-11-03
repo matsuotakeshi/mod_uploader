@@ -1,0 +1,22 @@
+{
+  "host": [
+    "15.1-RELEASE",
+    "15.1-RELEASE",
+    "15.1-RELEASE"
+  ],
+  "jail": "15.1-RELEASE-p6",
+  "files": [
+    {
+      "file": "/usr/lib/libssl.so.35",
+      "host_sha256": "09b30d892437036b8368d2dc12a8ba7f83c1dd140f51974e8eadc1cb543dec4a",
+      "patched_jail_sha256": "6fbf907ed94cc3d66f03bde6535e2b7862b91f9bf4c7f7c10806afb44a255d5c",
+      "same": false
+    },
+    {
+      "file": "/lib/libcrypto.so.35",
+      "host_sha256": "beacc4542bde340aab83e8c3ed340b60e2da08cf45f275026afefeabb6b6d612",
+      "patched_jail_sha256": "3657f50b377e37b3c2f382e0491d7c6f2baf0e99d059406ab43c53d76bfa7266",
+      "same": false
+    }
+  ]
+}

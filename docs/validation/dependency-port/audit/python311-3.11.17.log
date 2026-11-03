@@ -1,0 +1,10 @@
+python311-3.11.17 is vulnerable:
+  Python -- poplib module, when passed a user-controlled command, can have additional commands injected using newlines
+  CVE: CVE-2025-15367
+  WWW: https://vuxml.FreeBSD.org/freebsd/6d3488ae-2e0f-11f1-88c7-00a098b42aeb.html
+
+  Python -- imaplib module, when passed a user-controlled command, can have additional commands injected using newlines
+  CVE: CVE-2025-15366
+  WWW: https://vuxml.FreeBSD.org/freebsd/0be929a5-2e0f-11f1-88c7-00a098b42aeb.html
+
+2 problem(s) in 1 package(s) found.

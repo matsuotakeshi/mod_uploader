@@ -1,5 +1,7 @@
 # mod_uploader 3.2.0_7 運用改修・検証結果
 
+続く依存更新・OS側OpenSSL確認・poudriere/THUMBNAIL検証は、[追加検証報告](DEPENDENCY-PORT-VALIDATION-ja.md)を参照してください。以下はrevision 7検証時点の記録です。
+
 検証日: 2026-11-03。基準は改修版 `6c447be275e8c4d03656a03fdfc7b8ebfa7e8b5c`（Port revision 6）。原作者のコードとzlibライセンス表示を維持した改変版です。
 
 依頼された5分野の実装と、利用できるFreeBSD環境での検証を実施しました。本番の保存領域非公開、認証・保護、Certbotドライランは管理者の確認済み事項として扱っています。本作業では本番のモジュール、Apache設定、保存データ、システムパッケージを交換・再起動・初期化していません。

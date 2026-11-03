@@ -1,6 +1,6 @@
 PORTNAME=	mod_uploader
 PORTVERSION=	3.2.0
-PORTREVISION=	7
+PORTREVISION=	8
 CATEGORIES=	www
 PKGNAMEPREFIX=	${APACHE_PKGNAMEPREFIX}
 
@@ -15,7 +15,7 @@ LIB_DEPENDS=	libapr-1.so:devel/apr1
 BUILD_DEPENDS=	libtool:devel/libtool
 
 USES=		apache:2.4 gmake iconv perl5 ssl python:run
-USE_PERL5=	build
+USE_PERL5=	patch build
 USE_GITHUB=	yes
 GH_ACCOUNT=	kimata
 GH_TAGNAME=	31632a29138b18b7adbf533416a0ec660f1b07ac
@@ -35,9 +35,12 @@ SUB_LIST=	APACHEMODDIR=${APACHEMODDIR}
 
 OPTIONS_DEFINE=	THUMBNAIL
 THUMBNAIL_DESC=	Enable ImageMagick raster thumbnails (configure resource policy first)
+THUMBNAIL_USES=	pkgconfig
 THUMBNAIL_BUILD_DEPENDS=	ImageMagick7-nox11>=7.1.2.34:graphics/ImageMagick7@nox11
 THUMBNAIL_RUN_DEPENDS=	ImageMagick7-nox11>=7.1.2.34:graphics/ImageMagick7@nox11
 THUMBNAIL_CONFIGURE_ON=	--enable-thumbnail --with-mconf=${LOCALBASE}/bin/Magick++-config
+# Magick++-config overrides PKG_CONFIG_LIBDIR with lib/pkgconfig.
+THUMBNAIL_MAKE_ENV=	PKG_CONFIG_PATH=${LOCALBASE}/libdata/pkgconfig:${LOCALBASE}/lib/pkgconfig
 
 pre-patch:
 	${PERL} -pi -e 's/\r\n/\n/g' \

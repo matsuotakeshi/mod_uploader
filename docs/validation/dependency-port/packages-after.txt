@@ -1,0 +1,7 @@
+ImageMagick6-6.9.13.59,1
+brotli-1.2.1,1
+curl-8.23.0
+expat-2.9.0
+libheif-1.23.6
+python311-3.11.17
+python312-3.12.15

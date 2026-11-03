@@ -1,0 +1,20 @@
+{
+  "tag": "freebsd-update|amd64|15.1-RELEASE|6|1fc17b79f0042220dbc07818727e8a0793374c903896977e09a3ad53bf7f916b|1806537600",
+  "indexes": {
+    "INDEX-NEW": {
+      "verified_sha256": "c11a25fe7fb352df64e2b02585ca071fdde7541daf2e543cc819903371c9967f",
+      "openssl_records": [
+        "world|base|/lib/libcrypto.so.35|f|0|0|0444|0|3657f50b377e37b3c2f382e0491d7c6f2baf0e99d059406ab43c53d76bfa7266|",
+        "world|base|/usr/lib/libssl.so.35|f|0|0|0444|0|6fbf907ed94cc3d66f03bde6535e2b7862b91f9bf4c7f7c10806afb44a255d5c|"
+      ]
+    },
+    "INDEX-OLD": {
+      "verified_sha256": "941308a2e6a42f3e50e57cad79797ebc0760c8f5d21fb2078bb1f9a28ac86fad",
+      "openssl_records": [
+        "world|base|/lib/libcrypto.so.35|f|0|0|0444|0|beacc4542bde340aab83e8c3ed340b60e2da08cf45f275026afefeabb6b6d612|",
+        "world|base|/usr/lib/libssl.so.35|f|0|0|0444|0|09b30d892437036b8368d2dc12a8ba7f83c1dd140f51974e8eadc1cb543dec4a|",
+        "world|base|/usr/lib/libssl.so.35|f|0|0|0444|0|cd473b955543d43759b8c09218d4d0b9b9c9c78024bf93d1a8e049db18dca1d2|"
+      ]
+    }
+  }
+}

@@ -1,0 +1,10 @@
+OpenSSL 3.5.6 7 Apr 2026 (Library: OpenSSL 3.5.6 7 Apr 2026)
+built on: reproducible build, date unspecified
+platform: FreeBSD-amd64
+options:  bn(64,64)
+compiler: clang
+OPENSSLDIR: "/etc/ssl"
+ENGINESDIR: "/usr/lib/engines-3"
+MODULESDIR: "/usr/lib/ossl-modules"
+Seeding source: os-specific
+CPUINFO: OPENSSL_ia32cap=0xfed83203078bffff:0x00405fc6f1bf07a9:0x0000002000000010:0x0000000000000000:0x0000000000000000
