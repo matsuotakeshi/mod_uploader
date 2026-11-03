@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Zlib
 """Analyze the configured Apache module's translation units, recording all diagnostics."""
-import concurrent.futures, json, re, subprocess, sys
+import concurrent.futures, json, os, re, shlex, subprocess, sys
 from pathlib import Path
 build=Path(sys.argv[1]).resolve();output=Path(sys.argv[2]).resolve();output.mkdir(exist_ok=True)
 deps=(build/'src/GNUmakefile.dep').read_text(errors='replace')
 block=deps[deps.index('mod_uploader.so: '):].split('\n\n',1)[0]
 names=sorted(set(re.findall(r'([A-Za-z_0-9]+)\.\$\(OBJ_EXT\)',block)))
 assert len(names)>30, names
+image_flags=[]
+if re.search(r'^#define MAKE_THUMBNAIL\s+' ,(build/'include/mod_uploader_config.h').read_text(encoding='utf8',errors='replace'),re.M):
+    image_flags=shlex.split(subprocess.check_output([os.environ.get('MAGICK_CONFIG','/usr/local/bin/Magick++-config'),'--cppflags'],text=True))
 def analyze(name):
     source=build/'src'/(name+'.cpp')
     if not source.exists():return {'source':name,'status':'missing-configured-source'}
@@ -15,7 +18,7 @@ def analyze(name):
          '-DUploaderAudit=1','-DUPLOADER_TYPE_APACHE','-DEAPI','-include','httpd.h',
          '-I'+str(build/'include'),'-I'+str(build/'src'),'-I/usr/local/include/apache24','-I/usr/local/include/apr-1','-I/usr/local/include',
          '-Xanalyzer','-analyzer-output=text',str(source)]
-    p=subprocess.run(cmd,capture_output=True,text=True,errors='replace',cwd=output)
+    p=subprocess.run(cmd+image_flags,capture_output=True,text=True,errors='replace',cwd=output)
     text=p.stdout+p.stderr;(output/(name+'.log')).write_text(text)
     return {'source':name+'.cpp','exit':p.returncode,'warnings':len(re.findall(r'warning:',text)),'errors':len(re.findall(r'error:',text))}
 with concurrent.futures.ThreadPoolExecutor(max_workers=3) as ex:results=list(ex.map(analyze,names))

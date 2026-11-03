@@ -64,6 +64,7 @@ public:
                                       apr_size_t item_id);
 
 protected:
+    const char *get_data_directory() const { return data_dir_path_; }
     const char *get_data_path(apr_pool_t *pool, apr_size_t item_id) const;
     const char *get_file_path(apr_pool_t *pool, UploadItem *uitem) const;
     const char *get_thumb_path(apr_pool_t *pool, apr_size_t item_id) const;

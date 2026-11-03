@@ -82,13 +82,23 @@ AC_CACHE_SAVE
 
 ###############################################################################
 # ¥Ø¥Ã¥À
+# Match the FreeBSD headers/library search used by src/GNUmakefile.in.
+case "$target_os" in
+  freebsd*) CPPFLAGS="$CPPFLAGS -isystem /usr/local/include"
+            LDFLAGS="$LDFLAGS -L/usr/local/lib" ;;
+esac
+
 AC_CHECK_HEADERS([ \
     ctype.h fcntl.h iconv.h limits.h setjmp.h signal.h stdlib.h string.h \
     sys/mman.h sys/mman.h sys/types.h sys/wait.h unistd.h utime.h sched.h \
 ])
 AC_CHECK_FUNCS([fork getpagesize memmem strndup wait madvise mprotect])
 
-AC_CHECK_LIB([iconv], [main], [LIB_ICONV=-liconv], [LIB_ICONV=])
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <iconv.h>]],
+    [[iconv_t cd = iconv_open("UTF-8", "UTF-8"); iconv_close(cd);]])],
+    [LIB_ICONV=],
+    [AC_CHECK_LIB([iconv], [libiconv_open], [LIB_ICONV=-liconv],
+        [AC_MSG_ERROR([iconv headers and library do not match])])])
 AC_SUBST(LIB_ICONV)
 AC_CHECK_ICONV_2ND_ARG_TYPE
 
@@ -194,7 +204,7 @@ AC_DEFINE(PST_FLOW_CONTROL_BUFFER_SIZE, 128,    [Ï¢Â³Åê¹Æ¤òÀ©¸æ¤¹¤ë¤Î¤Ë»È¤¦¥Ð¥Ã¥
 AC_DEFINE(PST_INTERVAL_SEC,             60,     [ºÆÅê¹Æ²ÄÇ½¤Ë¤Ê¤ë¤Þ¤Ç¤Î»þ´Ö(ÉÃ)])
 AC_DEFINE(PST_PROGRESS_HOLD_SEC,        300,    [¥ê¥¯¥¨¥¹¥È¤Î¿ÊÄ½¾ðÊó¤òÊÝ»ý¤¹¤ë»þ´Ö(ÉÃ)])
 
-AC_DEFINE(LCK_TIMEOUT_SEC,              300,    [¥í¥Ã¥¯¤ò¥¿¥¤¥à¥¢¥¦¥È¤Ë¤¹¤ë¤Þ¤Ç¤Î»þ´Ö(ÉÃ)])
+AC_DEFINE(LCK_TIMEOUT_SEC,              15,    [¥í¥Ã¥¯¤ò¥¿¥¤¥à¥¢¥¦¥È¤Ë¤¹¤ë¤Þ¤Ç¤Î»þ´Ö(ÉÃ)])
 
 AC_DEFINE(VIW_EXPIRES,                  60*60*24*7, [¥Õ¥¡¥¤¥ë¥­¥ã¥Ã¥·¥å¤Î¤ÎÍ­¸ú»þ´Ö])
 

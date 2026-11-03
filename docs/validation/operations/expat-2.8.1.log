@@ -1,0 +1,22 @@
+expat-2.8.1 is vulnerable:
+  Multiple vulnerability found in Expat
+  CVE: CVE-2026-50219
+  CVE: CVE-2026-56131
+  CVE: CVE-2026-56132
+  CVE: CVE-2026-56403
+  CVE: CVE-2026-56404
+  CVE: CVE-2026-56405
+  CVE: CVE-2026-56406
+  CVE: CVE-2026-56407
+  CVE: CVE-2026-56408
+  CVE: CVE-2026-56409
+  CVE: CVE-2026-56410
+  CVE: CVE-2026-56411
+  CVE: CVE-2026-56412
+  WWW: https://vuxml.FreeBSD.org/freebsd/d06b1fa2-731f-11f1-a0d2-589cfc10a551.html
+
+  libexpat -- Improper Handling of Unicode Encoding
+  CVE: CVE-2026-93990
+  WWW: https://vuxml.FreeBSD.org/freebsd/7fed71c4-be3a-11f1-ab8d-00a0980083d7.html
+
+2 problem(s) in 1 package(s) found.

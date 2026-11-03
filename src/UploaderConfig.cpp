@@ -34,6 +34,7 @@
 #include "apr_strings.h"
 
 #include "UploaderConfig.h"
+#include "StorageTransaction.h"
 #include "StorageLock.h"
 #include "UploadItemList.h"
 #include "UploadItemManager.h"
@@ -286,6 +287,7 @@ void UploaderConfig::check()
         throw "Invalid capacity or pagination limits";
     check_dir(data_dir_path);
     StorageLock::hold(pool_,data_dir_path);
+    StorageTransaction::require_clean(data_dir_path);
     if (File::is_exist(pool_, apr_pstrcat(pool_, data_dir_path, "/.migration-in-progress", NULL)))
         throw "Password migration is incomplete; restore backup or finish migration before startup";
     check_dir(file_dir_path);

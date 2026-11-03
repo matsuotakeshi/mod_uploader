@@ -31,3 +31,8 @@ The audit also fixes generation checks, concurrent identifiers, shared-state ali
 
 Port revision 6: support root and subpath VirtualHost mounts with validated URI routing, normalize BaseUrl once, and provide canonical static URLs and explicit static-handler examples. Password format, authentication, upload limits and thumbnail implementation are retained.
 Correct the FreeBSD -L flag spelling for direct libtool builds, including ImageMagick-enabled configurations.
+
+Port revision 7: verified offline backup/restore, conservative journal recovery,
+capacity/dependency checks, reversible upload eviction with durable staging,
+bounded raster-only thumbnails, explicit error statuses and reduced compiler warnings.
+Metadata remains version 4. See docs/OPERATIONS-ja.md and OPERATIONS-VALIDATION-ja.md.

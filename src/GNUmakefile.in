@@ -131,7 +131,7 @@ override CC := $(LIBTOOL) --silent --mode=compile --tag=CC $(CC_ORIG) -prefer-pi
 override CXX:= $(LIBTOOL) --silent --mode=compile --tag=CXX $(CXX_ORIG) -prefer-pic
 LINK        := $(LIBTOOL) --silent --mode=link --tag=CXX $(CXX_ORIG)
 CFLAGS      += -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion \
-	-Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer
+	-Wpointer-arith -Wfloat-equal -Wstrict-aliasing
 DEBUG_OPT   += -ggdb
 ifeq ($(firstword $(sort $(shell $(CC_ORIG) -dumpversion) 3.9.9)),3.9.9)
 # GCC 4.0 以上の場合

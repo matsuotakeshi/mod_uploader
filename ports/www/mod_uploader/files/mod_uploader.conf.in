@@ -11,9 +11,10 @@ LoadModule uploader_module %%PREFIX%%/%%APACHEMODDIR%%/mod_uploader.so
     UploaderFileDirectory "/var/db/mod_uploader/file"
     UploaderThumbDirectory "/var/db/mod_uploader/thumb"
     UploaderTempDirectory "/var/db/mod_uploader/temp"
-    UploaderTotalFileSizeLimit 1073741824
+    # mod_uploader size limits are KiB (LimitRequestBody above is bytes).
+    UploaderTotalFileSizeLimit 1048576
     UploaderTotalFileNumberLimit 1000
-    UploaderFileSizeLimit 10485760
+    UploaderFileSizeLimit 10240
     UploaderPerPageItemNumber 30
     UploaderIndexViewTemplate "%%DATADIR%%/tmpl/index.htm"
     UploaderInfoViewTemplate "%%DATADIR%%/tmpl/info.htm"

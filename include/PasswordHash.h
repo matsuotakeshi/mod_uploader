@@ -14,9 +14,9 @@ inline std::string hex(const unsigned char *p, size_t n) {
 }
 inline bool unhex(const std::string& s, unsigned char *p, size_t n) {
     if(s.size()!=n*2)return false;
-    for(size_t i=0;i<n*2;++i) {unsigned char c=s[i];int v=c>='0'&&c<='9'?c-'0':c>='a'&&c<='f'?c-'a'+10:-1;
+    for(size_t i=0;i<n*2;++i) {unsigned char c=static_cast<unsigned char>(s[i]);int v=c>='0'&&c<='9'?c-'0':c>='a'&&c<='f'?c-'a'+10:-1;
         if(v<0)return false;
-        if(i%2)p[i/2]|=v;else p[i/2]=static_cast<unsigned char>(v<<4);}return true;
+        if(i%2)p[i/2]|=static_cast<unsigned char>(v);else p[i/2]=static_cast<unsigned char>(v<<4);}return true;
 }
 inline bool decode(const std::string& value, unsigned char *salt, unsigned char *digest) {
     const std::string prefix="pbkdf2-sha256$600000$";

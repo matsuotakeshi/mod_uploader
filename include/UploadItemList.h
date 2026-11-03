@@ -103,6 +103,13 @@ public:
         return !can_fit(file_size) || total_file_size_ > max_file_size_ - file_size ||
             (size() >= max_list_size_);
     };
+    bool needs_eviction(apr_uint64_t file_size, apr_uint64_t removed_bytes,
+                        apr_size_t removed_count) const
+    {
+        return !can_fit(file_size) || removed_bytes > total_file_size_ || removed_count > size() ||
+            total_file_size_ - removed_bytes > max_file_size_ - file_size ||
+            size() - removed_count >= max_list_size_;
+    }
     /**
      * プールを使ってインスタンスを生成します．
      *

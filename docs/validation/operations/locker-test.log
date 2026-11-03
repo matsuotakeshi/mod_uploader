@@ -1,0 +1,1 @@
+locker: 6 checks passed (actual destructor, injected APR failures; not real APR failure)

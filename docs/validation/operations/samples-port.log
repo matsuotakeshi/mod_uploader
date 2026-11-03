@@ -1,0 +1,3 @@
+mod_uploader-root.conf.in: 10 checks passed; <test-root>/root-sample-7m_kfp0k
+mod_uploader.conf.in: 10 checks passed; <test-root>/root-sample-ti3q_z33
+root-samples: 20 checks passed across 2 distributed configuration samples

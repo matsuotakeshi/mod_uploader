@@ -34,6 +34,7 @@
 #include "UploadItemIO.h"
 
 class ImageFile;
+class StorageTransaction;
 
 /**
  * @brief アップロードアイテムをファイルに書き込むクラス．
@@ -60,6 +61,10 @@ public:
      * @retval false サムネイルを作成していない
      */
     bool write(UploadItem *uitem, const char *temp_file_path);
+    bool stage(UploadItem *uitem, const char *temp_file_path,
+               StorageTransaction& transaction);
+    void stage_remove(apr_pool_t *pool, UploadItem *uitem,
+                      StorageTransaction& transaction);
     /**
      * アイテムヘッダを書き出します．
      *

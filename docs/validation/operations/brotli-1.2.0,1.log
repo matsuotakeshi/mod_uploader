@@ -1,0 +1,6 @@
+brotli-1.2.0,1 is vulnerable:
+  brotli -- out-of-bounds write permits remote code execution
+  CVE: CVE-2026-111497
+  WWW: https://vuxml.FreeBSD.org/freebsd/f1e61d76-cdb6-11f1-b15e-589cfc104230.html
+
+1 problem(s) in 1 package(s) found.

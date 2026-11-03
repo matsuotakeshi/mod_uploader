@@ -29,6 +29,7 @@
 #define FILE_H
 
 #include "Environment.h"
+#include <limits>
 
 #include <cstdlib>
 #ifdef DEBUG
@@ -206,7 +207,9 @@ public:
             size = get_size();
         }
 
-        if (apr_mmap_create(&mmap_, file_, offset,
+        if (offset > static_cast<apr_uint64_t>(std::numeric_limits<apr_off_t>::max()) ||
+            size > std::numeric_limits<apr_size_t>::max()) THROW(MESSAGE_FILE_MMAP_FAILED);
+        if (apr_mmap_create(&mmap_, file_, static_cast<apr_off_t>(offset),
                             static_cast<apr_size_t>(size), flag, pool_)
             != APR_SUCCESS) {
             THROW(MESSAGE_FILE_MMAP_FAILED);
@@ -282,7 +285,8 @@ public:
 
         REQUIRE_FILE_OPENDED;
 
-        seek_offset = offset;
+        if (offset > static_cast<apr_uint64_t>(std::numeric_limits<apr_off_t>::max())) THROW(MESSAGE_FILE_SEEK_FAILED);
+        seek_offset = static_cast<apr_off_t>(offset);
         if (apr_file_seek(file_, APR_SET, &seek_offset) != APR_SUCCESS) {
             THROW(MESSAGE_FILE_SEEK_FAILED);
         }
@@ -310,7 +314,8 @@ public:
             close();
         }
 
-        return info.size;
+        if (info.size < 0) THROW(MESSAGE_FILE_STAT_FAILED);
+        return static_cast<apr_uint64_t>(info.size);
     };
     /**
      * 更新日時を取得します．
@@ -375,7 +380,8 @@ public:
         REQUIRE_FILE_OPENDED;
 
         munmap();
-        if (apr_file_trunc(file_, size) != APR_SUCCESS) {
+        if (size > static_cast<apr_size_t>(std::numeric_limits<apr_off_t>::max())) THROW(MESSAGE_FILE_TRUNC_FAILED);
+        if (apr_file_trunc(file_, static_cast<apr_off_t>(size)) != APR_SUCCESS) {
             THROW(MESSAGE_FILE_TRUNC_FAILED);
         }
     };
@@ -394,6 +400,8 @@ public:
 
         return file;
     };
+    // Borrow without transferring ownership (get_handle deliberately releases it).
+    apr_file_t *borrow_handle() const { return file_; }
     bool is_closed()
     {
         return file_ == NULL;

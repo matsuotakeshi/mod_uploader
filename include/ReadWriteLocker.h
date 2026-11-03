@@ -168,6 +168,8 @@ protected:
      */
     static void yield()
     {
+        // A busy wait monopolizes a CPU while image I/O holds the manager lock.
+        apr_sleep(1000);
 #if APR_HAS_THREADS
         // APR 0.x だと UNIX 環境の apr_thread_yield の中身は空なので
 #if (APR_MAJOR_VERSION == 0) && defined(_POSIX_PRIORITY_SCHEDULING)

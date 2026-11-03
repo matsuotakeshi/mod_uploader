@@ -56,4 +56,9 @@ use canonical static-resource URLs. See [the root/subpath configuration guide](d
 for static handlers, administration, TLS, migration and rollback, and
 [the revision 6 validation report](docs/ROOT-VALIDATION-ja.md) for measured coverage.
 
+Port revision 7 adds verified offline backup/restore and recovery tools, journaled
+upload/eviction, bounded raster thumbnail processing, dependency/capacity audits,
+and meaningful error HTTP statuses. See [the operations guide](docs/OPERATIONS-ja.md)
+and [revision 7 validation](docs/OPERATIONS-VALIDATION-ja.md) before upgrading.
+
 管理画面はApacheでの独立した認証が必須です。Portの初期設定では閉鎖しています。IP別のパスワード処理回数と、プロセス間の同時実行数も制限します。設定・制限値は[セキュリティと移行手順](docs/SECURITY-MIGRATION-ja.md)を参照してください。

@@ -37,6 +37,8 @@
 #include "apr_file_info.h"
 
 #include "UploadItemManager.h"
+#include "StorageTransaction.h"
+#include <vector>
 #include "UploadItem.h"
 #include "MetadataSafety.h"
 #include "UploadItemList.h"
@@ -305,13 +307,41 @@ apr_size_t UploadItemManager::add_impl(apr_pool_t *pool,
         REQUIRE_MANAGER_LOCKED();
 
         create_item_id_index(&item_id, &item_index);
-        remove_files_locked(pool, file_size);
         reinterpret_cast<UploadItem::header_t *>(uitem)->id = item_id;
         reinterpret_cast<UploadItem::header_t *>(uitem)->index = item_index;
 
-        if (item_writer_.write(uitem, file_temp_path)) {
-            thumbnail_list_->add(uitem->get_id());
+        // Choose eviction victims without changing either disk or shared memory.
+        std::vector<UploadItem::header_t> victims;
+        apr_uint64_t removed_bytes = 0;
+        while (item_list_->needs_eviction(file_size, removed_bytes, victims.size())) {
+            UploadItem::header_t *selected = NULL;
+            for (apr_size_t i = item_list_->size(); i > 0; --i) {
+                UploadItem::header_t *candidate = item_list_->get_by_index(i-1);
+                bool used = false;
+                for (size_t j = 0; j < victims.size(); ++j)
+                    if (victims[j].id == candidate->id) used = true;
+                if (used) continue;
+                if (selected == NULL) selected = candidate;
+#ifdef REMOVE_UNPOPULAR
+                if (AS_UITEM(candidate)->get_atime() < AS_UITEM(selected)->get_atime()) selected = candidate;
+#else
+                break;
+#endif
+            }
+            if (selected == NULL) THROW(MESSAGE_BUG_FOUND);
+            removed_bytes += AS_UITEM(selected)->get_file_size();
+            victims.push_back(*selected);
         }
+        StorageTransaction transaction(data_dir_path_);
+        const bool thumbnail = item_writer_.stage(uitem, file_temp_path, transaction);
+        for (size_t i = 0; i < victims.size(); ++i)
+            item_writer_.stage_remove(pool, AS_UITEM(&victims[i]), transaction);
+        transaction.commit();
+        for (size_t i = 0; i < victims.size(); ++i) {
+            thumbnail_list_->remove(victims[i].id);
+            item_list_->remove(victims[i].id);
+        }
+        if (thumbnail) thumbnail_list_->add(uitem->get_id());
         item_list_->add(uitem);
 
         set_mtime(current_time);

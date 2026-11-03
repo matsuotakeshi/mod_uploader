@@ -38,3 +38,8 @@ libexec/mod_uploader/migrate_passwords.py
 %%DATADIR%%/SECURITY-MIGRATION-ja.md
 @sample %%ETCDIR%%/mod_uploader-root.conf.sample
 %%DATADIR%%/ROOT-DEPLOYMENT-ja.md
+%%DATADIR%%/OPERATIONS-ja.md
+libexec/mod_uploader/storage_backup.py
+libexec/mod_uploader/storage_recover.py
+libexec/mod_uploader/storage_health.py
+libexec/mod_uploader/dependency_audit.py

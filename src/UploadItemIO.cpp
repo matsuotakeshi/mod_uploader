@@ -32,6 +32,7 @@
 #include "apr_strings.h"
 
 #include "UploadItemIO.h"
+#include "StorageTransaction.h"
 #include "UploadItem.h"
 #include "Message.h"
 #include "Macro.h"
@@ -166,6 +167,7 @@ void UploadItemIO::prepare_subdir(apr_pool_t *pool, const char *dir_path,
     if (apr_dir_make(sub_dir_path, APR_OS_DEFAULT, pool) != APR_SUCCESS) {
         THROW(MESSAGE_UPLOAD_ITEM_SUB_DIR_CREATION_FAILED);
     }
+    StorageTransaction::sync_directory(dir_path);
 }
 
 // Local Variables:

@@ -24,7 +24,7 @@ class Server:
         text+='User '+pwd.getpwuid(os.geteuid()).pw_name+'\nGroup #'+str(os.getegid())+'\n'
         text+='<Location /up>\nSetHandler uploader\nRequire all granted\nUploaderBaseUrl "'+base+'"\n'
         for key,name in [('Data','data'),('File','file'),('Thumb','thumb'),('Temp','temp')]:text+='Uploader'+key+'Directory "'+str(root/name)+'"\n'
-        text+='UploaderTotalFileSizeLimit 10485760\nUploaderTotalFileNumberLimit 100\nUploaderFileSizeLimit 1048576\nUploaderPerPageItemNumber 30\n'
+        text+='UploaderTotalFileSizeLimit 10240\nUploaderTotalFileNumberLimit 100\nUploaderFileSizeLimit 1024\nUploaderPerPageItemNumber 30\n'
         for key,name in [('Index','index'),('Info','info'),('Progress','progress'),('Download','download'),('Thumbnail','thumbnail'),('Admin','admin'),('Error','error')]:
             text+='Uploader'+key+'ViewTemplate "'+str(build/'tmpl/en'/(name+'.htm'))+'"\n'
         text+='</Location>\n<Location /up/admin>\n'
@@ -132,16 +132,16 @@ def main():
         assert a.request('/up/remove/',remove+[('csrf_token',a.token)],cookie='')[0]==403;checks+=1
         assert a.request('/up/remove/',remove+[('csrf_token',a.token)],headers={'Origin':'https://evil.example'})[0]==403;checks+=1
         # Duplicate fields now fail in the multipart parser, before CSRF handling.
-        # The legacy error template uses HTTP 200; even a correct password must not delete.
+        # Error pages retain their layout and now return the appropriate failure status.
         status,_,body=a.request('/up/remove/',[('id','1'),('remove_pass','remove123'),('csrf_token',a.token),('csrf_token',a.token)])
-        assert status==200 and b'MESSAGE_RFC1867_FORMAT_INVALID' in body and (root/'data/01/1').exists();checks+=1
+        assert status==400 and b'MESSAGE_RFC1867_FORMAT_INVALID' in body and (root/'data/01/1').exists();checks+=1
         key=(root/'data/.csrf-key').read_bytes();sid=a.cookie.split('=',1)[1];base=a.origin+'/up'
         for stamp in [int(time.time())-7201,int(time.time())+120]:
             stamp=str(stamp);token=stamp+'.'+hmac.new(key,(base+'\n'+sid+'\n'+stamp).encode(),hashlib.sha256).hexdigest()
             assert a.request('/up/remove/',remove+[('csrf_token',token)])[0]==403;checks+=1
         assert (root/'data/01/1').exists();checks+=1
         # Old tab token remains valid after a second GET; correct source alone is insufficient.
-        old=a.token;a.index();status,_,_=a.request('/up/remove/',remove+[('csrf_token',old)]);assert status==200 and (root/'data/01/1').exists();checks+=1
+        old=a.token;a.index();status,_,_=a.request('/up/remove/',remove+[('csrf_token',old)]);assert status==403 and (root/'data/01/1').exists();checks+=1
         dl='/up/download/1.txt';payload=(root/'file/01/1.txt').read_bytes()
         for password in ['wrong','download123-extra']:
             assert a.request(dl,[('download_pass',password),('csrf_token',a.token)])[2]!=payload;checks+=1
@@ -161,11 +161,11 @@ def main():
         after=set((root/'data').glob('*/*'));created=[f for f in after-before if f.name.isdigit()];assert len(created)==1,(status,created);checks+=1
         record=created[0].read_bytes();assert b'new-remove' not in record and b'new-download' not in record and record[16:17]==b'4';checks+=1
         run(tool,'--verify-remove',created[0],input=b'new-remove\n');run(tool,'--verify-download',created[0],input=b'new-download\n');checks+=1
-        assert a.request('/up/remove/',[('id','1'),('remove_pass','remove123-extra'),('csrf_token',a.token)])[0]==200 and (root/'data/01/1').exists();checks+=1
+        assert a.request('/up/remove/',[('id','1'),('remove_pass','remove123-extra'),('csrf_token',a.token)])[0]==403 and (root/'data/01/1').exists();checks+=1
         assert a.request('/up/remove/',[('id','1'),('remove_pass','remove123'),('csrf_token',a.token)])[0]==200 and not (root/'data/01/1').exists();checks+=1
         assert not (root/'file/01/1.txt').exists();checks+=1
         server.stop();server.start()
-        status,_,_=a.request('/up/admin/remove/',[('id',created[0].name)],headers={'X-CSRF-Token':a.token});assert status==200 and created[0].exists();checks+=1
+        status,_,_=a.request('/up/admin/remove/',[('id',created[0].name)],headers={'X-CSRF-Token':a.token});assert status==400 and created[0].exists();checks+=1
         status,_,_=a.request('/up/admin/remove/',[('id',created[0].name),('remove_pass','')],headers={'X-CSRF-Token':a.token});assert status==200 and not created[0].exists();checks+=1
         assert (root/'backup/snapshot/data/01/1').read_bytes()[16:17]==b'3';checks+=1
     finally:server.stop()

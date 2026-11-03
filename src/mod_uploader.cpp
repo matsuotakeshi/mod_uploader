@@ -57,6 +57,7 @@
 
 #include "ApacheResponse.h"
 #include "UploaderConfig.h"
+#include "ConfigNumber.h"
 #include "Auxiliary.h"
 #include "Macro.h"
 #include "SourceInfo.h"
@@ -418,10 +419,19 @@ DIRECTIVE_HANDLER(file_dir_path, apr_pstrdup(parms->pool, arg));
 DIRECTIVE_HANDLER(thumb_dir_path, apr_pstrdup(parms->pool, arg));
 DIRECTIVE_HANDLER(temp_dir_path, apr_pstrdup(parms->pool, arg));
 
-DIRECTIVE_HANDLER(total_file_size_limit, apr_atoi64(arg) * 1024);
-DIRECTIVE_HANDLER(total_file_number_limit, atoi(arg));
-DIRECTIVE_HANDLER(file_size_limit, apr_atoi64(arg) * 1024);
-DIRECTIVE_HANDLER(per_page_item_number, atoi(arg));
+// Size directives retain their historical KiB unit; reject overflow and junk.
+#define NUMBER_DIRECTIVE(member, maximum, factor) \
+    static const char *set_ ## member(cmd_parms *, void *mconfig, char *arg) { \
+        uint64_t number; \
+        if (!ConfigNumber::parse(arg, maximum, number)) return "Uploader limit must be a positive decimal integer within range (size limits are KiB)"; \
+        AS_UCONFIG(mconfig)->member = number * factor; \
+        return NULL; \
+    }
+NUMBER_DIRECTIVE(total_file_size_limit, INT64_MAX / 1024, 1024);
+NUMBER_DIRECTIVE(file_size_limit, INT64_MAX / 1024, 1024);
+NUMBER_DIRECTIVE(total_file_number_limit, 1000000, 1);
+NUMBER_DIRECTIVE(per_page_item_number, 1000000, 1);
+#undef NUMBER_DIRECTIVE
 
 TEMPLATE_DIRECTIVE_HANDLER(INDEX_VIEW, apr_pstrdup(parms->pool, arg));
 TEMPLATE_DIRECTIVE_HANDLER(INFO_VIEW, apr_pstrdup(parms->pool, arg));

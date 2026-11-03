@@ -61,6 +61,7 @@
 #include "DownloadFlowController.h"
 #include "CharCodeConverter.h"
 #include "Message.h"
+#include "HttpErrorStatus.h"
 #include "Macro.h"
 #include "Auxiliary.h"
 #include "SourceInfo.h"
@@ -209,6 +210,11 @@ static int error(typename Response::Handle *r,
                  typename Response::Writer& o,
                  UploaderConfig *config, const char *message)
 {
+#if defined(UPLOADER_TYPE_APACHE) && AP_SERVER_MAJORVERSION_NUMBER >= 2
+    r->status = HttpErrorStatus::get(message);
+    apr_table_setn(r->headers_out, "Cache-Control", "no-store");
+    if (r->status == 429 || r->status == 503) apr_table_setn(r->headers_out, "Retry-After", "15");
+#endif
     Response::set_content_type(r, PAGE_CONTENT_TYPE);
     Response::header_end(r);
 
@@ -763,6 +769,9 @@ static int upload(typename Response::Handle *r, UploaderConfig *config,
 
         progress->item_id = item_id;
         progress->is_succeeded  = (status == OK);
+#if defined(UPLOADER_TYPE_APACHE) && AP_SERVER_MAJORVERSION_NUMBER >= 2
+        progress->is_succeeded = progress->is_succeeded && r->status < 400;
+#endif
 
         return status;
     } catch(const char *message) {

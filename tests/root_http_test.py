@@ -134,7 +134,7 @@ def exercise(args,mount,trailing,tls):
             # The historical collision check must remain effective.
             (root/'www'/mount.lstrip('/')).mkdir(parents=True,exist_ok=True)
             server.start();status,_,body=c.request('/up/')
-            check(status==200 and b'name="csrf_token"' not in body,'physical directory collision remains an error')
+            check(status==500 and b'name="csrf_token"' not in body,'physical directory collision remains an error')
     finally:server.stop()
     print('mount='+repr(mount or '/')+' trailing='+str(trailing)+' tls='+str(tls)+' thumbnail='+str(args.thumbnail)+': '+str(checks)+' checks passed; '+str(root))
     return checks

@@ -1,6 +1,6 @@
 PORTNAME=	mod_uploader
 PORTVERSION=	3.2.0
-PORTREVISION=	6
+PORTREVISION=	7
 CATEGORIES=	www
 PKGNAMEPREFIX=	${APACHE_PKGNAMEPREFIX}
 
@@ -35,8 +35,8 @@ SUB_LIST=	APACHEMODDIR=${APACHEMODDIR}
 
 OPTIONS_DEFINE=	THUMBNAIL
 THUMBNAIL_DESC=	Enable ImageMagick raster thumbnails (configure resource policy first)
-THUMBNAIL_BUILD_DEPENDS=	Magick++-config:graphics/ImageMagick7@nox11
-THUMBNAIL_RUN_DEPENDS=	Magick++-config:graphics/ImageMagick7@nox11
+THUMBNAIL_BUILD_DEPENDS=	ImageMagick7-nox11>=7.1.2.34:graphics/ImageMagick7@nox11
+THUMBNAIL_RUN_DEPENDS=	ImageMagick7-nox11>=7.1.2.34:graphics/ImageMagick7@nox11
 THUMBNAIL_CONFIGURE_ON=	--enable-thumbnail --with-mconf=${LOCALBASE}/bin/Magick++-config
 
 pre-patch:
@@ -47,14 +47,19 @@ pre-patch:
 		${WRKSRC}/configure \
 		${WRKSRC}/configure.ac \
 		${WRKSRC}/include/ApacheResponse.h \
+		${WRKSRC}/include/File.h \
 		${WRKSRC}/include/FlowController.h \
 		${WRKSRC}/include/Locker.h \
 		${WRKSRC}/include/MultipartMessageParser.h.in \
 		${WRKSRC}/include/MultipartMessageParserBuffer.h \
 		${WRKSRC}/include/ReadLocker.h \
+		${WRKSRC}/include/ReadWriteLocker.h \
+		${WRKSRC}/include/TemplateParser.h \
 		${WRKSRC}/include/UploadItem.h \
+		${WRKSRC}/include/UploadItemIO.h \
 		${WRKSRC}/include/UploadItemList.h \
 		${WRKSRC}/include/UploadItemManager.h \
+		${WRKSRC}/include/UploadItemWriter.h \
 		${WRKSRC}/include/WriteLocker.h \
 		${WRKSRC}/include/uploader_util.h \
 		${WRKSRC}/src/ApacheRequestReader.cpp \
@@ -66,6 +71,7 @@ pre-patch:
 		${WRKSRC}/src/GNUmakefile.dep.in \
 		${WRKSRC}/src/GNUmakefile.in \
 		${WRKSRC}/src/ImageFile.cpp \
+		${WRKSRC}/src/MessageDigest5.cpp \
 		${WRKSRC}/src/MultipartMessageParser.cpp \
 		${WRKSRC}/src/MultipartMessageParserBuffer.cpp \
 		${WRKSRC}/src/PostDataChecker.cpp \
@@ -76,10 +82,12 @@ pre-patch:
 		${WRKSRC}/src/TemplateLexer.cpp \
 		${WRKSRC}/src/TemplateParser.cpp \
 		${WRKSRC}/src/UploadItem.cpp \
+		${WRKSRC}/src/UploadItemIO.cpp \
 		${WRKSRC}/src/UploadItemList.cpp \
 		${WRKSRC}/src/UploadItemListReader.cpp \
 		${WRKSRC}/src/UploadItemManager.cpp \
 		${WRKSRC}/src/UploadItemReader.cpp \
+		${WRKSRC}/src/UploadItemWriter.cpp \
 		${WRKSRC}/src/UploaderConfig.cpp \
 		${WRKSRC}/src/UploaderTemplate.cpp \
 		${WRKSRC}/src/mod_uploader.cpp \
@@ -99,7 +107,7 @@ pre-patch:
 		${WRKSRC}/tmpl/thumbnail.htm.in
 
 post-patch:
-	${REINPLACE_CMD} -e '1s|.*|#!${PYTHON_CMD}|' ${WRKSRC}/util/migrate_passwords.py
+	${REINPLACE_CMD} -e '1s|.*|#!${PYTHON_CMD}|' ${WRKSRC}/util/*.py
 
 post-configure:
 	${REINPLACE_CMD} -e 's|^SHELL=.*|SHELL=/bin/sh|' ${WRKSRC}/GNUmakefile
@@ -109,9 +117,11 @@ do-install:
 	${INSTALL_LIB} ${WRKSRC}/src/mod_uploader.so ${STAGEDIR}${PREFIX}/${APACHEMODDIR}/
 	${MKDIR} ${STAGEDIR}${PREFIX}/libexec/mod_uploader
 	${INSTALL_PROGRAM} ${WRKSRC}/src/password_tool ${STAGEDIR}${PREFIX}/libexec/mod_uploader/
-	${INSTALL_SCRIPT} ${WRKSRC}/util/migrate_passwords.py ${STAGEDIR}${PREFIX}/libexec/mod_uploader/
+.for script in migrate_passwords storage_backup storage_recover storage_health dependency_audit
+	${INSTALL_SCRIPT} ${WRKSRC}/util/${script}.py ${STAGEDIR}${PREFIX}/libexec/mod_uploader/
+.endfor
 	${MKDIR} ${STAGEDIR}${ETCDIR} ${STAGEDIR}${DATADIR}/tmpl/en
-	${INSTALL_DATA} ${WRKSRC}/COPYING ${WRKSRC}/MODIFICATIONS ${WRKSRC}/docs/SECURITY-MIGRATION-ja.md ${WRKSRC}/docs/ROOT-DEPLOYMENT-ja.md ${STAGEDIR}${DATADIR}/
+	${INSTALL_DATA} ${WRKSRC}/COPYING ${WRKSRC}/MODIFICATIONS ${WRKSRC}/docs/SECURITY-MIGRATION-ja.md ${WRKSRC}/docs/ROOT-DEPLOYMENT-ja.md ${WRKSRC}/docs/OPERATIONS-ja.md ${STAGEDIR}${DATADIR}/
 	${INSTALL_DATA} ${WRKDIR}/mod_uploader.conf ${STAGEDIR}${ETCDIR}/mod_uploader.conf.sample
 	${INSTALL_DATA} ${WRKDIR}/mod_uploader-root.conf ${STAGEDIR}${ETCDIR}/mod_uploader-root.conf.sample
 	${INSTALL_DATA} ${WRKSRC}/tmpl/*.htm ${STAGEDIR}${DATADIR}/tmpl/

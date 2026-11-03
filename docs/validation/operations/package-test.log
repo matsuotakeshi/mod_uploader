@@ -1,0 +1,2 @@
+tar: Removing leading '/' from member names
+operations-http: 54 checks passed; thumbnail=False; fixtures retained: <test-root>/operations-http-l9qxinj7

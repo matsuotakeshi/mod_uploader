@@ -17,7 +17,7 @@ static std::vector<char> read_file(const char *path) {
     struct stat st;if(lstat(path,&st)!=0||!S_ISREG(st.st_mode)||st.st_nlink!=1||st.st_size<24||st.st_size>4096)
         throw "Not a regular native metadata file";
     std::ifstream in(path,std::ios::binary);std::vector<char> data(static_cast<size_t>(st.st_size));
-    if(!in.read(data.data(),data.size()))throw "Cannot read metadata";return data;
+    if(!in.read(data.data(),static_cast<std::streamsize>(data.size())))throw "Cannot read metadata";return data;
 }
 template<size_t N> static void terminated(const char (&s)[N]) {if(!memchr(s,0,N))throw "Unterminated metadata field";}
 template<class T> static void validate_fields(const T& h) {
@@ -60,7 +60,7 @@ static Header load(const std::vector<char>& data,bool migrate) {
 static void write_file(const char *path,const void *data,size_t size) {
     int fd=open(path,O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW,0600);if(fd<0)throw "Output must not already exist";
     size_t n=0;while(n<size){ssize_t count=write(fd,static_cast<const char*>(data)+n,size-n);if(count<0&&errno==EINTR)continue;
-        if(count<=0){close(fd);throw "Write failed";}n+=count;}
+        if(count<=0){close(fd);throw "Write failed";}n+=static_cast<size_t>(count);}
     if(fsync(fd)!=0){close(fd);throw "fsync failed";}if(close(fd)!=0)throw "close failed";
 }
 int main(int argc,char **argv) {
@@ -87,7 +87,7 @@ int main(int argc,char **argv) {
             if(data[16]!='4')throw "Verify requires migrated metadata";
             std::string password;std::getline(std::cin,password);
             bool ok=PasswordHash::verify(strcmp(argv[1],"--verify-remove")==0?h.remove_pass:h.download_pass,password.c_str());
-            OPENSSL_cleanse(&password[0],password.size());return ok?0:3;
+            if(!password.empty())OPENSSL_cleanse(&password[0],password.size());return ok?0:3;
         }
         throw "Invalid arguments";
     }catch(const char *message){std::cerr<<message<<"\n";return 1;}

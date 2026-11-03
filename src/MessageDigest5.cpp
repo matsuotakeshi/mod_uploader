@@ -89,8 +89,6 @@ void MessageDigest5::update(const apr_byte_t *input, apr_size_t size)
     gap = 64 - remain_size_;
 
     if (LIKELY(size >= gap)) {
-        read_size = 0;
-
         memcpy(buffer_+remain_size_, input, gap);
         process(buffer_);
 

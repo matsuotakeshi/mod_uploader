@@ -44,6 +44,8 @@
 #undef PACKAGE_TARNAME
 #undef PACKAGE_VERSION
 #include <Magick++.h>
+#include <memory>
+#include <cstring>
 #undef PACKAGE_NAME
 #undef PACKAGE_STRING
 #undef PACKAGE_BUGREPORT
@@ -70,7 +72,40 @@ ImageFile::ImageFile(apr_pool_t *pool, const char *file_path)
     file_map = mmap();
 
     try {
-        image_ = new Magick::Image(Magick::Blob(file_map->mm, file_map->size));
+        // Reject non-raster formats before entering a decoder; never invoke delegates.
+        const unsigned char *bytes = static_cast<const unsigned char *>(file_map->mm);
+        const size_t length = file_map->size;
+        const char *format = NULL;
+        if (length >= 8 && std::memcmp(bytes, "\211PNG\r\n\032\n", 8) == 0) format = "PNG";
+        else if (length >= 3 && bytes[0] == 0xff && bytes[1] == 0xd8 && bytes[2] == 0xff) format = "JPEG";
+        else if (length >= 6 && (std::memcmp(bytes, "GIF87a", 6) == 0 || std::memcmp(bytes, "GIF89a", 6) == 0)) format = "GIF";
+        else if (length >= 12 && std::memcmp(bytes, "RIFF", 4) == 0 && std::memcmp(bytes+8, "WEBP", 4) == 0) format = "WEBP";
+        if (format == NULL) throw "Thumbnail format is not supported";
+
+        Magick::InitializeMagick(NULL);
+        Magick::ResourceLimits::memory(64UL * 1024 * 1024);
+        Magick::ResourceLimits::map(0);
+        Magick::ResourceLimits::disk(0);
+        Magick::ResourceLimits::thread(1);
+        Magick::ResourceLimits::width(8192);
+        Magick::ResourceLimits::height(8192);
+        // Decoding/scaling a single image temporarily needs multiple cache entries.
+        Magick::ResourceLimits::listLength(8);
+        MagickCore::ExceptionInfo *exception = MagickCore::AcquireExceptionInfo();
+        const bool policy_ok = MagickCore::SetMagickSecurityPolicy(
+            "<policymap><policy domain=\"delegate\" rights=\"none\" pattern=\"*\"/>"
+            "<policy domain=\"filter\" rights=\"none\" pattern=\"*\"/></policymap>", exception) != MagickCore::MagickFalse;
+        MagickCore::DestroyExceptionInfo(exception);
+        if (!policy_ok) throw "Cannot restrict thumbnail delegates";
+
+        std::unique_ptr<Magick::Image> decoded(new Magick::Image());
+        decoded->magick(format);
+        decoded->ping(Magick::Blob(bytes, length));
+        if (decoded->columns() == 0 || decoded->rows() == 0 || decoded->columns() > 8192 ||
+            decoded->rows() > 8192 || decoded->columns() > 16000000 / decoded->rows())
+            throw "Thumbnail dimensions exceed safety limits";
+        decoded->read(Magick::Blob(bytes, length), Magick::Geometry(), std::string(format));
+        image_ = decoded.release();
     } catch(exception &e) {
         // File の資源は APR のプールが管理しているので問題ない
         throw apr_pstrdup(pool_, e.what());
@@ -93,7 +128,8 @@ void ImageFile::create_thumbnail(const char *file_path,
         Magick::Image thumbnail(*image_);
 
         thumbnail.scale(size);
-
+        thumbnail.strip();
+        thumbnail.magick("GIF");
         thumbnail.write(file_path);
     } catch(exception &e) {
         throw apr_pstrdup(pool_, e.what());

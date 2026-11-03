@@ -194,7 +194,9 @@ public:
     static apr_size_t calc_node_memory_size(apr_array_header_t *token_array)
     {
         // 最悪の場合のノード数はトークン数の 2 倍以下
-        return sizeof(node_t) * token_array->nelts * 2;
+        if (token_array->nelts < 0 || static_cast<apr_size_t>(token_array->nelts) >
+            static_cast<apr_size_t>(-1) / sizeof(node_t) / 2) THROW(MESSAGE_SYS_MEMORY_ALLOC_FAILED);
+        return sizeof(node_t) * static_cast<apr_size_t>(token_array->nelts) * 2;
     };
     static const node_t *parse(apr_pool_t *pool, const char *file_path,
                                const char ***ids, const char ***keys);

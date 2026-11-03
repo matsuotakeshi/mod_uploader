@@ -52,7 +52,7 @@ def main():
         for i in range(10):
             client=a if i%2 else b
             status,_,body=client.request(dl,[('download_pass','wrong'),('csrf_token',client.token)],headers={'X-Forwarded-For':'192.0.2.'+str(i+1)})
-            assert status==200 and body!=b'fixture-content\n',(i,status);checks+=1
+            assert status==403 and body!=b'fixture-content\n',(i,status);checks+=1
         status,h,_=b.request(dl,[('download_pass','download123'),('csrf_token',b.token)])
         assert status==429 and 1<=int(h['Retry-After'])<=60;checks+=1
         assert b.request('/up/remove/',[('id','1'),('remove_pass','remove123'),('csrf_token',b.token)])[0]==429;checks+=1
@@ -91,7 +91,7 @@ def main():
         def guess(i):
             d=Client(port);d.index();return d.request(dl,[('download_pass','wrong'),('csrf_token',d.token)])[0]
         with concurrent.futures.ThreadPoolExecutor(max_workers=16) as ex:statuses=list(ex.map(guess,range(16)))
-        assert 429 in statuses and set(statuses)<={200,429},statuses;checks+=1
+        assert 429 in statuses and set(statuses)<={403,429},statuses;checks+=1
         c.admin_credentials=a.admin_credentials
         assert c.request('/up/admin/remove/',[('id','1'),('remove_pass',''),('csrf_token',c.token)])[0]==200;checks+=1
         assert not (root/'data/01/1').exists() and not (root/'file/01/1.txt').exists();checks+=1

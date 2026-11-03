@@ -5298,6 +5298,12 @@ rm -f confcache
 ###############################################################################
 # ¥Ø¥Ã¥À
 
+# Match the FreeBSD headers/library search used by src/GNUmakefile.in.
+case "$target_os" in
+  freebsd*) CPPFLAGS="$CPPFLAGS -isystem /usr/local/include"
+            LDFLAGS="$LDFLAGS -L/usr/local/lib" ;;
+esac
+
 for ac_header in  \
     ctype.h fcntl.h iconv.h limits.h setjmp.h signal.h stdlib.h string.h \
     sys/mman.h sys/mman.h sys/types.h sys/wait.h unistd.h utime.h sched.h \
@@ -5327,9 +5333,20 @@ fi
 done
 
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -liconv" >&5
-$as_echo_n "checking for main in -liconv... " >&6; }
-if ${ac_cv_lib_iconv_main+:} false; then :
+# Test the actual selected header (Ports may select libc via LIBICONV_PLUG).
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+#include <iconv.h>
+int main () {
+  iconv_t cd = iconv_open("UTF-8", "UTF-8"); iconv_close(cd);
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then
+  LIB_ICONV=
+else
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for libiconv_open in -liconv" >&5
+$as_echo_n "checking for libiconv_open in -liconv... " >&6; }
+if ${ac_cv_lib_iconv_libiconv_open+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
@@ -5337,31 +5354,37 @@ LIBS="-liconv  $LIBS"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
-
+#ifdef __cplusplus
+extern "C"
+#endif
+char libiconv_open ();
 int
 main ()
 {
-return main ();
+return libiconv_open ();
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_iconv_main=yes
+  ac_cv_lib_iconv_libiconv_open=yes
 else
-  ac_cv_lib_iconv_main=no
+  ac_cv_lib_iconv_libiconv_open=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_iconv_main" >&5
-$as_echo "$ac_cv_lib_iconv_main" >&6; }
-if test "x$ac_cv_lib_iconv_main" = xyes; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_iconv_libiconv_open" >&5
+$as_echo "$ac_cv_lib_iconv_libiconv_open" >&6; }
+if test "x$ac_cv_lib_iconv_libiconv_open" = xyes; then :
   LIB_ICONV=-liconv
 else
-  LIB_ICONV=
+  as_fn_error $? "iconv headers and library do not match" "$LINENO" 5
 fi
+
+fi
+rm -f conftest.err conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
 
 
 
@@ -7267,7 +7290,7 @@ $as_echo "#define PST_PROGRESS_HOLD_SEC 300" >>confdefs.h
 
 
 
-$as_echo "#define LCK_TIMEOUT_SEC 300" >>confdefs.h
+$as_echo "#define LCK_TIMEOUT_SEC 15" >>confdefs.h
 
 
 

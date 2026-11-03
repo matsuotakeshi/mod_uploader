@@ -37,9 +37,12 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/resource.h>
+#include <cerrno>
 #endif
 
 #include "UploadItemWriter.h"
+#include "StorageTransaction.h"
 #include "UploadItem.h"
 #include "TemporaryPool.h"
 #include "TemporaryFile.h"
@@ -63,27 +66,44 @@ UploadItemWriter::UploadItemWriter(apr_pool_t *pool, const char *data_dir_path,
 
 bool UploadItemWriter::write(UploadItem *uitem, const char *temp_file_path)
 {
+    StorageTransaction transaction(get_data_directory());
+    const bool thumbnail = stage(uitem, temp_file_path, transaction);
+    transaction.commit();
+    return thumbnail;
+}
+
+bool UploadItemWriter::stage(UploadItem *uitem, const char *temp_file_path,
+                            StorageTransaction& transaction)
+{
     TemporaryPool temp_pool(pool_);
-    bool is_thumbnail_created;
-
-    is_thumbnail_created = false;
-    try {
-        prepare_subdir(temp_pool.get(), uitem->get_id());
-
-        write_data(temp_pool.get(), uitem);
-        write_file(temp_pool.get(), uitem, temp_file_path);
-
+    prepare_subdir(temp_pool.get(), uitem->get_id());
+    // Persist payload before metadata. Every target stays unpublished until commit.
+    transaction.create_file(get_file_path(temp_pool.get(), uitem), temp_file_path);
+    transaction.create_bytes(get_data_path(temp_pool.get(), uitem->get_id()), uitem, sizeof(UploadItem));
+    bool thumbnail = false;
 #ifdef MAKE_THUMBNAIL
-        if (uitem->get_file_size() < VIW_THUMBNAIL_SIZE_LIMIT) {
-            is_thumbnail_created = write_thumb(temp_pool.get(), uitem);
+    if (uitem->get_file_size() < VIW_THUMBNAIL_SIZE_LIMIT) {
+        const std::string preview = std::string(get_thumb_path(temp_pool.get(), uitem->get_id())) + ".uploader-preview";
+        transaction.temporary_file(preview.c_str());
+        thumbnail = write_thumb(temp_pool.get(), uitem);
+        if (thumbnail) {
+            const char *path = get_thumb_path(temp_pool.get(), uitem->get_id());
+            const std::string staged = std::string(path) + ".uploader-preview";
+            try { transaction.create_file(path, staged.c_str()); }
+            catch (...) { apr_file_remove(staged.c_str(), temp_pool.get()); throw; }
+            apr_file_remove(staged.c_str(), temp_pool.get());
         }
-#endif
-    } catch(const char *) {
-        remove(temp_pool.get(), uitem);
-        throw;
     }
+#endif
+    return thumbnail;
+}
 
-    return is_thumbnail_created;
+void UploadItemWriter::stage_remove(apr_pool_t *pool, UploadItem *uitem,
+                                   StorageTransaction& transaction)
+{
+    transaction.remove_file(get_data_path(pool, uitem->get_id()));
+    transaction.remove_file(get_file_path(pool, uitem));
+    transaction.remove_file(get_thumb_path(pool, uitem->get_id()));
 }
 
 void UploadItemWriter::write_data(apr_pool_t *pool,
@@ -95,9 +115,9 @@ void UploadItemWriter::write_data(apr_pool_t *pool,
 
 void UploadItemWriter::remove(apr_pool_t *pool, UploadItem *uitem)
 {
-    apr_file_remove(get_data_path(pool, uitem->get_id()), pool);
-    apr_file_remove(get_file_path(pool, uitem), pool);
-    apr_file_remove(get_thumb_path(pool, uitem->get_id()), pool);
+    StorageTransaction transaction(get_data_directory());
+    stage_remove(pool, uitem, transaction);
+    transaction.commit();
 }
 
 
@@ -107,20 +127,19 @@ void UploadItemWriter::remove(apr_pool_t *pool, UploadItem *uitem)
 void UploadItemWriter::write_data(apr_pool_t *pool, UploadItem *uitem)
 {
     const char *uitem_data_path;
-    apr_mmap_t *uitem_data_map;
 
     uitem_data_path = get_data_path(pool, uitem->get_id());
 
     TemporaryFile uitem_data(pool, uitem_data_path);
 
     uitem_data.open(APR_WRITE);
-    uitem_data.expand(sizeof(UploadItem));
-    uitem_data_map = uitem_data.mmap(0, sizeof(UploadItem),
-                                     APR_MMAP_READ|APR_MMAP_WRITE);
-
-    memcpy(uitem_data_map->mm, uitem, sizeof(UploadItem));
+    StorageTransaction::require_clean(get_data_directory());
+    if (apr_file_write_full(uitem_data.borrow_handle(), uitem, sizeof(UploadItem), NULL) != APR_SUCCESS)
+        THROW(MESSAGE_FILE_WRITE_FAILED);
+    if (apr_file_sync(uitem_data.borrow_handle()) != APR_SUCCESS) THROW(MESSAGE_FILE_WRITE_FAILED);
 
     uitem_data.commit();
+    StorageTransaction::sync_directory(std::string(uitem_data_path).substr(0, std::string(uitem_data_path).rfind('/')));
 }
 
 void UploadItemWriter::write_file(apr_pool_t *pool, UploadItem *uitem,
@@ -136,11 +155,14 @@ void UploadItemWriter::write_file(apr_pool_t *pool, UploadItem *uitem,
 bool UploadItemWriter::write_thumb(apr_pool_t *pool, UploadItem *uitem)
 {
 #ifdef USE_FORK
-    static const int TIMEOUT_SEC    = 100;
+    static const int TIMEOUT_SEC    = 10;
     static const int NICE_VALUE     = 20;
 
     pid_t pid;
-    int status;
+    int status = 0;
+    const std::string preview = std::string(get_thumb_path(pool, uitem->get_id())) + ".uploader-preview";
+    struct stat preview_info;
+    if (lstat(preview.c_str(), &preview_info) == 0 || errno != ENOENT) return false;
 
     switch (pid = fork()) {
     case 0: // 子プロセス．
@@ -149,14 +171,20 @@ bool UploadItemWriter::write_thumb(apr_pool_t *pool, UploadItem *uitem)
         // 念のため nice 値を設定
         nice(NICE_VALUE);
         alarm(TIMEOUT_SEC);
-
-        exit(write_thumb_impl(pool, uitem) ? EXIT_SUCCESS : EXIT_FAILURE);
+        {
+            struct rlimit cpu = {3, 3}, memory = {512UL*1024*1024, 512UL*1024*1024}, output = {2UL*1024*1024, 2UL*1024*1024};
+            if (setrlimit(RLIMIT_CPU, &cpu) != 0 || setrlimit(RLIMIT_AS, &memory) != 0 ||
+                setrlimit(RLIMIT_FSIZE, &output) != 0) _exit(EXIT_FAILURE);
+        }
+        _exit(write_thumb_impl(pool, uitem) ? EXIT_SUCCESS : EXIT_FAILURE);
     case -1: // エラー．
         return false;
     default: // 親プロセス
-        waitpid(pid, &status, 0);
-
-        return WIFEXITED(status) && (WEXITSTATUS(status) == EXIT_SUCCESS);
+        pid_t waited;
+        do { waited = waitpid(pid, &status, 0); } while (waited < 0 && errno == EINTR);
+        if (waited == pid && WIFEXITED(status) && WEXITSTATUS(status) == EXIT_SUCCESS) return true;
+        apr_file_remove(preview.c_str(), pool);
+        return false;
     }
 #else
     return write_thumb_impl(pool, uitem);
@@ -169,15 +197,22 @@ bool UploadItemWriter::write_thumb_impl(apr_pool_t *pool, UploadItem *uitem)
     apr_size_t thumb_height;
 
     try {
-        ImageFile image(pool, get_file_path(pool_, uitem));
+        const std::string payload = std::string(get_file_path(pool, uitem)) + ".uploader-new";
+        const std::string preview = std::string(get_thumb_path(pool, uitem->get_id())) + ".uploader-preview";
+        ImageFile image(pool, payload.c_str());
 
         get_thumbnail_size(&image, &thumb_width, &thumb_height);
 
-        image.create_thumbnail(get_thumb_path(pool, uitem->get_id()),
+        image.create_thumbnail(preview.c_str(),
                                thumb_width, thumb_height);
 
         return true;
-    } catch(const char *) {
+    } catch(const char *message) {
+        if (std::strcmp(message, "Thumbnail format is not supported") != 0)
+            std::fprintf(stderr, "mod_uploader: thumbnail skipped: %.240s\n", message);
+        return false;
+    } catch(...) {
+        std::fprintf(stderr, "mod_uploader: thumbnail failed unexpectedly\n");
         return false;
     }
 }

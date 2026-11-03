@@ -1,0 +1,2 @@
+hardening-http: 41 checks passed (real proxy, authenticated admin, shared IP/worker limits, concurrent requests, restart)
+Disposable test directory retained: <test-root>/hardening-http-x4uqw96w

@@ -89,7 +89,92 @@
  
  
  ###############################################################################
-@@ -7243,10 +7244,10 @@
+@@ -5297,6 +5298,12 @@
+ ###############################################################################
+ # �إå�
+ 
++# Match the FreeBSD headers/library search used by src/GNUmakefile.in.
++case "$target_os" in
++  freebsd*) CPPFLAGS="$CPPFLAGS -isystem /usr/local/include"
++            LDFLAGS="$LDFLAGS -L/usr/local/lib" ;;
++esac
++
+ for ac_header in  \
+     ctype.h fcntl.h iconv.h limits.h setjmp.h signal.h stdlib.h string.h \
+     sys/mman.h sys/mman.h sys/types.h sys/wait.h unistd.h utime.h sched.h \
+@@ -5326,9 +5333,20 @@
+ done
+ 
+ 
+-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -liconv" >&5
+-$as_echo_n "checking for main in -liconv... " >&6; }
+-if ${ac_cv_lib_iconv_main+:} false; then :
++# Test the actual selected header (Ports may select libc via LIBICONV_PLUG).
++cat confdefs.h - <<_ACEOF >conftest.$ac_ext
++#include <iconv.h>
++int main () {
++  iconv_t cd = iconv_open("UTF-8", "UTF-8"); iconv_close(cd);
++  return 0;
++}
++_ACEOF
++if ac_fn_c_try_link "$LINENO"; then
++  LIB_ICONV=
++else
++{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for libiconv_open in -liconv" >&5
++$as_echo_n "checking for libiconv_open in -liconv... " >&6; }
++if ${ac_cv_lib_iconv_libiconv_open+:} false; then :
+   $as_echo_n "(cached) " >&6
+ else
+   ac_check_lib_save_LIBS=$LIBS
+@@ -5336,31 +5354,37 @@
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+ 
+-
++#ifdef __cplusplus
++extern "C"
++#endif
++char libiconv_open ();
+ int
+ main ()
+ {
+-return main ();
++return libiconv_open ();
+   ;
+   return 0;
+ }
+ _ACEOF
+ if ac_fn_c_try_link "$LINENO"; then :
+-  ac_cv_lib_iconv_main=yes
+-else
+-  ac_cv_lib_iconv_main=no
++  ac_cv_lib_iconv_libiconv_open=yes
++else
++  ac_cv_lib_iconv_libiconv_open=no
+ fi
+ rm -f core conftest.err conftest.$ac_objext \
+     conftest$ac_exeext conftest.$ac_ext
+ LIBS=$ac_check_lib_save_LIBS
+ fi
+-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_iconv_main" >&5
+-$as_echo "$ac_cv_lib_iconv_main" >&6; }
+-if test "x$ac_cv_lib_iconv_main" = xyes; then :
++{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_iconv_libiconv_open" >&5
++$as_echo "$ac_cv_lib_iconv_libiconv_open" >&6; }
++if test "x$ac_cv_lib_iconv_libiconv_open" = xyes; then :
+   LIB_ICONV=-liconv
+ else
+-  LIB_ICONV=
+-fi
++  as_fn_error $? "iconv headers and library do not match" "$LINENO" 5
++fi
++
++fi
++rm -f conftest.err conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+ 
+ 
+ 
+@@ -7243,10 +7267,10 @@
  $as_echo "#define ITM_MAX_FILE_DIGEST_SIZE 48" >>confdefs.h
  
  
@@ -104,6 +189,15 @@
  
  
  $as_echo "#define ITM_MAX_COMMENT_SIZE 256" >>confdefs.h
+@@ -7266,7 +7290,7 @@
+ 
+ 
+ 
+-$as_echo "#define LCK_TIMEOUT_SEC 300" >>confdefs.h
++$as_echo "#define LCK_TIMEOUT_SEC 15" >>confdefs.h
+ 
+ 
+ 
 --- a/configure.ac
 +++ b/configure.ac
 @@ -1,4 +1,5 @@
@@ -130,7 +224,32 @@
  AC_SUBST(PACKAGE_CODE)
  
  ###############################################################################
-@@ -183,8 +185,8 @@
+@@ -80,13 +82,23 @@
+ 
+ ###############################################################################
+ # �إå�
++# Match the FreeBSD headers/library search used by src/GNUmakefile.in.
++case "$target_os" in
++  freebsd*) CPPFLAGS="$CPPFLAGS -isystem /usr/local/include"
++            LDFLAGS="$LDFLAGS -L/usr/local/lib" ;;
++esac
++
+ AC_CHECK_HEADERS([ \
+     ctype.h fcntl.h iconv.h limits.h setjmp.h signal.h stdlib.h string.h \
+     sys/mman.h sys/mman.h sys/types.h sys/wait.h unistd.h utime.h sched.h \
+ ])
+ AC_CHECK_FUNCS([fork getpagesize memmem strndup wait madvise mprotect])
+ 
+-AC_CHECK_LIB([iconv], [main], [LIB_ICONV=-liconv], [LIB_ICONV=])
++AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <iconv.h>]],
++    [[iconv_t cd = iconv_open("UTF-8", "UTF-8"); iconv_close(cd);]])],
++    [LIB_ICONV=],
++    [AC_CHECK_LIB([iconv], [libiconv_open], [LIB_ICONV=-liconv],
++        [AC_MSG_ERROR([iconv headers and library do not match])])])
+ AC_SUBST(LIB_ICONV)
+ AC_CHECK_ICONV_2ND_ARG_TYPE
+ 
+@@ -183,8 +195,8 @@
  AC_DEFINE(ITM_MAX_FILE_MIME_SIZE,       64,		[���åץ����ɥե������ MIME �����פκ���Ĺ])
  AC_DEFINE(ITM_MAX_FILE_EXT_SIZE,        8,		[���åץ����ɥե�����γ�ĥ�Ҥκ���Ĺ])
  AC_DEFINE(ITM_MAX_FILE_DIGEST_SIZE,     48,		[���åץ����ɥե������ MD5 �ͤκ���Ĺ])
@@ -141,6 +260,15 @@
  AC_DEFINE(ITM_MAX_COMMENT_SIZE,         256,	[���åץ����ɥ����ƥ�Υ����Ȥκ���Ĺ])
  
  AC_DEFINE(PST_MAX_ITEM_COUNT,           10,     [��Ƥ�����ܤκ����])
+@@ -192,7 +204,7 @@
+ AC_DEFINE(PST_INTERVAL_SEC,             60,     [����Ʋ�ǽ�ˤʤ�ޤǤλ���(��)])
+ AC_DEFINE(PST_PROGRESS_HOLD_SEC,        300,    [�ꥯ�����Ȥο�Ľ������ݻ��������(��)])
+ 
+-AC_DEFINE(LCK_TIMEOUT_SEC,              300,    [���å��򥿥��ॢ���Ȥˤ���ޤǤλ���(��)])
++AC_DEFINE(LCK_TIMEOUT_SEC,              15,    [���å��򥿥��ॢ���Ȥˤ���ޤǤλ���(��)])
+ 
+ AC_DEFINE(VIW_EXPIRES,                  60*60*24*7, [�ե����륭��å���Τ�ͭ������])
+ 
 --- a/include/ApacheResponse.h
 +++ b/include/ApacheResponse.h
 @@ -1,3 +1,4 @@
@@ -166,6 +294,66 @@
  #else
          return r->connection->remote_addr;
  #endif
+--- a/include/File.h
++++ b/include/File.h
+@@ -29,6 +29,7 @@
+ #define FILE_H
+ 
+ #include "Environment.h"
++#include <limits>
+ 
+ #include <cstdlib>
+ #ifdef DEBUG
+@@ -206,7 +207,9 @@
+             size = get_size();
+         }
+ 
+-        if (apr_mmap_create(&mmap_, file_, offset,
++        if (offset > static_cast<apr_uint64_t>(std::numeric_limits<apr_off_t>::max()) ||
++            size > std::numeric_limits<apr_size_t>::max()) THROW(MESSAGE_FILE_MMAP_FAILED);
++        if (apr_mmap_create(&mmap_, file_, static_cast<apr_off_t>(offset),
+                             static_cast<apr_size_t>(size), flag, pool_)
+             != APR_SUCCESS) {
+             THROW(MESSAGE_FILE_MMAP_FAILED);
+@@ -282,7 +285,8 @@
+ 
+         REQUIRE_FILE_OPENDED;
+ 
+-        seek_offset = offset;
++        if (offset > static_cast<apr_uint64_t>(std::numeric_limits<apr_off_t>::max())) THROW(MESSAGE_FILE_SEEK_FAILED);
++        seek_offset = static_cast<apr_off_t>(offset);
+         if (apr_file_seek(file_, APR_SET, &seek_offset) != APR_SUCCESS) {
+             THROW(MESSAGE_FILE_SEEK_FAILED);
+         }
+@@ -310,7 +314,8 @@
+             close();
+         }
+ 
+-        return info.size;
++        if (info.size < 0) THROW(MESSAGE_FILE_STAT_FAILED);
++        return static_cast<apr_uint64_t>(info.size);
+     };
+     /**
+      * 更新日時を取得します．
+@@ -375,7 +380,8 @@
+         REQUIRE_FILE_OPENDED;
+ 
+         munmap();
+-        if (apr_file_trunc(file_, size) != APR_SUCCESS) {
++        if (size > static_cast<apr_size_t>(std::numeric_limits<apr_off_t>::max())) THROW(MESSAGE_FILE_TRUNC_FAILED);
++        if (apr_file_trunc(file_, static_cast<apr_off_t>(size)) != APR_SUCCESS) {
+             THROW(MESSAGE_FILE_TRUNC_FAILED);
+         }
+     };
+@@ -394,6 +400,8 @@
+ 
+         return file;
+     };
++    // Borrow without transferring ownership (get_handle deliberately releases it).
++    apr_file_t *borrow_handle() const { return file_; }
+     bool is_closed()
+     {
+         return file_ == NULL;
 --- a/include/FlowController.h
 +++ b/include/FlowController.h
 @@ -43,7 +43,7 @@
@@ -199,6 +387,15 @@
 +        paddress[0] = static_cast<char>(address_length);
          memcpy(paddress + 1, address, address_length);
          paddress[1 + address_length] = '\0';
+ 
+@@ -84,7 +84,7 @@
+             return false;
+         }
+ 
+-        return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
++        return (strncmp(paddress_a + 1, paddress_b + 1, static_cast<unsigned char>(paddress_a[0])) == 0);
+     };
+ };
  
 --- a/include/Locker.h
 +++ b/include/Locker.h
@@ -358,6 +555,30 @@
              }
  
              yield();
+--- a/include/ReadWriteLocker.h
++++ b/include/ReadWriteLocker.h
+@@ -168,6 +168,8 @@
+      */
+     static void yield()
+     {
++        // A busy wait monopolizes a CPU while image I/O holds the manager lock.
++        apr_sleep(1000);
+ #if APR_HAS_THREADS
+         // APR 0.x だと UNIX 環境の apr_thread_yield の中身は空なので
+ #if (APR_MAJOR_VERSION == 0) && defined(_POSIX_PRIORITY_SCHEDULING)
+--- a/include/TemplateParser.h
++++ b/include/TemplateParser.h
+@@ -194,7 +194,9 @@
+     static apr_size_t calc_node_memory_size(apr_array_header_t *token_array)
+     {
+         // 最悪の場合のノード数はトークン数の 2 倍以下
+-        return sizeof(node_t) * token_array->nelts * 2;
++        if (token_array->nelts < 0 || static_cast<apr_size_t>(token_array->nelts) >
++            static_cast<apr_size_t>(-1) / sizeof(node_t) / 2) THROW(MESSAGE_SYS_MEMORY_ALLOC_FAILED);
++        return sizeof(node_t) * static_cast<apr_size_t>(token_array->nelts) * 2;
+     };
+     static const node_t *parse(apr_pool_t *pool, const char *file_path,
+                                const char ***ids, const char ***keys);
 --- a/include/UploadItem.h
 +++ b/include/UploadItem.h
 @@ -80,12 +80,46 @@
@@ -425,6 +646,16 @@
  
              strncpy(identifier, PACKAGE_NAME, ITM_MAX_IDENTIFIER_SIZE-1);
              strncpy(version, PACKAGE_VERSION, ITM_MAX_VERSION_SIZE-1);
+--- a/include/UploadItemIO.h
++++ b/include/UploadItemIO.h
+@@ -64,6 +64,7 @@
+                                       apr_size_t item_id);
+ 
+ protected:
++    const char *get_data_directory() const { return data_dir_path_; }
+     const char *get_data_path(apr_pool_t *pool, apr_size_t item_id) const;
+     const char *get_file_path(apr_pool_t *pool, UploadItem *uitem) const;
+     const char *get_thumb_path(apr_pool_t *pool, apr_size_t item_id) const;
 --- a/include/UploadItemList.h
 +++ b/include/UploadItemList.h
 @@ -80,10 +80,12 @@
@@ -440,7 +671,7 @@
          return get_header_list() + i;
      };
      apr_size_t size() const
-@@ -94,9 +96,11 @@
+@@ -94,11 +96,20 @@
      {
          return total_file_size_;
      };
@@ -452,7 +683,16 @@
 +        return !can_fit(file_size) || total_file_size_ > max_file_size_ - file_size ||
              (size() >= max_list_size_);
      };
++    bool needs_eviction(apr_uint64_t file_size, apr_uint64_t removed_bytes,
++                        apr_size_t removed_count) const
++    {
++        return !can_fit(file_size) || removed_bytes > total_file_size_ || removed_count > size() ||
++            total_file_size_ - removed_bytes > max_file_size_ - file_size ||
++            size() - removed_count >= max_list_size_;
++    }
      /**
+      * プールを使ってインスタンスを生成します．
+      *
 --- a/include/UploadItemManager.h
 +++ b/include/UploadItemManager.h
 @@ -61,23 +61,16 @@
@@ -493,6 +733,27 @@
  
      /**
       * ユニークなアイテム ID とインデックスを生成します．
+--- a/include/UploadItemWriter.h
++++ b/include/UploadItemWriter.h
+@@ -34,6 +34,7 @@
+ #include "UploadItemIO.h"
+ 
+ class ImageFile;
++class StorageTransaction;
+ 
+ /**
+  * @brief アップロードアイテムをファイルに書き込むクラス．
+@@ -60,6 +61,10 @@
+      * @retval false サムネイルを作成していない
+      */
+     bool write(UploadItem *uitem, const char *temp_file_path);
++    bool stage(UploadItem *uitem, const char *temp_file_path,
++               StorageTransaction& transaction);
++    void stage_remove(apr_pool_t *pool, UploadItem *uitem,
++                      StorageTransaction& transaction);
+     /**
+      * アイテムヘッダを書き出します．
+      *
 --- a/include/WriteLocker.h
 +++ b/include/WriteLocker.h
 @@ -1,3 +1,4 @@
@@ -841,7 +1102,7 @@
  LINK        := $(LIBTOOL) --silent --mode=link --tag=CXX $(CXX_ORIG)
  CFLAGS      += -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion \
 -	-Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer -fforce-addr
-+	-Wpointer-arith -Wfloat-equal -Wstrict-aliasing -ftracer
++	-Wpointer-arith -Wfloat-equal -Wstrict-aliasing
  DEBUG_OPT   += -ggdb
  ifeq ($(firstword $(sort $(shell $(CC_ORIG) -dumpversion) 3.9.9)),3.9.9)
  # GCC 4.0 以上の場合
@@ -877,8 +1138,54 @@
  /******************************************************************************
   * Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
   *
-@@ -72,7 +73,7 @@
-         image_ = new Magick::Image(Magick::Blob(file_map->mm, file_map->size));
+@@ -43,6 +44,8 @@
+ #undef PACKAGE_TARNAME
+ #undef PACKAGE_VERSION
+ #include <Magick++.h>
++#include <memory>
++#include <cstring>
+ #undef PACKAGE_NAME
+ #undef PACKAGE_STRING
+ #undef PACKAGE_BUGREPORT
+@@ -69,10 +72,43 @@
+     file_map = mmap();
+ 
+     try {
+-        image_ = new Magick::Image(Magick::Blob(file_map->mm, file_map->size));
++        // Reject non-raster formats before entering a decoder; never invoke delegates.
++        const unsigned char *bytes = static_cast<const unsigned char *>(file_map->mm);
++        const size_t length = file_map->size;
++        const char *format = NULL;
++        if (length >= 8 && std::memcmp(bytes, "\211PNG\r\n\032\n", 8) == 0) format = "PNG";
++        else if (length >= 3 && bytes[0] == 0xff && bytes[1] == 0xd8 && bytes[2] == 0xff) format = "JPEG";
++        else if (length >= 6 && (std::memcmp(bytes, "GIF87a", 6) == 0 || std::memcmp(bytes, "GIF89a", 6) == 0)) format = "GIF";
++        else if (length >= 12 && std::memcmp(bytes, "RIFF", 4) == 0 && std::memcmp(bytes+8, "WEBP", 4) == 0) format = "WEBP";
++        if (format == NULL) throw "Thumbnail format is not supported";
++
++        Magick::InitializeMagick(NULL);
++        Magick::ResourceLimits::memory(64UL * 1024 * 1024);
++        Magick::ResourceLimits::map(0);
++        Magick::ResourceLimits::disk(0);
++        Magick::ResourceLimits::thread(1);
++        Magick::ResourceLimits::width(8192);
++        Magick::ResourceLimits::height(8192);
++        // Decoding/scaling a single image temporarily needs multiple cache entries.
++        Magick::ResourceLimits::listLength(8);
++        MagickCore::ExceptionInfo *exception = MagickCore::AcquireExceptionInfo();
++        const bool policy_ok = MagickCore::SetMagickSecurityPolicy(
++            "<policymap><policy domain=\"delegate\" rights=\"none\" pattern=\"*\"/>"
++            "<policy domain=\"filter\" rights=\"none\" pattern=\"*\"/></policymap>", exception) != MagickCore::MagickFalse;
++        MagickCore::DestroyExceptionInfo(exception);
++        if (!policy_ok) throw "Cannot restrict thumbnail delegates";
++
++        std::unique_ptr<Magick::Image> decoded(new Magick::Image());
++        decoded->magick(format);
++        decoded->ping(Magick::Blob(bytes, length));
++        if (decoded->columns() == 0 || decoded->rows() == 0 || decoded->columns() > 8192 ||
++            decoded->rows() > 8192 || decoded->columns() > 16000000 / decoded->rows())
++            throw "Thumbnail dimensions exceed safety limits";
++        decoded->read(Magick::Blob(bytes, length), Magick::Geometry(), std::string(format));
++        image_ = decoded.release();
      } catch(exception &e) {
          // File の資源は APR のプールが管理しているので問題ない
 -        throw e.what();
@@ -886,14 +1193,30 @@
      }
  }
  
-@@ -95,7 +96,7 @@
+@@ -92,10 +128,11 @@
+         Magick::Image thumbnail(*image_);
  
+         thumbnail.scale(size);
+-
++        thumbnail.strip();
++        thumbnail.magick("GIF");
          thumbnail.write(file_path);
      } catch(exception &e) {
 -        throw e.what();
 +        throw apr_pstrdup(pool_, e.what());
      }
  }
+ 
+--- a/src/MessageDigest5.cpp
++++ b/src/MessageDigest5.cpp
+@@ -89,8 +89,6 @@
+     gap = 64 - remain_size_;
+ 
+     if (LIKELY(size >= gap)) {
+-        read_size = 0;
+-
+         memcpy(buffer_+remain_size_, input, gap);
+         process(buffer_);
  
 --- a/src/MultipartMessageParser.cpp
 +++ b/src/MultipartMessageParser.cpp
@@ -1402,6 +1725,24 @@
  }
  
  void run_size()
+--- a/src/UploadItemIO.cpp
++++ b/src/UploadItemIO.cpp
+@@ -32,6 +32,7 @@
+ #include "apr_strings.h"
+ 
+ #include "UploadItemIO.h"
++#include "StorageTransaction.h"
+ #include "UploadItem.h"
+ #include "Message.h"
+ #include "Macro.h"
+@@ -166,6 +167,7 @@
+     if (apr_dir_make(sub_dir_path, APR_OS_DEFAULT, pool) != APR_SUCCESS) {
+         THROW(MESSAGE_UPLOAD_ITEM_SUB_DIR_CREATION_FAILED);
+     }
++    StorageTransaction::sync_directory(dir_path);
+ }
+ 
+ // Local Variables:
 --- a/src/UploadItemList.cpp
 +++ b/src/UploadItemList.cpp
 @@ -56,6 +56,7 @@
@@ -1440,15 +1781,18 @@
  /******************************************************************************
   * Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
   *
-@@ -37,6 +38,7 @@
+@@ -36,7 +37,10 @@
+ #include "apr_file_info.h"
  
  #include "UploadItemManager.h"
++#include "StorageTransaction.h"
++#include <vector>
  #include "UploadItem.h"
 +#include "MetadataSafety.h"
  #include "UploadItemList.h"
  #include "UploadItemIterator.h"
  #include "ThumbnailList.h"
-@@ -71,6 +73,27 @@
+@@ -71,6 +75,27 @@
  
  const apr_size_t UploadItemManager::SYNC_FACTOR = 32;
  const apr_size_t UploadItemManager::SYNC_LIMIT  = 200;
@@ -1476,7 +1820,7 @@
  
  
  /******************************************************************************
-@@ -108,7 +131,7 @@
+@@ -108,7 +133,7 @@
  {
      UploadItem::header_t *header;
      apr_size_t synced_count;
@@ -1485,7 +1829,7 @@
  
      REQUIRE_MANAGER_LOCKED();
  
-@@ -140,14 +163,15 @@
+@@ -140,14 +165,15 @@
  }
  
  apr_file_t *UploadItemManager::get_item_file(apr_pool_t *pool,
@@ -1504,7 +1848,7 @@
  
      REQUIRE_MANAGER_LOCKED();
  
-@@ -155,12 +179,16 @@
+@@ -155,12 +181,16 @@
  
      file_path = UploadItemIO::get_file_path(pool, file_dir_path_, uitem);
  
@@ -1526,7 +1870,7 @@
      return file;
  }
  
-@@ -202,18 +230,10 @@
+@@ -202,18 +232,10 @@
  void UploadItemManager::child_init(apr_shm_t *shm, UploadItemList *item_list,
                                     ThumbnailList *thumbnail_list)
  {
@@ -1549,7 +1893,7 @@
  
      item_list_ = item_list;
      thumbnail_list_ = thumbnail_list;
-@@ -221,7 +241,7 @@
+@@ -221,7 +243,7 @@
  
  apr_size_t UploadItemManager::get_memory_size()
  {
@@ -1558,7 +1902,7 @@
  }
  
  void UploadItemManager::check_finalize_state(UploadItemManager *item_manager)
-@@ -272,7 +292,12 @@
+@@ -272,7 +294,12 @@
      UploadItem *uitem;
      apr_time_t current_time;
  
@@ -1572,7 +1916,7 @@
  
      {
          WriteLocker manager_locker(lock_);
-@@ -280,12 +305,9 @@
+@@ -280,24 +307,46 @@
          REQUIRE_MANAGER_LOCKED();
  
          create_item_id_index(&item_id, &item_index);
@@ -1582,13 +1926,46 @@
 -            (pool, item_id, item_index, file_size, current_time, ip_address,
 -             file_name, file_mime, file_digest, remove_pass, download_pass,
 -             comment, code_pat);
-+        remove_files_locked(pool, file_size);
+-
+-        if (item_writer_.write(uitem, file_temp_path)) {
+-            thumbnail_list_->add(uitem->get_id());
 +        reinterpret_cast<UploadItem::header_t *>(uitem)->id = item_id;
 +        reinterpret_cast<UploadItem::header_t *>(uitem)->index = item_index;
++
++        // Choose eviction victims without changing either disk or shared memory.
++        std::vector<UploadItem::header_t> victims;
++        apr_uint64_t removed_bytes = 0;
++        while (item_list_->needs_eviction(file_size, removed_bytes, victims.size())) {
++            UploadItem::header_t *selected = NULL;
++            for (apr_size_t i = item_list_->size(); i > 0; --i) {
++                UploadItem::header_t *candidate = item_list_->get_by_index(i-1);
++                bool used = false;
++                for (size_t j = 0; j < victims.size(); ++j)
++                    if (victims[j].id == candidate->id) used = true;
++                if (used) continue;
++                if (selected == NULL) selected = candidate;
++#ifdef REMOVE_UNPOPULAR
++                if (AS_UITEM(candidate)->get_atime() < AS_UITEM(selected)->get_atime()) selected = candidate;
++#else
++                break;
++#endif
++            }
++            if (selected == NULL) THROW(MESSAGE_BUG_FOUND);
++            removed_bytes += AS_UITEM(selected)->get_file_size();
++            victims.push_back(*selected);
+         }
++        StorageTransaction transaction(data_dir_path_);
++        const bool thumbnail = item_writer_.stage(uitem, file_temp_path, transaction);
++        for (size_t i = 0; i < victims.size(); ++i)
++            item_writer_.stage_remove(pool, AS_UITEM(&victims[i]), transaction);
++        transaction.commit();
++        for (size_t i = 0; i < victims.size(); ++i) {
++            thumbnail_list_->remove(victims[i].id);
++            item_list_->remove(victims[i].id);
++        }
++        if (thumbnail) thumbnail_list_->add(uitem->get_id());
+         item_list_->add(uitem);
  
-         if (item_writer_.write(uitem, file_temp_path)) {
-             thumbnail_list_->add(uitem->get_id());
-@@ -295,9 +317,6 @@
          set_mtime(current_time);
      }
  
@@ -1598,7 +1975,7 @@
      return item_id;
  }
  
-@@ -306,6 +325,10 @@
+@@ -306,6 +355,10 @@
      WriteLocker manager_locker(lock_);
  
      REQUIRE_MANAGER_LOCKED();
@@ -1609,7 +1986,7 @@
  
      // 処理の順番を変えるとまずい
      item_writer_.remove(pool, uitem);
-@@ -315,56 +338,31 @@
+@@ -315,56 +368,31 @@
      set_mtime(apr_time_now());
  }
  
@@ -1683,7 +2060,7 @@
  void UploadItemManager::create_item_id_index(apr_size_t *item_id,
                                               apr_size_t *item_index) const
  {
-@@ -377,20 +375,29 @@
+@@ -377,20 +405,29 @@
          return;
      }
  
@@ -1800,6 +2177,192 @@
              THROW(MESSAGE_UPLOAD_ITEM_FORMAT_INVALID);
          }
          break;
+--- a/src/UploadItemWriter.cpp
++++ b/src/UploadItemWriter.cpp
+@@ -37,9 +37,12 @@
+ #include <unistd.h>
+ #include <sys/types.h>
+ #include <sys/wait.h>
++#include <sys/resource.h>
++#include <cerrno>
+ #endif
+ 
+ #include "UploadItemWriter.h"
++#include "StorageTransaction.h"
+ #include "UploadItem.h"
+ #include "TemporaryPool.h"
+ #include "TemporaryFile.h"
+@@ -63,27 +66,44 @@
+ 
+ bool UploadItemWriter::write(UploadItem *uitem, const char *temp_file_path)
+ {
++    StorageTransaction transaction(get_data_directory());
++    const bool thumbnail = stage(uitem, temp_file_path, transaction);
++    transaction.commit();
++    return thumbnail;
++}
++
++bool UploadItemWriter::stage(UploadItem *uitem, const char *temp_file_path,
++                            StorageTransaction& transaction)
++{
+     TemporaryPool temp_pool(pool_);
+-    bool is_thumbnail_created;
+-
+-    is_thumbnail_created = false;
+-    try {
+-        prepare_subdir(temp_pool.get(), uitem->get_id());
+-
+-        write_data(temp_pool.get(), uitem);
+-        write_file(temp_pool.get(), uitem, temp_file_path);
+-
++    prepare_subdir(temp_pool.get(), uitem->get_id());
++    // Persist payload before metadata. Every target stays unpublished until commit.
++    transaction.create_file(get_file_path(temp_pool.get(), uitem), temp_file_path);
++    transaction.create_bytes(get_data_path(temp_pool.get(), uitem->get_id()), uitem, sizeof(UploadItem));
++    bool thumbnail = false;
+ #ifdef MAKE_THUMBNAIL
+-        if (uitem->get_file_size() < VIW_THUMBNAIL_SIZE_LIMIT) {
+-            is_thumbnail_created = write_thumb(temp_pool.get(), uitem);
++    if (uitem->get_file_size() < VIW_THUMBNAIL_SIZE_LIMIT) {
++        const std::string preview = std::string(get_thumb_path(temp_pool.get(), uitem->get_id())) + ".uploader-preview";
++        transaction.temporary_file(preview.c_str());
++        thumbnail = write_thumb(temp_pool.get(), uitem);
++        if (thumbnail) {
++            const char *path = get_thumb_path(temp_pool.get(), uitem->get_id());
++            const std::string staged = std::string(path) + ".uploader-preview";
++            try { transaction.create_file(path, staged.c_str()); }
++            catch (...) { apr_file_remove(staged.c_str(), temp_pool.get()); throw; }
++            apr_file_remove(staged.c_str(), temp_pool.get());
+         }
+-#endif
+-    } catch(const char *) {
+-        remove(temp_pool.get(), uitem);
+-        throw;
+-    }
+-
+-    return is_thumbnail_created;
++    }
++#endif
++    return thumbnail;
++}
++
++void UploadItemWriter::stage_remove(apr_pool_t *pool, UploadItem *uitem,
++                                   StorageTransaction& transaction)
++{
++    transaction.remove_file(get_data_path(pool, uitem->get_id()));
++    transaction.remove_file(get_file_path(pool, uitem));
++    transaction.remove_file(get_thumb_path(pool, uitem->get_id()));
+ }
+ 
+ void UploadItemWriter::write_data(apr_pool_t *pool,
+@@ -95,9 +115,9 @@
+ 
+ void UploadItemWriter::remove(apr_pool_t *pool, UploadItem *uitem)
+ {
+-    apr_file_remove(get_data_path(pool, uitem->get_id()), pool);
+-    apr_file_remove(get_file_path(pool, uitem), pool);
+-    apr_file_remove(get_thumb_path(pool, uitem->get_id()), pool);
++    StorageTransaction transaction(get_data_directory());
++    stage_remove(pool, uitem, transaction);
++    transaction.commit();
+ }
+ 
+ 
+@@ -107,20 +127,19 @@
+ void UploadItemWriter::write_data(apr_pool_t *pool, UploadItem *uitem)
+ {
+     const char *uitem_data_path;
+-    apr_mmap_t *uitem_data_map;
+ 
+     uitem_data_path = get_data_path(pool, uitem->get_id());
+ 
+     TemporaryFile uitem_data(pool, uitem_data_path);
+ 
+     uitem_data.open(APR_WRITE);
+-    uitem_data.expand(sizeof(UploadItem));
+-    uitem_data_map = uitem_data.mmap(0, sizeof(UploadItem),
+-                                     APR_MMAP_READ|APR_MMAP_WRITE);
+-
+-    memcpy(uitem_data_map->mm, uitem, sizeof(UploadItem));
++    StorageTransaction::require_clean(get_data_directory());
++    if (apr_file_write_full(uitem_data.borrow_handle(), uitem, sizeof(UploadItem), NULL) != APR_SUCCESS)
++        THROW(MESSAGE_FILE_WRITE_FAILED);
++    if (apr_file_sync(uitem_data.borrow_handle()) != APR_SUCCESS) THROW(MESSAGE_FILE_WRITE_FAILED);
+ 
+     uitem_data.commit();
++    StorageTransaction::sync_directory(std::string(uitem_data_path).substr(0, std::string(uitem_data_path).rfind('/')));
+ }
+ 
+ void UploadItemWriter::write_file(apr_pool_t *pool, UploadItem *uitem,
+@@ -136,11 +155,14 @@
+ bool UploadItemWriter::write_thumb(apr_pool_t *pool, UploadItem *uitem)
+ {
+ #ifdef USE_FORK
+-    static const int TIMEOUT_SEC    = 100;
++    static const int TIMEOUT_SEC    = 10;
+     static const int NICE_VALUE     = 20;
+ 
+     pid_t pid;
+-    int status;
++    int status = 0;
++    const std::string preview = std::string(get_thumb_path(pool, uitem->get_id())) + ".uploader-preview";
++    struct stat preview_info;
++    if (lstat(preview.c_str(), &preview_info) == 0 || errno != ENOENT) return false;
+ 
+     switch (pid = fork()) {
+     case 0: // 子プロセス．
+@@ -149,14 +171,20 @@
+         // 念のため nice 値を設定
+         nice(NICE_VALUE);
+         alarm(TIMEOUT_SEC);
+-
+-        exit(write_thumb_impl(pool, uitem) ? EXIT_SUCCESS : EXIT_FAILURE);
++        {
++            struct rlimit cpu = {3, 3}, memory = {512UL*1024*1024, 512UL*1024*1024}, output = {2UL*1024*1024, 2UL*1024*1024};
++            if (setrlimit(RLIMIT_CPU, &cpu) != 0 || setrlimit(RLIMIT_AS, &memory) != 0 ||
++                setrlimit(RLIMIT_FSIZE, &output) != 0) _exit(EXIT_FAILURE);
++        }
++        _exit(write_thumb_impl(pool, uitem) ? EXIT_SUCCESS : EXIT_FAILURE);
+     case -1: // エラー．
+         return false;
+     default: // 親プロセス
+-        waitpid(pid, &status, 0);
+-
+-        return WIFEXITED(status) && (WEXITSTATUS(status) == EXIT_SUCCESS);
++        pid_t waited;
++        do { waited = waitpid(pid, &status, 0); } while (waited < 0 && errno == EINTR);
++        if (waited == pid && WIFEXITED(status) && WEXITSTATUS(status) == EXIT_SUCCESS) return true;
++        apr_file_remove(preview.c_str(), pool);
++        return false;
+     }
+ #else
+     return write_thumb_impl(pool, uitem);
+@@ -169,15 +197,22 @@
+     apr_size_t thumb_height;
+ 
+     try {
+-        ImageFile image(pool, get_file_path(pool_, uitem));
++        const std::string payload = std::string(get_file_path(pool, uitem)) + ".uploader-new";
++        const std::string preview = std::string(get_thumb_path(pool, uitem->get_id())) + ".uploader-preview";
++        ImageFile image(pool, payload.c_str());
+ 
+         get_thumbnail_size(&image, &thumb_width, &thumb_height);
+ 
+-        image.create_thumbnail(get_thumb_path(pool, uitem->get_id()),
++        image.create_thumbnail(preview.c_str(),
+                                thumb_width, thumb_height);
+ 
+         return true;
+-    } catch(const char *) {
++    } catch(const char *message) {
++        if (std::strcmp(message, "Thumbnail format is not supported") != 0)
++            std::fprintf(stderr, "mod_uploader: thumbnail skipped: %.240s\n", message);
++        return false;
++    } catch(...) {
++        std::fprintf(stderr, "mod_uploader: thumbnail failed unexpectedly\n");
+         return false;
+     }
+ }
 --- a/src/UploaderConfig.cpp
 +++ b/src/UploaderConfig.cpp
 @@ -26,6 +26,7 @@
@@ -1810,15 +2373,16 @@
  
  #include <cstring>
  
-@@ -33,6 +34,7 @@
+@@ -33,6 +34,8 @@
  #include "apr_strings.h"
  
  #include "UploaderConfig.h"
++#include "StorageTransaction.h"
 +#include "StorageLock.h"
  #include "UploadItemList.h"
  #include "UploadItemManager.h"
  #include "UploadItemListReader.h"
-@@ -147,7 +149,8 @@
+@@ -147,7 +150,8 @@
      item_manager_(NULL)
  
  {
@@ -1828,7 +2392,7 @@
  
      apr_temp_dir_get(&temp_dir_path, pool_);
      memset(tmpls_, 0, sizeof(tmpls_));
-@@ -225,6 +228,7 @@
+@@ -225,6 +229,7 @@
      if (!is_active_) {
          return;
      }
@@ -1836,7 +2400,7 @@
  
      item_manager_->sync_all_item(pool_);
  
-@@ -275,8 +279,15 @@
+@@ -275,8 +280,16 @@
      if (base_url == NULL) {
          THROW(MESSAGE_CONF_PARAM_COMPULSORY_NOT_SPECIFIED);
      }
@@ -1848,6 +2412,7 @@
 +        throw "Invalid capacity or pagination limits";
      check_dir(data_dir_path);
 +    StorageLock::hold(pool_,data_dir_path);
++    StorageTransaction::require_clean(data_dir_path);
 +    if (File::is_exist(pool_, apr_pstrcat(pool_, data_dir_path, "/.migration-in-progress", NULL)))
 +        throw "Password migration is incomplete; restore backup or finish migration before startup";
      check_dir(file_dir_path);
@@ -1876,7 +2441,15 @@
  /******************************************************************************
   * Copyright (C) 2007 Tetsuya Kimata <kimata@acapulco.dyndns.org>
   *
-@@ -181,7 +182,13 @@
+@@ -56,6 +57,7 @@
+ 
+ #include "ApacheResponse.h"
+ #include "UploaderConfig.h"
++#include "ConfigNumber.h"
+ #include "Auxiliary.h"
+ #include "Macro.h"
+ #include "SourceInfo.h"
+@@ -181,7 +183,13 @@
      UploaderConfig *config;
  
      config = AS_UCONFIG(data);
@@ -1891,7 +2464,7 @@
  
      return APR_SUCCESS;
  }
-@@ -348,6 +355,9 @@
+@@ -348,6 +356,9 @@
          logger.error(__FILE__, __LINE__, &r_wrapper, "Exception: %s", message);
  
          return HTTP_INTERNAL_SERVER_ERROR;
@@ -1901,7 +2474,7 @@
      }
  }
  
-@@ -362,7 +372,7 @@
+@@ -362,7 +373,7 @@
  {
      UploaderConfig *config;
  
@@ -1910,7 +2483,7 @@
          return DECLINED;
      }
  
-@@ -386,6 +396,9 @@
+@@ -386,6 +397,9 @@
      } catch(const char *message) {
          logger.error(__FILE__, __LINE__, r, "Exception: %s", message);
  
@@ -1920,6 +2493,30 @@
          return HTTP_INTERNAL_SERVER_ERROR;
      }
  }
+@@ -405,10 +419,19 @@
+ DIRECTIVE_HANDLER(thumb_dir_path, apr_pstrdup(parms->pool, arg));
+ DIRECTIVE_HANDLER(temp_dir_path, apr_pstrdup(parms->pool, arg));
+ 
+-DIRECTIVE_HANDLER(total_file_size_limit, apr_atoi64(arg) * 1024);
+-DIRECTIVE_HANDLER(total_file_number_limit, atoi(arg));
+-DIRECTIVE_HANDLER(file_size_limit, apr_atoi64(arg) * 1024);
+-DIRECTIVE_HANDLER(per_page_item_number, atoi(arg));
++// Size directives retain their historical KiB unit; reject overflow and junk.
++#define NUMBER_DIRECTIVE(member, maximum, factor) \
++    static const char *set_ ## member(cmd_parms *, void *mconfig, char *arg) { \
++        uint64_t number; \
++        if (!ConfigNumber::parse(arg, maximum, number)) return "Uploader limit must be a positive decimal integer within range (size limits are KiB)"; \
++        AS_UCONFIG(mconfig)->member = number * factor; \
++        return NULL; \
++    }
++NUMBER_DIRECTIVE(total_file_size_limit, INT64_MAX / 1024, 1024);
++NUMBER_DIRECTIVE(file_size_limit, INT64_MAX / 1024, 1024);
++NUMBER_DIRECTIVE(total_file_number_limit, 1000000, 1);
++NUMBER_DIRECTIVE(per_page_item_number, 1000000, 1);
++#undef NUMBER_DIRECTIVE
+ 
+ TEMPLATE_DIRECTIVE_HANDLER(INDEX_VIEW, apr_pstrdup(parms->pool, arg));
+ TEMPLATE_DIRECTIVE_HANDLER(INFO_VIEW, apr_pstrdup(parms->pool, arg));
 --- a/src/uploader_handler.cpp
 +++ b/src/uploader_handler.cpp
 @@ -1,3 +1,4 @@
@@ -1945,7 +2542,15 @@
  
  #include "UploadItem.h"
  #include "UploadItemIO.h"
-@@ -117,6 +126,41 @@
+@@ -52,6 +61,7 @@
+ #include "DownloadFlowController.h"
+ #include "CharCodeConverter.h"
+ #include "Message.h"
++#include "HttpErrorStatus.h"
+ #include "Macro.h"
+ #include "Auxiliary.h"
+ #include "SourceInfo.h"
+@@ -117,6 +127,41 @@
  }
  
  template<class Response>
@@ -1987,7 +2592,7 @@
  static int redirect(typename Response::Handle *r, typename Response::Writer& o,
                      const char *url)
  {
-@@ -135,7 +179,7 @@
+@@ -135,7 +180,7 @@
      o.write("  <meta http-equiv=\"content-type\" "
               "content=\"application/xhtml+xml\" />\n");
      o.write("  <meta http-equiv=\"refresh\" content=\"0;url=");
@@ -1996,7 +2601,7 @@
      o.write("\" />\n");
      o.write("  <title>" PACKAGE_NAME "</title>\n");
      o.write(" </head>\n");
-@@ -153,7 +197,7 @@
+@@ -153,7 +198,7 @@
                                    UploaderConfig *config, const char *message)
  {
      o.write("<div class=\"warning\">ERROR: ");
@@ -2005,7 +2610,19 @@
      o.write("</div>\n");
      o.finish();
  
-@@ -176,7 +220,10 @@
+@@ -165,6 +210,11 @@
+                  typename Response::Writer& o,
+                  UploaderConfig *config, const char *message)
+ {
++#if defined(UPLOADER_TYPE_APACHE) && AP_SERVER_MAJORVERSION_NUMBER >= 2
++    r->status = HttpErrorStatus::get(message);
++    apr_table_setn(r->headers_out, "Cache-Control", "no-store");
++    if (r->status == 429 || r->status == 503) apr_table_setn(r->headers_out, "Retry-After", "15");
++#endif
+     Response::set_content_type(r, PAGE_CONTENT_TYPE);
+     Response::header_end(r);
+ 
+@@ -176,7 +226,10 @@
          TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
  
          var_creator.create(BASE_URL_VAR_NAME, config->base_url);
@@ -2017,7 +2634,7 @@
  
          TemplateExecutor<typename Response::Writer> executor(r->pool, o);
  
-@@ -266,6 +313,9 @@
+@@ -266,6 +319,9 @@
          TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
  
          var_creator.create(BASE_URL_VAR_NAME, config->base_url);
@@ -2027,7 +2644,7 @@
          var_creator.create(COMMAND_VAR_NAME, INDEX_COMMAND);
  
          var_creator.create
-@@ -346,6 +396,9 @@
+@@ -346,6 +402,9 @@
          TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
  
          var_creator.create(BASE_URL_VAR_NAME, config->base_url);
@@ -2037,7 +2654,7 @@
          var_creator.create
              (COMMAND_VAR_NAME,
               apr_pstrcat(r->pool, SORT_COMMAND, sort_type, NULL));
-@@ -401,6 +454,9 @@
+@@ -401,6 +460,9 @@
          TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
  
          var_creator.create(BASE_URL_VAR_NAME, config->base_url);
@@ -2047,7 +2664,7 @@
  
          var_creator.create
              (ITEM_VAR_NAME,
-@@ -478,6 +534,9 @@
+@@ -478,6 +540,9 @@
          (apr_atoi64(get_word(r->pool, &item_id_str, FILE_EXT_SEPARATOR[0])));
  
      try {
@@ -2057,7 +2674,7 @@
          const char  *thumb_file_path;
  
          Response::set_content_type(r, get_image_mime(file_name));
-@@ -571,6 +630,9 @@
+@@ -571,6 +636,9 @@
          TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
  
          var_creator.create(BASE_URL_VAR_NAME, config->base_url);
@@ -2067,7 +2684,7 @@
  
          var_creator.create
              (THUMBNAIL_LIST_VAR_NAME,
-@@ -603,6 +665,13 @@
+@@ -603,6 +671,13 @@
                         const char *download_pass, const char *comment,
                         const char *code_pat, apr_size_t *item_id)
  {
@@ -2081,7 +2698,7 @@
      *item_id = config->get_item_manager()->add
          (r->pool, file_name, file_mime, file_size, file_digest,
           file_temp_path, remove_pass, download_pass, comment,
-@@ -671,6 +740,7 @@
+@@ -671,6 +746,7 @@
      try {
          content_array = parser.parse(Response::get_content_type(r),
                                       Response::get_content_size(r));
@@ -2089,16 +2706,19 @@
          progress->end_time = apr_time_now();
      } catch(const char *message) {
          progress->end_time = apr_time_now();
-@@ -692,7 +762,7 @@
+@@ -692,7 +768,10 @@
               remove_pass, download_pass, comment, code_pat, &item_id);
  
          progress->item_id = item_id;
 -        progress->is_succeeded  = true;
 +        progress->is_succeeded  = (status == OK);
++#if defined(UPLOADER_TYPE_APACHE) && AP_SERVER_MAJORVERSION_NUMBER >= 2
++        progress->is_succeeded = progress->is_succeeded && r->status < 400;
++#endif
  
          return status;
      } catch(const char *message) {
-@@ -751,6 +821,11 @@
+@@ -751,6 +830,11 @@
  static int mail_upload(typename Response::Handle *r, UploaderConfig *config,
                         const char *arg)
  {
@@ -2110,7 +2730,7 @@
      int status;
  
      const char *file_name;
-@@ -781,6 +856,7 @@
+@@ -781,6 +865,7 @@
           PST_MAX_ITEM_COUNT);
  
      content_array = parser.parse();
@@ -2118,7 +2738,7 @@
  
      file_temp_path = NULL;
      try {
-@@ -825,6 +901,9 @@
+@@ -825,6 +910,9 @@
          TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
  
          var_creator.create(BASE_URL_VAR_NAME, config->base_url);
@@ -2128,7 +2748,7 @@
  
          var_creator.create
              (ITEM_VAR_NAME,
-@@ -846,7 +925,9 @@
+@@ -846,7 +934,9 @@
  static int download_set_header(typename Response::Handle *r, UploadItem *uitem,
                                 apr_file_t *item_file)
  {
@@ -2139,7 +2759,7 @@
  
  #ifdef UPLOADER_TYPE_APACHE
  #if AP_SERVER_MAJORVERSION_NUMBER != 1
-@@ -917,7 +998,7 @@
+@@ -917,7 +1007,7 @@
      }
  
      Response::set_expires(r, apr_time_now() +  apr_time_from_sec(VIW_EXPIRES));
@@ -2148,7 +2768,7 @@
  
  #if defined(USE_GZIP) && defined(UPLOADER_TYPE_APACHE)
      if (uitem->is_gzipped()) {
-@@ -1033,6 +1114,7 @@
+@@ -1033,6 +1123,7 @@
  
              content_array = parser.parse(Response::get_content_type(r),
                                           Response::get_content_size(r));
@@ -2156,7 +2776,7 @@
  
              download_pass = get_download_password<typename Response::Reader>
                  (r->pool, content_array);
-@@ -1046,9 +1128,13 @@
+@@ -1046,9 +1137,13 @@
  
          // DL pass のチェック
          if (!is_admin_mode) {
@@ -2173,7 +2793,7 @@
                  if (strlen(download_pass) != 0) {
                      THROW(MESSAGE_DOWNLOAD_PASS_MISMATCH);
                  }
-@@ -1069,10 +1155,9 @@
+@@ -1069,10 +1164,9 @@
          }
  
          item_file = config->get_item_manager()
@@ -2185,7 +2805,7 @@
  
          if (is_view_mode) {
              // 表示
-@@ -1124,6 +1209,7 @@
+@@ -1124,6 +1218,7 @@
  
          content_array = parser.parse(Response::get_content_type(r),
                                       Response::get_content_size(r));
@@ -2193,7 +2813,7 @@
  
          get_remove_param<typename Response::Reader>
              (r->pool, content_array, &item_id, &remove_pass);
-@@ -1131,12 +1217,15 @@
+@@ -1131,12 +1226,15 @@
          uitem = config->get_item_manager()->get_item(r->pool, item_id);
  
          if (!is_admin_mode) {
@@ -2211,7 +2831,7 @@
                  THROW(MESSAGE_REMOVE_PASS_MISMATCH);
              }
          }
-@@ -1228,12 +1317,15 @@
+@@ -1228,12 +1326,15 @@
      apr_size_t page_no;
      apr_size_t page_count;
  
@@ -2232,7 +2852,7 @@
  
      // コマンド
      admin_arg = arg;
-@@ -1269,6 +1361,9 @@
+@@ -1269,6 +1370,9 @@
          TemplateVariableCreator var_creator(r->pool, tmpl->get_ids());
  
          var_creator.create(BASE_URL_VAR_NAME, config->base_url);
@@ -2242,7 +2862,7 @@
  
          var_creator.create
              (ITEM_LIST_VAR_NAME,
-@@ -1304,12 +1399,42 @@
+@@ -1304,12 +1408,42 @@
      const char *command;
      const char *request_uri;
  
@@ -2285,7 +2905,7 @@
  
          if (UNLIKELY(*(request_uri + strlen(request_uri) - 1) ==
                       ARG_SEPARATE_STR[0])) {
-@@ -1322,6 +1447,7 @@
+@@ -1322,6 +1456,7 @@
  
          return HTTP_TEMPORARY_REDIRECT;
      } else {
@@ -2977,482 +3597,232 @@
    </div>
  
 --- /dev/null
-+++ b/include/UploadSafety.h
-@@ -0,0 +1,22 @@
-+// Altered mod_uploader port: bounded multipart helpers, independent of APR.
-+#ifndef UPLOAD_SAFETY_H
-+#define UPLOAD_SAFETY_H
-+#include <cstddef>
-+#include <cstring>
-+namespace UploadSafety {
-+inline const char *boundary(const char *data, std::size_t size,
-+                            const char *token, std::size_t length) {
-+    if (length > size || size - length < 6) return NULL;
-+    for (std::size_t i = 4; i <= size - length - 2; ++i) {
-+        if (std::memcmp(data+i-4, "\r\n--", 4) == 0 &&
-+            std::memcmp(data+i, token, length) == 0 &&
-+            (std::memcmp(data+i+length, "\r\n", 2) == 0 ||
-+             std::memcmp(data+i+length, "--", 2) == 0)) return data+i;
-+    }
-+    return NULL;
-+}
-+inline bool allowed(std::size_t current, std::size_t extra, std::size_t limit) {
-+    return current <= limit && extra <= limit-current;
-+}
-+}
-+#endif
---- /dev/null
-+++ b/include/RequestOrigin.h
-@@ -0,0 +1,41 @@
-+// SPDX-License-Identifier: Zlib
-+// Altered mod_uploader: require a verifiable browser source on Apache POST.
-+#ifndef REQUEST_ORIGIN_H
-+#define REQUEST_ORIGIN_H
-+#include <cstddef>
-+#include <cstring>
-+namespace RequestOrigin {
-+inline unsigned char lower(unsigned char c) {
-+    return c >= 'A' && c <= 'Z' ? static_cast<unsigned char>(c + ('a'-'A')) : c;
-+}
-+inline std::size_t length(const char *url) {
-+    if (url == NULL) return 0;
-+    std::size_t scheme = 0;
-+    if (std::strncmp(url, "https://", 8) == 0) scheme = 8;
-+    else if (std::strncmp(url, "http://", 7) == 0) scheme = 7;
-+    else return 0;
-+    std::size_t end = scheme;
-+    while (url[end] && url[end] != '/' && url[end] != '?' && url[end] != '#') {
-+        const unsigned char c = static_cast<unsigned char>(url[end]);
-+        if (c <= 32 || c >= 127 || c == '@' || c == '\\') return 0;
-+        ++end;
-+    }
-+    return end == scheme ? 0 : end;
-+}
-+inline bool matches(const char *base, const char *source, bool referer) {
-+    const std::size_t a = length(base), b = length(source);
-+    if (a == 0 || a != b || (!referer && source[b] != 0)) return false;
-+    for (std::size_t i = 0; i < a; ++i)
-+        if (lower(static_cast<unsigned char>(base[i])) !=
-+            lower(static_cast<unsigned char>(source[i]))) return false;
-+    return true;
-+}
-+inline bool allowed(const char *base, const char *origin,
-+                    const char *referer, const char *fetch_site) {
-+    if (fetch_site != NULL && std::strcmp(fetch_site, "cross-site") == 0) return false;
-+    // An invalid Origin must never fall back to a permissive Referer.
-+    if (origin != NULL) return matches(base, origin, false);
-+    return referer != NULL && matches(base, referer, true);
-+}
-+}
-+#endif
---- /dev/null
-+++ b/include/PasswordHash.h
-@@ -0,0 +1,43 @@
-+// SPDX-License-Identifier: Zlib
-+#ifndef UPLOADER_PASSWORD_HASH_H
-+#define UPLOADER_PASSWORD_HASH_H
-+#include <openssl/evp.h>
-+#include <openssl/rand.h>
-+#include <openssl/crypto.h>
-+#include <string>
-+#include <cstring>
-+namespace PasswordHash {
-+static const int ITERATIONS = 600000;
-+inline std::string hex(const unsigned char *p, size_t n) {
-+    const char *digits="0123456789abcdef"; std::string out(n*2, '0');
-+    for(size_t i=0;i<n;++i) {out[2*i]=digits[p[i]>>4];out[2*i+1]=digits[p[i]&15];}return out;
-+}
-+inline bool unhex(const std::string& s, unsigned char *p, size_t n) {
-+    if(s.size()!=n*2)return false;
-+    for(size_t i=0;i<n*2;++i) {unsigned char c=s[i];int v=c>='0'&&c<='9'?c-'0':c>='a'&&c<='f'?c-'a'+10:-1;
-+        if(v<0)return false;
-+        if(i%2)p[i/2]|=v;else p[i/2]=static_cast<unsigned char>(v<<4);}return true;
-+}
-+inline bool decode(const std::string& value, unsigned char *salt, unsigned char *digest) {
-+    const std::string prefix="pbkdf2-sha256$600000$";
-+    return value.size()==prefix.size()+32+1+64 && value.compare(0,prefix.size(),prefix)==0 &&
-+        value[prefix.size()+32]=='$' && unhex(value.substr(prefix.size(),32),salt,16) &&
-+        unhex(value.substr(prefix.size()+33),digest,32);
-+}
-+inline bool valid(const char *s) {unsigned char salt[16],digest[32];return *s==0 || decode(s,salt,digest);}
-+inline std::string make(const char *password) {
-+    size_t n=std::strlen(password);if(n==0)return "";if(n>127)throw "Password exceeds 127 bytes";
-+    unsigned char salt[16],digest[32];
-+    if(RAND_bytes(salt,16)!=1 || PKCS5_PBKDF2_HMAC(password,static_cast<int>(n),salt,16,ITERATIONS,EVP_sha256(),32,digest)!=1)
-+        throw "Password hashing failed";
-+    std::string value="pbkdf2-sha256$600000$"+hex(salt,16)+"$"+hex(digest,32);
-+    OPENSSL_cleanse(digest,sizeof(digest));return value;
-+}
-+inline bool verify(const char *stored,const char *password) {
-+    size_t n=std::strlen(password);if(n>127)return false;if(*stored==0)return n==0;
-+    unsigned char salt[16],expected[32],actual[32];if(!decode(stored,salt,expected))return false;
-+    if(PKCS5_PBKDF2_HMAC(password,static_cast<int>(n),salt,16,ITERATIONS,EVP_sha256(),32,actual)!=1)throw "Password verification failed";
-+    bool ok=CRYPTO_memcmp(actual,expected,32)==0;OPENSSL_cleanse(actual,sizeof(actual));return ok;
-+}
-+}
-+#endif
---- /dev/null
-+++ b/include/SecurityTokens.h
-@@ -0,0 +1,33 @@
-+// SPDX-License-Identifier: Zlib
-+#ifndef UPLOADER_SECURITY_TOKENS_H
-+#define UPLOADER_SECURITY_TOKENS_H
-+#include "PasswordHash.h"
-+#include <openssl/hmac.h>
-+#include <ctime>
-+#include <cstdint>
-+namespace SecurityTokens {
-+static const uint64_t LIFETIME=7200;
-+inline std::string random_hex() {unsigned char value[32];if(RAND_bytes(value,32)!=1)throw "Random generator failed";return PasswordHash::hex(value,32);}
-+inline bool session_valid(const std::string& sid) {unsigned char value[32];return PasswordHash::unhex(sid,value,32);}
-+inline std::string sign(const std::string& key,const std::string& base,const std::string& sid,const std::string& stamp) {
-+    std::string input=base+"\n"+sid+"\n"+stamp;unsigned char mac[EVP_MAX_MD_SIZE];unsigned int size=0;
-+    if(key.size()!=32 || !HMAC(EVP_sha256(),key.data(),32,reinterpret_cast<const unsigned char*>(input.data()),input.size(),mac,&size) || size!=32)
-+        throw "Token signing failed";
-+    return PasswordHash::hex(mac,size);
-+}
-+inline std::string issue(const std::string& key,const std::string& base,const std::string& sid,uint64_t now) {
-+    if(!session_valid(sid))throw "Invalid session";
-+    std::string stamp=std::to_string(now);return stamp+"."+sign(key,base,sid,stamp);
-+}
-+inline bool verify(const std::string& key,const std::string& base,const std::string& sid,const std::string& token,uint64_t now) {
-+    if(!session_valid(sid))return false;
-+    size_t dot=token.find('.');
-+    if(dot==std::string::npos || dot==0 || dot>20 || token.size()!=dot+65)return false;
-+    uint64_t stamp=0;
-+    for(size_t i=0;i<dot;++i) {if(token[i]<'0'||token[i]>'9' || stamp>(UINT64_MAX-9)/10)return false;stamp=stamp*10+token[i]-'0';}
-+    if(std::to_string(stamp)!=token.substr(0,dot) || stamp>now || now-stamp>LIFETIME)return false;
-+    unsigned char mac[32];if(!PasswordHash::unhex(token.substr(dot+1),mac,32))return false;
-+    std::string expected=sign(key,base,sid,token.substr(0,dot));return CRYPTO_memcmp(expected.data(),token.data()+dot+1,64)==0;
-+}
-+}
-+#endif
---- /dev/null
-+++ b/include/ApacheSecurity.h
-@@ -0,0 +1,77 @@
-+// SPDX-License-Identifier: Zlib
-+#ifndef UPLOADER_APACHE_SECURITY_H
-+#define UPLOADER_APACHE_SECURITY_H
-+#include "SecurityTokens.h"
-+#include <fcntl.h>
-+#include <unistd.h>
-+#include <sys/stat.h>
-+#include <cerrno>
-+namespace ApacheSecurity {
-+inline std::string key(const char *directory) {
-+    std::string path=std::string(directory)+"/.csrf-key";
-+    int fd=open(path.c_str(),O_RDONLY|O_NOFOLLOW|O_CLOEXEC);
-+    if(fd<0 && errno==ENOENT) {
-+        std::string tmp=path+".tmp."+SecurityTokens::random_hex();
-+        int out=open(tmp.c_str(),O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW|O_CLOEXEC,0600);
-+        if(out<0)throw "Cannot create CSRF secret";
-+        unsigned char bytes[32];bool good=RAND_bytes(bytes,32)==1;size_t written=0;
-+        while(good && written<sizeof(bytes)) {
-+            ssize_t n=write(out,bytes+written,sizeof(bytes)-written);
-+            if(n<0 && errno==EINTR)continue;if(n<=0){good=false;break;}written+=n;
-+        }
-+        if(good && fsync(out)!=0)good=false;
-+        if(close(out)!=0)good=false;
-+        OPENSSL_cleanse(bytes,sizeof(bytes));
-+        if(!good){unlink(tmp.c_str());throw "Cannot write CSRF secret";}
-+        int result=link(tmp.c_str(),path.c_str());int saved=errno;unlink(tmp.c_str());
-+        if(result!=0 && saved!=EEXIST)throw "Cannot publish CSRF secret";
-+        fd=open(path.c_str(),O_RDONLY|O_NOFOLLOW|O_CLOEXEC);
-+    }
-+    if(fd<0)throw "Cannot open CSRF secret";
-+    struct stat st;
-+    if(fstat(fd,&st)!=0 || !S_ISREG(st.st_mode) || st.st_size!=32 ||
-+        (st.st_mode&077)!=0 || st.st_uid!=geteuid()) {close(fd);throw "Unsafe CSRF secret permissions or owner";}
-+    std::string result(32,'\0');size_t count=0;
-+    while(count<32) {ssize_t n=read(fd,&result[count],32-count);if(n<0&&errno==EINTR)continue;
-+        if(n<=0){close(fd);throw "Cannot read CSRF secret";}count+=n;}
-+    close(fd);return result;
-+}
-+inline const char *cookie_name(const char *base) {return std::strncmp(base,"https://",8)==0?"__Host-mod_uploader_sid":"mod_uploader_sid";}
-+inline std::string session(request_rec *r,const char *base) {
-+    const char *header=apr_table_get(r->headers_in,"Cookie");if(!header)return "";
-+    std::string all(header),name=std::string(cookie_name(base))+"=",value;size_t start=0;int found=0;
-+    while(start<all.size()) {
-+        size_t end=all.find(';',start);if(end==std::string::npos)end=all.size();
-+        while(start<end&&(all[start]==' '||all[start]=='\t'))++start;
-+        if(all.compare(start,name.size(),name)==0){value=all.substr(start+name.size(),end-start-name.size());++found;}
-+        start=end+1;
-+    }
-+    return found==1&&SecurityTokens::session_valid(value)?value:"";
-+}
-+inline bool verify(request_rec *r,const char *token) {
-+    if(!token)return false;
-+    const char *base=apr_table_get(r->notes,"uploader-csrf-base");
-+    const char *dir=apr_table_get(r->notes,"uploader-csrf-dir");
-+    return base&&dir&&SecurityTokens::verify(key(dir),base,session(r,base),token,static_cast<uint64_t>(std::time(NULL)));
-+}
-+inline bool prepare(request_rec *r,const char *directory,const char *base) {
-+    apr_table_setn(r->notes,"uploader-csrf-base",base);apr_table_setn(r->notes,"uploader-csrf-dir",directory);
-+    if(r->method_number==M_POST) {
-+        if(session(r,base).empty())return false;
-+        const char *header=apr_table_get(r->headers_in,"X-CSRF-Token");
-+        if(header) {if(!verify(r,header))return false;apr_table_setn(r->notes,"uploader-csrf-verified","1");}
-+        return true;
-+    }
-+    std::string sid=session(r,base);
-+    if(sid.empty()) {
-+        sid=SecurityTokens::random_hex();std::string cookie=std::string(cookie_name(base))+"="+sid+"; Path=/; HttpOnly; SameSite=Strict";
-+        if(std::strncmp(base,"https://",8)==0)cookie+="; Secure";
-+        apr_table_add(r->headers_out,"Set-Cookie",cookie.c_str());
-+    }
-+    std::string token=SecurityTokens::issue(key(directory),base,sid,static_cast<uint64_t>(std::time(NULL)));
-+    apr_table_set(r->notes,"uploader-csrf-token",token.c_str());
-+    apr_table_setn(r->headers_out,"Cache-Control","private, no-store");
-+    apr_table_mergen(r->headers_out,"Vary","Cookie");return true;
-+}
-+}
-+#endif
---- /dev/null
-+++ b/include/StorageLock.h
-@@ -0,0 +1,23 @@
-+// SPDX-License-Identifier: Zlib
-+#ifndef UPLOADER_STORAGE_LOCK_H
-+#define UPLOADER_STORAGE_LOCK_H
-+#include <sys/file.h>
-+#include <sys/stat.h>
-+#include <fcntl.h>
-+#include <unistd.h>
-+#include <string>
-+namespace StorageLock {
-+inline apr_status_t release(void *data) {int *fd=static_cast<int*>(data);close(*fd);return APR_SUCCESS;}
-+inline void hold(apr_pool_t *pool,const char *directory) {
-+    std::string path=std::string(directory)+"/.format-lock";
-+    int fd=open(path.c_str(),O_RDONLY|O_CREAT|O_NOFOLLOW|O_CLOEXEC,0600);
-+    if(fd<0)throw "Cannot open storage lock";
-+    struct stat st;
-+    if(fstat(fd,&st)!=0||!S_ISREG(st.st_mode)||flock(fd,LOCK_SH|LOCK_NB)!=0) {
-+        close(fd);throw "Storage migration is running; stop and retry later";
-+    }
-+    int *handle=static_cast<int*>(apr_palloc(pool,sizeof(int)));*handle=fd;
-+    apr_pool_cleanup_register(pool,handle,release,apr_pool_cleanup_null);
-+}
-+}
-+#endif
---- /dev/null
-+++ b/include/AuthenticationThrottle.h
-@@ -0,0 +1,79 @@
-+// SPDX-License-Identifier: Zlib
-+#ifndef UPLOADER_AUTHENTICATION_THROTTLE_H
-+#define UPLOADER_AUTHENTICATION_THROTTLE_H
-+#include <sys/file.h>
-+#include <sys/stat.h>
-+#include <fcntl.h>
-+#include <unistd.h>
-+#include <openssl/sha.h>
-+#include <cstdint>
-+#include <ctime>
-+#include <cerrno>
-+#include <string>
-+
-+// Fixed-size persistent state and kernel-held slots shared by all httpd workers.
-+// Hash bucket collisions conservatively share an IP budget; memory/disk use is bounded.
-+class AuthenticationThrottle {
-+public:
-+    static const unsigned LIMIT = 10, WINDOW = 60, CONCURRENT = 2, BUCKETS = 4096;
-+    AuthenticationThrottle(const char *directory, const char *ip, bool needed = true,
-+                           uint64_t now = static_cast<uint64_t>(std::time(NULL)))
-+        : slot_(-1), allowed_(!needed), retry_(1) {
-+        if (!needed) return;
-+        if (!ip || !*ip) return;
-+        const std::string prefix = std::string(directory) + "/.auth-";
-+        for (unsigned i = 0; i < CONCURRENT; ++i) {
-+            int fd = safe_open(prefix + "slot-" + char('0' + i));
-+            if (fd < 0) return;
-+            if (flock(fd, LOCK_EX | LOCK_NB) == 0) { slot_ = fd; break; }
-+            close(fd);
-+        }
-+        if (slot_ < 0) return;
-+        int state = safe_open(prefix + "attempts");
-+        if (state < 0) return;
-+        if (flock(state, LOCK_EX | LOCK_NB) != 0) { close(state); return; }
-+        struct stat st;
-+        const off_t size = static_cast<off_t>(BUCKETS * sizeof(Bucket));
-+        bool good = fstat(state, &st) == 0;
-+        if (good && st.st_size == 0) good = ftruncate(state, size) == 0;
-+        else if (good) good = st.st_size == size;
-+        unsigned char digest[SHA256_DIGEST_LENGTH];
-+        SHA256(reinterpret_cast<const unsigned char *>(ip), std::char_traits<char>::length(ip), digest);
-+        const off_t offset = ((static_cast<unsigned>(digest[0]) << 8 | digest[1]) % BUCKETS) * sizeof(Bucket);
-+        Bucket bucket = {0, 0};
-+        if (good) good = pread(state, &bucket, sizeof(bucket), offset) == sizeof(bucket);
-+        if (good && bucket.count <= LIMIT && now != UINT64_MAX) {
-+            if (bucket.start == 0 || (now >= bucket.start && now - bucket.start >= WINDOW)) {
-+                bucket.start = now; bucket.count = 0;
-+            }
-+            if (now >= bucket.start && bucket.count < LIMIT) {
-+                ++bucket.count;
-+                allowed_ = pwrite(state, &bucket, sizeof(bucket), offset) == sizeof(bucket);
-+            } else {
-+                retry_ = now < bucket.start ? WINDOW : static_cast<unsigned>(WINDOW - (now - bucket.start));
-+            }
-+        }
-+        // No passwords, raw IP addresses or tokens are written to state files.
-+        close(state);
-+        if (!allowed_) { close(slot_); slot_ = -1; }
-+    }
-+    ~AuthenticationThrottle() noexcept { if (slot_ >= 0) close(slot_); }
-+    bool allowed() const { return allowed_; }
-+    unsigned retry_after() const { return retry_; }
-+private:
-+    struct Bucket { uint64_t start, count; };
-+    static int safe_open(const std::string& path) {
-+        int fd = open(path.c_str(), O_RDWR | O_CREAT | O_NOFOLLOW | O_CLOEXEC | O_NONBLOCK, 0600);
-+        if (fd < 0) return -1;
-+        struct stat st;
-+        if (fstat(fd, &st) != 0 || !S_ISREG(st.st_mode) || st.st_uid != geteuid() ||
-+            (st.st_mode & 077) != 0 || st.st_nlink != 1) { close(fd); return -1; }
-+        return fd;
-+    }
-+    AuthenticationThrottle(const AuthenticationThrottle&) = delete;
-+    AuthenticationThrottle& operator=(const AuthenticationThrottle&) = delete;
-+    int slot_;
-+    bool allowed_;
-+    unsigned retry_;
-+};
-+#endif
---- /dev/null
-+++ b/include/HtmlSafety.h
-@@ -0,0 +1,21 @@
-+// SPDX-License-Identifier: Zlib
-+#ifndef UPLOADER_HTML_SAFETY_H
-+#define UPLOADER_HTML_SAFETY_H
-+#include <string>
-+namespace HtmlSafety {
-+inline std::string escape(const char *input) {
-+    std::string out;
-+    for (; *input; ++input) {
-+        switch (*input) {
-+        case '&': out += "&amp;"; break;
-+        case '<': out += "&lt;"; break;
-+        case '>': out += "&gt;"; break;
-+        case '"': out += "&quot;"; break;
-+        case 39: out += "&#39;"; break;
-+        default: out += *input;
-+        }
-+    }
-+    return out;
-+}
-+}
-+#endif
---- /dev/null
-+++ b/include/MetadataSafety.h
++++ b/MODIFICATIONS
 @@ -0,0 +1,38 @@
-+// SPDX-License-Identifier: Zlib
-+#ifndef UPLOADER_METADATA_SAFETY_H
-+#define UPLOADER_METADATA_SAFETY_H
-+#include <cstring>
-+#include <cstddef>
-+namespace MetadataSafety {
-+template<size_t N> bool terminated(const char (&s)[N]) { return std::memchr(s, 0, N) != NULL; }
-+inline bool path_component(const char *s) {
-+    if (!*s || !std::strcmp(s,".") || !std::strcmp(s,"..")) return false;
-+    for (; *s; ++s) {
-+        unsigned char c = static_cast<unsigned char>(*s);
-+        if (c < 32 || c == 127 || std::strchr("/\\<>\"'&", c)) return false;
-+    }
-+    return true;
-+}
-+template<class H> bool same_identity(const H& a,const H& b) {
-+    return a.id==b.id && a.index==b.index && a.mtime==b.mtime && a.file_size==b.file_size &&
-+        std::strcmp(a.file_digest,b.file_digest)==0 && std::strcmp(a.download_pass,b.download_pass)==0 &&
-+        std::strcmp(a.remove_pass,b.remove_pass)==0;
-+}
-+template<class H> bool valid(const H& h) {
-+#define TERMINATED(f) if (!terminated(h.f)) return false
-+    TERMINATED(identifier); TERMINATED(version); TERMINATED(date); TERMINATED(ip_address);
-+    TERMINATED(file_name); TERMINATED(file_mime); TERMINATED(file_ext); TERMINATED(file_digest);
-+    TERMINATED(remove_pass); TERMINATED(download_pass); TERMINATED(comment);
-+#undef TERMINATED
-+    if ((reinterpret_cast<const unsigned char *>(&h.flags)[0] & ~3U) != 0) return false;
-+    if (!path_component(h.file_name) || !path_component(h.file_ext) ||
-+        std::strpbrk(h.file_ext,".") || std::strpbrk(h.comment,"<>") ||
-+        std::strpbrk(h.date,"<>\"'&") || std::strpbrk(h.ip_address,"<>\"'&") ||
-+        std::strpbrk(h.file_mime,"<>\"'&\r\n")) return false;
-+    if (std::strlen(h.file_digest) != 32) return false;
-+    for (const char *p=h.file_digest;*p;++p)
-+        if (!((*p>='0'&&*p<='9')||(*p>='a'&&*p<='f')||(*p>='A'&&*p<='F'))) return false;
-+    return true;
-+}
-+}
-+#endif
++mod_uploader 3.2.0 - altered FreeBSD / Apache 2.4 version
++
++Original software: Tetsuya Kimata.
++Upstream: https://github.com/kimata/mod_uploader
++Baseline commit: 31632a29138b18b7adbf533416a0ec660f1b07ac
++
++This is an altered source version, not an official upstream release.
++It contains FreeBSD/Clang build adjustments, Apache 2.4 request handling
++changes, multipart and upload security fixes, regression tests and a
++FreeBSD Port candidate. See README.md and docs/FREEBSD-ja.md.
++
++The original copyright and license notices are retained. The modifications
++and new source files in this work are distributed under the zlib license
++in COPYING. Authors of the original work are not represented as authors
++of these modifications. Other existing file-specific notices still apply.
++
++Validation: the user reported that mod_uploader worked on their FreeBSD /
++Apache setup after the catch-handler correction. Exact system versions
++and individual feature results were not supplied. Local C++ regression
++tests use Windows/G++ and simulated APR/httpd APIs; they do not certify
++FreeBSD Ports packaging or complete HTTP functionality.
++
++Security update: version-4 hashed password metadata, offline verified backups,
++storage exclusion, and expiring session-bound signed CSRF tokens.
++See docs/SECURITY-MIGRATION-ja.md before replacing an existing installation.
++
++Port revision 4: require Apache-authenticated administration; bound per-IP password attempts and cross-process concurrent hashing; make Locker cleanup non-throwing with error reporting. See SECURITY-MIGRATION-ja.md.
++
++Port revision 5: audit fixes validate before eviction, serialize capacity changes, reject malformed text/metadata and unsafe lock takeover, close mail/thumbnail authorization gaps, handle missing payloads and cleanup failures, and escape error/redirect output.
++The audit also fixes generation checks, concurrent identifiers, shared-state alignment and synchronization, and configuration-pool lifetime across Apache DSO unloading.
++
++Port revision 6: support root and subpath VirtualHost mounts with validated URI routing, normalize BaseUrl once, and provide canonical static URLs and explicit static-handler examples. Password format, authentication, upload limits and thumbnail implementation are retained.
++Correct the FreeBSD -L flag spelling for direct libtool builds, including ImageMagick-enabled configurations.
++
++Port revision 7: verified offline backup/restore, conservative journal recovery,
++capacity/dependency checks, reversible upload eviction with durable staging,
++bounded raster-only thumbnails, explicit error statuses and reduced compiler warnings.
++Metadata remains version 4. See docs/OPERATIONS-ja.md and OPERATIONS-VALIDATION-ja.md.
 --- /dev/null
-+++ b/include/UrlRouting.h
-@@ -0,0 +1,70 @@
-+// SPDX-License-Identifier: Zlib
-+// Altered mod_uploader: one mount-relative route for root and subpath installs.
-+#ifndef UPLOADER_URL_ROUTING_H
-+#define UPLOADER_URL_ROUTING_H
++++ b/README.md
+@@ -0,0 +1,64 @@
++# mod_uploader 3.2.0: altered FreeBSD / Apache 2.4 version
 +
-+#include <string>
-+#include <cstring>
-+#include "RequestOrigin.h"
++Original software by Tetsuya Kimata: https://github.com/kimata/mod_uploader
 +
-+namespace UrlRouting {
-+// Apache supplies a decoded path without the query. Never decode it a second time.
-+inline bool safe_path(const char *path) {
-+    if (!path || *path != '/') return false;
-+    const char *segment = path + 1;
-+    for (const char *p = segment; ; ++p) {
-+        const unsigned char c = static_cast<unsigned char>(*p);
-+        if (c && (c < 32 || c == 127 || std::strchr("\\%?#\"'<>\x20", c))) return false;
-+        if (c == '/' || c == 0) {
-+            const std::size_t size = static_cast<std::size_t>(p - segment);
-+            if ((size == 0 && c == '/') ||
-+                (size == 1 && segment[0] == '.') ||
-+                (size == 2 && segment[0] == '.' && segment[1] == '.')) return false;
-+            segment = p + 1;
-+        }
-+        if (c == 0) return true;
-+    }
-+}
++This repository contains an altered version based on upstream commit
++`31632a29138b18b7adbf533416a0ec660f1b07ac`. It is not an official upstream
++release. Copyright and zlib license notices are retained in [COPYING](COPYING).
++See [MODIFICATIONS](MODIFICATIONS) for attribution and modification notice.
 +
-+inline std::string normalize_base(const char *base) {
-+    const std::size_t origin_size = RequestOrigin::length(base);
-+    if (!origin_size) throw "UploaderBaseUrl requires an absolute http(s) URL";
-+    std::string result(base);
-+    // Remove only trailing path separators; preserve the scheme's :// delimiter.
-+    while (result.size() > origin_size && result[result.size()-1] == '/') result.resize(result.size()-1);
-+    if (result.size() > origin_size && !safe_path(result.c_str()+origin_size))
-+        throw "UploaderBaseUrl has an invalid path (query, fragment or ambiguous path)";
-+    for (std::size_t i = 0; i < origin_size; ++i)
-+        if (std::strchr("\"'<>&", result[i])) throw "UploaderBaseUrl has an invalid authority";
-+    return result;
-+}
++The user reported successful operation on their FreeBSD / Apache setup
++following the build correction. The Port has now built and passed stage, check-plist, stage-qa and package
++on FreeBSD 15.1 amd64 / Clang 19.1.7 / Apache 2.4.69 (THUMBNAIL off).
++Isolated real Apache HTTP/HTTPS, concurrent requests, migration and rollback tests
++also pass; their coverage and limits are recorded in docs/validation.
++Production package installation, poudriere and exhaustive HTTP behavior remain unverified.
 +
-+// Static resources retain their historical location beside the uploader mount.
-+inline std::string asset_base(const char *base) {
-+    std::string result(base);
-+    const std::size_t origin_size = RequestOrigin::length(base);
-+    if (result.size() > origin_size) result.resize(result.rfind('/'));
-+    return result;
-+}
++## Build
 +
-+enum Status { ROUTE, REDIRECT, COLLISION, INVALID };
-+inline Status resolve(const char *base, const char *uri, const char *path_info,
-+                      const char **argument) {
-+    *argument = NULL;
-+    if (!safe_path(uri)) return INVALID;
-+    const std::size_t origin_size = RequestOrigin::length(base);
-+    if (!origin_size) return INVALID;
-+    const char *mount = base + origin_size;
-+    const std::size_t mount_size = std::strlen(mount);
-+    if (std::strncmp(uri, mount, mount_size) != 0 ||
-+        (mount_size && uri[mount_size] && uri[mount_size] != '/')) return INVALID;
-+    *argument = uri + mount_size;
-+    if (**argument == 0) return REDIRECT; // /up -> /up/; root always has '/'.
-+    // Preserve the historical physical-directory collision check for subpaths.
-+    // The VirtualHost's DocumentRoot is necessarily a directory at the root mount.
-+    if (mount_size && (!path_info || !*path_info) && uri[std::strlen(uri)-1] == '/')
-+        return COLLISION;
-+    return ROUTE;
-+}
-+}
-+#endif
++Install Apache 2.4 development tools, APR, GNU make, Perl and GNU libtool.
++Use the paths appropriate to your FreeBSD installation:
++
++```sh
++./configure --with-apxs=/usr/local/sbin/apxs \
++  --with-aprconf=/usr/local/bin/apr-1-config \
++  --with-libtool=/usr/local/bin/libtool --with-writer=basic \
++  CC=clang CXX=clang++
++gmake LANG=ja_JP.eucJP apache-module
++```
++
++The Port candidate is in `ports/www/mod_uploader`. It downloads the pinned
++original upstream source and applies the bundled patch. It does not fetch
++this repository recursively or automatically enable the module.
++
++## Tests and migration report
++
++```sh
++sh tests/run_native.sh
++python3 tests/handler_test.py
++```
++
++Tests substitute APR/httpd interfaces where stated; they are not full
++module integration tests. See [the Japanese migration report](docs/FREEBSD-ja.md)
++for changes, security limitations, FreeBSD verification steps and layout details.
++Downloads use attachments. Password metadata now uses version 4 and salted
++PBKDF2-HMAC-SHA256 (600,000 iterations). Existing version 2/3 data requires an
++offline, verified-backup-first migration; the new module refuses legacy data.
++Signed, session-bound CSRF tokens protect Apache POST in addition to origin
++checks. See [the migration and rollback guide](docs/SECURITY-MIGRATION-ja.md).
++No production data is automatically migrated by installing or loading this module.
++
++Validation logs are checked in under `docs/validation/`.
++
++Port revision 6 supports VirtualHost root (`/`) and subpath (`/up`) deployments.
++Base URLs with or without a trailing slash are normalized, and bundled templates
++use canonical static-resource URLs. See [the root/subpath configuration guide](docs/ROOT-DEPLOYMENT-ja.md)
++for static handlers, administration, TLS, migration and rollback, and
++[the revision 6 validation report](docs/ROOT-VALIDATION-ja.md) for measured coverage.
++
++Port revision 7 adds verified offline backup/restore and recovery tools, journaled
++upload/eviction, bounded raster thumbnail processing, dependency/capacity audits,
++and meaningful error HTTP statuses. See [the operations guide](docs/OPERATIONS-ja.md)
++and [revision 7 validation](docs/OPERATIONS-VALIDATION-ja.md) before upgrading.
++
++管理画面はApacheでの独立した認証が必須です。Portの初期設定では閉鎖しています。IP別のパスワード処理回数と、プロセス間の同時実行数も制限します。設定・制限値は[セキュリティと移行手順](docs/SECURITY-MIGRATION-ja.md)を参照してください。
+--- /dev/null
++++ b/docs/OPERATIONS-ja.md
+@@ -0,0 +1,116 @@
++# mod_uploader 3.2.0_7 運用・復旧手順
++
++本改修は zlib ライセンスに従った改変版です。画面、ルート `/` とサブパス `/up`、形式4のパスワード、認証・CSRFの設定形式は維持します。保存領域の非公開、本番認証・保護、Certbot更新ドライランは管理者による確認済み事項です。以下のツールが本番停止・交換・初期化を自動実行することはありません。
++
++## バックアップ
++
++`util/storage_backup.py` は FreeBSD / Python 3 用です。Portでは `/usr/local/libexec/mod_uploader/` に入ります。SHA-256でコピー内容を照合し、途中失敗したコピーは `.incomplete-*` として残します。バックアップ先は新規ディレクトリに限り、既存バックアップを上書き・世代削除しません。
++
++全Apacheプロセスを完全停止してから実行します。gracefulによる旧ワーカーの残留中は実施できません。同じ保存領域の `.format-lock` を排他取得し、稼働中のモジュールと競合する場合は拒否します。`--server-stopped` は停止操作ではなく、管理者による停止確認の指定です。
++
++```sh
++# 実際の設定先に合わせる。保存先を移動するコマンドではありません。
++state=/var/db/mod_uploader
++tool=/usr/local/libexec/mod_uploader
++snapshot=/srv/backups/mod-uploader/20261103-before-upgrade
++python3 "$tool/storage_backup.py" create \
++  --data-dir "$state/data" --file-dir "$state/file" \
++  --thumb-dir "$state/thumb" --temp-dir "$state/temp" \
++  --output "$snapshot" --server-stopped
++python3 "$tool/storage_backup.py" verify "$snapshot"
++```
++
++バックアップ親ディレクトリは事前に作成し、管理者専用（0700）にします。data内のCSRF鍵も含むため公開領域には置きません。別ホスト・別媒体へ暗号化して複製し、複製先でも `verify` を実行してください。SHA-256照合は破損検出であり、manifestを書き換えられる攻撃者に対する電子署名ではありません。
++
++シンボリックリンク、ハードリンク、デバイス等の特殊ファイルを含むデータセットは拒否します。FreeBSDの `/home` のような管理者指定パスの祖先リンクは正規化します。バックアップ対象同士、または対象と出力先が包含関係にある場合も拒否します。
++
++復旧に必要な旧モジュール、ソースまたはパッケージ、configure引数、Apache設定、独自テンプレートも別途保存してください。通常ファイルのみを集めたリリース保存ディレクトリは `--extra release=/private/release-directory` で同時収録できます。追加対象も他の対象と重複できません。証明書のシンボリックリンクを含むディレクトリはこのツールの対象外です。既存の証明書バックアップ運用を維持します。
++
++## 復元と復旧訓練
++
++```sh
++python3 "$tool/storage_backup.py" restore "$snapshot" \
++  --destination /srv/recovery/uploader-20261103 --preserve-owner
++```
++
++`--preserve-owner` はroot専用です。指定しない場合は復元を実行したユーザーの所有となり、管理者が必要な所有者・権限を設定します。復元先は新規の専用ディレクトリに限定され、元の稼働領域へ直接上書きできません。ルートディレクトリを0700にし、ファイルのsetuid等の特殊許可ビットは復元しません。ACL・ファイルフラグは `cp -a` の範囲で保存しますが、異なるホストのUID/GID対応、ACL・ZFS特性は切替前に確認してください。
++
++1. 新規ディレクトリへの復元と照合を済ませます。
++2. 復元したデータだけを参照する、別ポート・loopbackのApacheで一覧、元ファイル取得、パスワード照合、サムネイルを確認します。送信先・公開URLは本番と分離します。
++3. 本番への切替時にApacheを完全停止します。切替直前の現行データも別途退避し、バックアップ取得後の投稿が消えないよう扱いを決めます。
++4. 旧ディレクトリを残したまま設定の保存先を切り替え、所有者・権限を確認して `apachectl configtest` を実行します。起動後に利用者の操作で確認します。
++
++取得頻度・保管世代・復旧目標は管理者が決めます。例として毎日の停止時間に取得、変更前の追加取得、定期的な別ディレクトリへの復元訓練が可能です。停止を伴うバックアップを無断でcronから実行しないでください。ツールは世代削除を自動化しません。
++
++## 書き込み失敗・中断への対処
++
++新規投稿はデータとメタデータをステージし、その後に容量超過分の既存投稿を移動します。削除予定データは確定前まで戻せる状態で保持します。ファイル更新とディレクトリエントリをfsyncし、例外時は巻き戻します。処理記録は `data/.storage-transaction/` です。
++
++プロセス強制終了やディスク障害で記録が残った場合、次の起動は拒否します。共有メモリのロックを他のワーカーが強制奪取することはありません。待機は短いsleepを挟み、15秒を目安に失敗します。自動再試行やジャーナルの手動削除で処理を継続しないでください。
++
++Apacheを完全停止し、容量不足・I/Oエラー・権限等の原因を直してから確認します。
++
++```sh
++python3 "$tool/storage_recover.py" \
++  --data-dir "$state/data" --file-dir "$state/file" \
++  --thumb-dir "$state/thumb" --temp-dir "$state/temp" --server-stopped
++# 上は参照のみ。復旧適用前には必ず新規の救済バックアップを取得します。
++python3 "$tool/storage_recover.py" \
++  --data-dir "$state/data" --file-dir "$state/file" \
++  --thumb-dir "$state/thumb" --temp-dir "$state/temp" --server-stopped \
++  --apply --rescue-backup /srv/backups/mod-uploader/20261103-rescue
++```
++
++確定前の記録なら巻き戻し、COMMITTED記録があれば確定後の後始末を完了します。指定領域外のパス、リンク、不明な形式・ファイルは拒否します。救済バックアップには未完了状態が含まれるため、通常の完成済みバックアップと区別してください。救済バックアップを別の場所へ復元した場合、記録に残る絶対パスは自動変換しません。元の配置での復旧か、管理者による精査が必要です。
++
++ジャーナルなしで共有ロック所有ワーカーが異常終了した場合も、ログを調査し完全停止・再起動で一覧をディスクから再構築します。電源断、故障したストレージがfsync成功を誤報する場合、外部プロセスによる同時編集までは保証できません。別媒体のバックアップは引き続き必要です。
++
++## 容量・負荷の監視
++
++```sh
++python3 "$tool/storage_health.py" \
++  --data-dir "$state/data" --file-dir "$state/file" \
++  --thumb-dir "$state/thumb" --temp-dir "$state/temp" \
++  --min-free-mib 512 --min-free-percent 10
++```
++
++終了値0は設定閾値以上かつ未完了記録なし、1は容量等の警告、2は検査失敗です。これは読取専用なのでcron等からの定期実行に使えます。ただし書き込み中に一時的なジャーナルを観測する場合があります。単発警告だけでApacheを止めず、ログと継続時間を確認します。死活監視・通知経路への登録は管理者が行います。
++
++空き容量は既存保存量に加え、受信中の一時ファイルと新規ステージ分を見込みます。満杯になってから旧投稿を先行削除して空ける方式ではありません。大量アップロード時はApacheの `MaxRequestWorkers`、`LimitRequestBody`、OS/ファイルシステム容量も関係します。推奨値は実際のメモリと最大ファイルサイズに合わせて設定します。
++
++`UploaderFileSizeLimit` と `UploaderTotalFileSizeLimit` は従来から **KiB単位** です。1MiBなら `1024`、10MiBなら `10240`、1GiBなら `1048576` です。Apacheの `LimitRequestBody` はバイト単位なので混同しないでください。今回、Port設定例を合計1GiB・1ファイル10MiBに合わせました。既存の本番設定は自動変更しません。負数・0・桁あふれ・数字以外の付いた値は起動時に拒否します。投稿件数・ページ件数は1〜1,000,000です。
++
++低速送信の制限例（VirtualHostまたはサーバー設定）:
++
++```apache
++# mod_reqtimeoutがロードされていることを確認して設定します。
++RequestReadTimeout header=20-40,MinRate=500 body=20,MinRate=500
++```
++
++変更後にconfigtestし、大きいファイル・低速回線の正当な投稿も確認してください。モジュール内のパスワード試行回数と同時照合数制限は維持します。CSRFトークンを負荷制限の代用にはしません。
++
++エラーページの外観を保ちつつ、未知コマンド・不在ID=404、不正入力=400、サイズ超過=413、パスワード不一致=403、投稿間隔=429、ロック待機失敗等=503を返します。内部障害は500です。これまでエラー本文をHTTP 200で受け取っていた自動クライアントは、4xx/5xxの本文も表示できるよう調整してください。通常の完了画面は200のままです。
++
++## 画像処理と依存ライブラリ
++
++サムネイル入力はシグネチャでJPEG/PNG/GIF/WebPを判定し、対象デコーダを指定します。SVG・PDF・MVG等からの生成は行いません。生成できない形式でも通常のアップロード・元ファイル取得は維持します。
++
++画像幅・高さ8192以下、1600万画素以下、ImageMagickメモリ64MiB、map/diskキャッシュ0、スレッド1、内部画像リスト8を上限とします。子プロセスはCPU3秒、壁時計10秒、仮想メモリ512MiB、出力2MiBに制限します。外部delegateとfilterは拒否します。既存の管理者policyによる禁止を解除しません。出力はメタデータを取り除いたGIFです。制限超過時はサムネイルを作らず、元ファイルを保持します。アニメーションや大画像は従来より制限されます。
++
++```sh
++python3 "$tool/dependency_audit.py" --output /private/audit/uploader-20261103
++```
++
++FreeBSDのVuXMLを専用出力ディレクトリへ取得し、Apache/APR/ImageMagick/Python/libiconvとパッケージ依存先を照合します。終了値0=照合対象の既知警告なし、1=警告あり、2=検査未完了です。`report.json` と個別ログを保存します。ホスト全体の結果は `host-audit.log` です。システムパッケージの更新・削除は行いません。base由来OpenSSLや独自prefixのライブラリはpkg登録外であるため別途確認が必要です。
++
++検証機のImageMagick 6.9.13.50には既知脆弱性があり、上記の資源制限だけで修復したとは扱いません。利用環境でも実際のバージョンと依存先を照合し、修正版へ更新してから有効化してください。更新は隔離検証→全停止時の交換→起動確認の順に行い、本番の既存ライブラリを本作業から自動更新しません。
++
++PortのTHUMBNAIL有効時は `ImageMagick7-nox11>=7.1.2.34` を要求します。古いPortsツリーではこの条件を満たせないため、検証用ツリーとパッケージ情報も更新してください。これは2026-11-03時点の[VuXML警告](https://vuxml.freebsd.org/freebsd/fc4d0a5b-d0c6-11f1-bae2-3497f65b111b.html)への対応であり、将来の警告まで解消する固定値ではありません。
++
++参考: [FreeBSD VuXML ImageMagick6](https://vuxml.freebsd.org/freebsd/fc4d429d-d0c6-11f1-bae2-3497f65b111b.html)、[ImageMagick security policy](https://imagemagick.org/security-policy/)、[FreeBSD Port検証](https://docs.freebsd.org/en/books/porters-handbook/testing/)。
++
++## 更新・ロールバック
++
++新モジュールと運用ツールを別ディレクトリでビルド・確認し、本番適用は管理者が判断します。完全停止中にバックアップを取り、設定とサムネイル有効/無効を維持して交換します。未完了ジャーナルがある状態で旧版を起動しないでください。問題があれば完全停止し、旧モジュール・設定・対応するデータバックアップを戻します。形式4は変わらず、パスワードの再変換は不要です。
++
++具体的な実行結果、試験件数、未検証範囲は `OPERATIONS-VALIDATION-ja.md` に記録します。
 --- /dev/null
 +++ b/docs/ROOT-DEPLOYMENT-ja.md
 @@ -0,0 +1,135 @@
@@ -3591,245 +3961,6 @@
 +- [Apache Alias](https://httpd.apache.org/docs/2.4/mod/mod_alias.html#alias)
 +
 +修正内容・テスト件数・実測環境と未検証事項はリポジトリの`docs/ROOT-VALIDATION-ja.md`に記録します。
---- /dev/null
-+++ b/util/password_tool.cpp
-@@ -0,0 +1,95 @@
-+// SPDX-License-Identifier: Zlib
-+// Native ABI converter. This tool never edits its input file.
-+#include "Environment.h"
-+#include "UploadItem.h"
-+#include "PasswordHash.h"
-+#include "MetadataSafety.h"
-+#include <fstream>
-+#include <iostream>
-+#include <vector>
-+#include <cstring>
-+#include <sys/stat.h>
-+#include <unistd.h>
-+#include <fcntl.h>
-+typedef UploadItem::header_t Header;
-+
-+static std::vector<char> read_file(const char *path) {
-+    struct stat st;if(lstat(path,&st)!=0||!S_ISREG(st.st_mode)||st.st_nlink!=1||st.st_size<24||st.st_size>4096)
-+        throw "Not a regular native metadata file";
-+    std::ifstream in(path,std::ios::binary);std::vector<char> data(static_cast<size_t>(st.st_size));
-+    if(!in.read(data.data(),data.size()))throw "Cannot read metadata";return data;
-+}
-+template<size_t N> static void terminated(const char (&s)[N]) {if(!memchr(s,0,N))throw "Unterminated metadata field";}
-+template<class T> static void validate_fields(const T& h) {
-+    terminated(h.identifier);terminated(h.version);terminated(h.date);terminated(h.ip_address);
-+    terminated(h.file_name);terminated(h.file_mime);terminated(h.file_ext);terminated(h.file_digest);
-+    terminated(h.remove_pass);terminated(h.download_pass);terminated(h.comment);
-+    if(strcmp(h.identifier,"mod_uploader")!=0)throw "Invalid metadata identifier";
-+    if ((reinterpret_cast<const unsigned char*>(&h.flags)[0]&~3U)!=0)throw "Invalid metadata flags";
-+}
-+template<class T> static Header convert(const T& old) {
-+    validate_fields(old);Header h;
-+    h.id=old.id;h.index=old.index;h.download_count=old.download_count;memcpy(&h.flags,&old.flags,sizeof(h.flags));
-+    h.is_need_sync=false;h.file_size=old.file_size;h.mtime=old.mtime;
-+#define COPY_FIELD(field) memcpy(h.field,old.field,sizeof(h.field))
-+    COPY_FIELD(date);COPY_FIELD(ip_address);COPY_FIELD(file_name);COPY_FIELD(file_mime);
-+    COPY_FIELD(file_ext);COPY_FIELD(file_digest);COPY_FIELD(comment);
-+#undef COPY_FIELD
-+    std::string remove=PasswordHash::make(old.remove_pass),download=PasswordHash::make(old.download_pass);
-+    memcpy(h.remove_pass,remove.c_str(),remove.size()+1);memcpy(h.download_pass,download.c_str(),download.size()+1);
-+    return h;
-+}
-+static Header load(const std::vector<char>& data,bool migrate) {
-+    int version=data[16]-'0';Header h;
-+    if(version==4) {
-+        if(data.size()!=sizeof(Header))throw "Wrong native v4 metadata size";
-+        memcpy(&h,data.data(),sizeof(h));validate_fields(h);
-+        if(!PasswordHash::valid(h.remove_pass)||!PasswordHash::valid(h.download_pass))throw "Invalid v4 password encoding";
-+    } else if(version==3) {
-+        if(data.size()!=sizeof(UploadItem::header_ver3_t))throw "Wrong native v3 metadata size";
-+        UploadItem::header_ver3_t old;memcpy(&old,data.data(),sizeof(old));validate_fields(old);
-+        if(migrate){h=convert(old);h.atime=old.atime;}else {h.id=old.id;}
-+    } else if(version==2) {
-+        if(data.size()!=sizeof(UploadItem::header_ver2x_t))throw "Wrong native v2 metadata size";
-+        UploadItem::header_ver2x_t old;memcpy(&old,data.data(),sizeof(old));validate_fields(old);
-+        if(migrate){h=convert(old);h.atime=old.mtime;}else {h.id=old.id;}
-+    } else throw "Unsupported metadata version";
-+    if(migrate && !MetadataSafety::valid(h)) throw "Unsafe metadata strings or path components";
-+    return h;
-+}
-+static void write_file(const char *path,const void *data,size_t size) {
-+    int fd=open(path,O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW,0600);if(fd<0)throw "Output must not already exist";
-+    size_t n=0;while(n<size){ssize_t count=write(fd,static_cast<const char*>(data)+n,size-n);if(count<0&&errno==EINTR)continue;
-+        if(count<=0){close(fd);throw "Write failed";}n+=count;}
-+    if(fsync(fd)!=0){close(fd);throw "fsync failed";}if(close(fd)!=0)throw "close failed";
-+}
-+int main(int argc,char **argv) {
-+    try {
-+        if(argc==3&&(strcmp(argv[1],"--fixture3")==0||strcmp(argv[1],"--fixture2")==0||strcmp(argv[1],"--fixture3-empty")==0)) {
-+            UploadItem::header_ver3_t h;h.id=1;h.index=0;h.file_size=16;h.mtime=1700000000000000LL;h.atime=h.mtime;
-+            strcpy(h.date,"23/11/14(Tue) 22:13:20");strcpy(h.ip_address,"127.0.0.1");strcpy(h.file_name,"fixture.txt");
-+            strcpy(h.file_mime,"text/plain");strcpy(h.file_ext,"txt");strcpy(h.file_digest,"0123456789abcdef0123456789abcdef");
-+            strcpy(h.remove_pass,"remove123");strcpy(h.download_pass,"download123");strcpy(h.comment,"migration fixture");
-+            if(strcmp(argv[1],"--fixture3-empty")==0){h.remove_pass[0]=0;h.download_pass[0]=0;}
-+            if(strcmp(argv[1],"--fixture2")!=0)write_file(argv[2],&h,sizeof(h));
-+            else {UploadItem::header_ver2x_t v;v.id=h.id;v.index=h.index;v.file_size=h.file_size;v.mtime=h.mtime;
-+#define COPY_OLD(field) memcpy(v.field,h.field,sizeof(v.field))
-+                COPY_OLD(date);COPY_OLD(ip_address);COPY_OLD(file_name);COPY_OLD(file_mime);COPY_OLD(file_ext);COPY_OLD(file_digest);COPY_OLD(remove_pass);COPY_OLD(download_pass);COPY_OLD(comment);
-+#undef COPY_OLD
-+                strcpy(v.version,"2.0.0");write_file(argv[2],&v,sizeof(v));}return 0;
-+        }
-+        if(argc<3)throw "Usage: password_tool --inspect FILE | --convert IN OUT | --verify-remove FILE | --verify-download FILE";
-+        std::vector<char> data=read_file(argv[2]);bool inspect=strcmp(argv[1],"--inspect")==0;
-+        Header h=load(data,!inspect);
-+        if(inspect){std::cout<<"{\"version\":"<<static_cast<int>(data[16]-'0')<<",\"id\":"<<h.id<<",\"bytes\":"<<data.size()<<"}\n";return 0;}
-+        if(strcmp(argv[1],"--convert")==0&&argc==4){write_file(argv[3],&h,sizeof(h));return 0;}
-+        if(strcmp(argv[1],"--verify-remove")==0||strcmp(argv[1],"--verify-download")==0) {
-+            if(data[16]!='4')throw "Verify requires migrated metadata";
-+            std::string password;std::getline(std::cin,password);
-+            bool ok=PasswordHash::verify(strcmp(argv[1],"--verify-remove")==0?h.remove_pass:h.download_pass,password.c_str());
-+            OPENSSL_cleanse(&password[0],password.size());return ok?0:3;
-+        }
-+        throw "Invalid arguments";
-+    }catch(const char *message){std::cerr<<message<<"\n";return 1;}
-+    catch(...){std::cerr<<"Metadata operation failed\n";return 1;}
-+}
---- /dev/null
-+++ b/util/migrate_passwords.py
-@@ -0,0 +1,138 @@
-+#!/usr/bin/env python3
-+# SPDX-License-Identifier: Zlib
-+"""Offline migration. Back up and verify all roots before replacing any metadata."""
-+import argparse, fcntl, hashlib, json, os, shutil, stat, subprocess, tempfile
-+from pathlib import Path
-+
-+def digest(path):
-+    h=hashlib.sha256()
-+    with path.open('rb') as f:
-+        for block in iter(lambda:f.read(1024*1024),b''): h.update(block)
-+    return h.hexdigest()
-+
-+def scan(root):
-+    result={}
-+    for base, dirs, files in os.walk(root,followlinks=False):
-+        for name in dirs+files:
-+            p=Path(base)/name;s=p.lstat()
-+            if stat.S_ISLNK(s.st_mode) or not (stat.S_ISDIR(s.st_mode) or stat.S_ISREG(s.st_mode)):
-+                raise RuntimeError('Symlinks and special files are not supported: '+str(p))
-+            if stat.S_ISREG(s.st_mode):
-+                if s.st_nlink!=1: raise RuntimeError('Hard-linked files are not supported: '+str(p))
-+                result[str(p.relative_to(root))]={'sha256':digest(p),'size':s.st_size,'mode':stat.S_IMODE(s.st_mode),'uid':s.st_uid,'gid':s.st_gid}
-+    return result
-+
-+def syncdir(path):
-+    fd=os.open(path,os.O_RDONLY)
-+    try: os.fsync(fd)
-+    finally: os.close(fd)
-+
-+def journal(backup,state):
-+    p=backup/'journal.json';tmp=backup/'journal.tmp'
-+    with tmp.open('w',encoding='utf8') as f:
-+        json.dump(state,f,indent=2);f.write('\n');f.flush();os.fsync(f.fileno())
-+    os.replace(tmp,p);syncdir(backup)
-+
-+def tool_run(tool,*args):
-+    return subprocess.run([str(tool),*map(str,args)],check=True,capture_output=True)
-+
-+def migrate_locked(args):
-+    if not args.server_stopped: raise RuntimeError('Stop every server using these directories and pass --server-stopped')
-+    tool=Path(args.tool).resolve(strict=True)
-+    roots={name:Path(getattr(args,name+'_dir')).resolve(strict=True) for name in ['data','file','thumb']}
-+    if args.temp_dir:roots['temp']=Path(args.temp_dir).resolve(strict=True)
-+    backup=Path(args.backup_dir).absolute()
-+    if backup.exists() or backup.is_symlink():raise RuntimeError('Backup destination must not exist')
-+    parent=backup.parent.resolve(strict=True);backup=parent/backup.name
-+    for a in roots.values():
-+        if not a.is_dir():raise RuntimeError('Every source must be a directory')
-+        if backup==a or a in backup.parents or backup in a.parents:raise RuntimeError('Backup and source roots must be disjoint')
-+    paths=list(roots.values())
-+    for i,a in enumerate(paths):
-+        for b in paths[i+1:]:
-+            if a==b or a in b.parents or b in a.parents:raise RuntimeError('Source roots must be disjoint')
-+    inventory={name:scan(path) for name,path in roots.items()}
-+    sentinel=roots['data']/'.migration-in-progress'
-+    if sentinel.exists():raise RuntimeError('Previous migration is incomplete: restore its backup first')
-+    backup.mkdir(mode=0o700);os.chmod(backup,0o700)
-+    state={'state':'backup-in-progress','format':1,'inventory':inventory,'converted':[]}
-+    journal(backup,state)
-+    # No source changes before this entire backup is complete and verified.
-+    for name,root in roots.items():
-+        target=backup/'snapshot'/name
-+        target.parent.mkdir(mode=0o700,exist_ok=True)
-+        # FreeBSD cp -a preserves ACLs, flags, ownership, modes and timestamps.
-+        subprocess.run(['/bin/cp','-a',str(root),str(target)],check=True,capture_output=True)
-+        copied=scan(target)
-+        if any(n not in copied or copied[n]['sha256']!=meta['sha256'] for n,meta in inventory[name].items()) or set(copied)!=set(inventory[name]):
-+            raise RuntimeError('Backup verification failed; no metadata was changed')
-+        for base,dirs,files in os.walk(target):
-+            for file in files:
-+                with (Path(base)/file).open('rb') as f:os.fsync(f.fileno())
-+            syncdir(base)
-+    syncdir(backup/'snapshot');syncdir(backup)
-+    state['state']='backup-verified';journal(backup,state)
-+    prepared=backup/'prepared';prepared.mkdir(mode=0o700)
-+    candidates=[]
-+    for rel in sorted(inventory['data']):
-+        # This is the exact two-hex-digit / decimal filename layout used by UploadItemIO.
-+        parts=Path(rel).parts
-+        if len(parts)!=2 or len(parts[0])!=2 or any(c not in '0123456789abcdef' for c in parts[0]) or not parts[1].isascii() or not parts[1].isdigit():continue
-+        source=roots['data']/rel
-+        info=json.loads(tool_run(tool,'--inspect',source).stdout)
-+        if info['id']!=int(parts[1]) or parts[0]!=format(info['id']&255,'02x'):raise RuntimeError('Metadata id/path mismatch: '+rel)
-+        dest=prepared/rel;dest.parent.mkdir(mode=0o700,parents=True,exist_ok=True)
-+        tool_run(tool,'--convert',source,dest)
-+        if json.loads(tool_run(tool,'--inspect',dest).stdout)['version']!=4:raise RuntimeError('Prepared metadata was not v4')
-+        candidates.append(rel)
-+    # Reject any concurrent source modification, including payload/thumbnail changes.
-+    if any(scan(root)!=inventory[name] for name,root in roots.items()):raise RuntimeError('Source changed during backup/preparation; no metadata was changed')
-+    state['state']='prepared';state['candidates']=candidates;journal(backup,state)
-+    # The new module refuses startup while this marker exists. Old processes must be stopped.
-+    fd=os.open(sentinel,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
-+    os.write(fd,b'Offline password migration in progress. Restore backup if interrupted.\n');os.fsync(fd);os.close(fd);syncdir(roots['data'])
-+    try:
-+        state['state']='converting';journal(backup,state)
-+        for rel in candidates:
-+            source=roots['data']/rel;meta=inventory['data'][rel]
-+            if digest(source)!=meta['sha256']:raise RuntimeError('Metadata changed before replacement')
-+            fd,name=tempfile.mkstemp(prefix='.password-migration-',dir=source.parent)
-+            try:
-+                with os.fdopen(fd,'wb') as f:
-+                    f.write((prepared/rel).read_bytes());f.flush();os.fsync(f.fileno())
-+                if os.geteuid()==0:os.chown(name,meta['uid'],meta['gid'])
-+                elif source.stat().st_uid!=os.geteuid():raise RuntimeError('Run as the file owner or root')
-+                os.chmod(name,0o600);os.replace(name,source);syncdir(source.parent)
-+            finally:
-+                if os.path.exists(name):os.unlink(name)
-+            state['converted'].append(rel);journal(backup,state)
-+        state['state']='complete';journal(backup,state)
-+        sentinel.unlink();syncdir(roots['data'])
-+    except BaseException:
-+        state['state']='interrupted-restore-backup';journal(backup,state)
-+        raise
-+    print('Migration complete: '+str(len(candidates))+' metadata files. Verified backup: '+str(backup))
-+    print('Rollback: stop Apache, restore the entire snapshot (data/file/thumb and optional temp), then reinstall the old module and templates.')
-+
-+def migrate(args):
-+    if not args.server_stopped:raise RuntimeError('Stop every old server and pass --server-stopped')
-+    root=Path(args.data_dir).resolve(strict=True)
-+    fd=os.open(root/'.format-lock',os.O_RDONLY|os.O_CREAT|os.O_NOFOLLOW,0o600)
-+    try:
-+        if not stat.S_ISREG(os.fstat(fd).st_mode):raise RuntimeError('Unsafe lock file')
-+        try:fcntl.flock(fd,fcntl.LOCK_EX|fcntl.LOCK_NB)
-+        except BlockingIOError:raise RuntimeError('The new server or another migration is using this data directory')
-+        return migrate_locked(args)
-+    finally:os.close(fd)
-+
-+def main():
-+    p=argparse.ArgumentParser(description=__doc__)
-+    for name in ['data','file','thumb']:p.add_argument('--'+name+'-dir',required=True)
-+    p.add_argument('--temp-dir');p.add_argument('--backup-dir',required=True)
-+    p.add_argument('--tool',required=True);p.add_argument('--server-stopped',action='store_true')
-+    args=p.parse_args()
-+    try:migrate(args)
-+    except Exception as e:
-+        # Converter errors never include password bytes. Do not print its captured input.
-+        print('Migration failed: '+str(e));raise SystemExit(1)
-+if __name__=='__main__':main()
 --- /dev/null
 +++ b/docs/SECURITY-MIGRATION-ja.md
 @@ -0,0 +1,151 @@
@@ -3985,100 +4116,1391 @@
 +
 +認証したファイルと実際に取得・削除するファイルが同じ世代かを、排他区間で再確認します。並行投稿時のID重複、共有メモリの配置・更新時の競合も修正しました。設定用APRプールをApacheの設定プール配下に置き、モジュール解放後の後処理呼出しによる終了時クラッシュを防ぎます。更新時はApacheを完全停止してから起動してください。
 --- /dev/null
-+++ b/MODIFICATIONS
-@@ -0,0 +1,33 @@
-+mod_uploader 3.2.0 - altered FreeBSD / Apache 2.4 version
-+
-+Original software: Tetsuya Kimata.
-+Upstream: https://github.com/kimata/mod_uploader
-+Baseline commit: 31632a29138b18b7adbf533416a0ec660f1b07ac
-+
-+This is an altered source version, not an official upstream release.
-+It contains FreeBSD/Clang build adjustments, Apache 2.4 request handling
-+changes, multipart and upload security fixes, regression tests and a
-+FreeBSD Port candidate. See README.md and docs/FREEBSD-ja.md.
-+
-+The original copyright and license notices are retained. The modifications
-+and new source files in this work are distributed under the zlib license
-+in COPYING. Authors of the original work are not represented as authors
-+of these modifications. Other existing file-specific notices still apply.
-+
-+Validation: the user reported that mod_uploader worked on their FreeBSD /
-+Apache setup after the catch-handler correction. Exact system versions
-+and individual feature results were not supplied. Local C++ regression
-+tests use Windows/G++ and simulated APR/httpd APIs; they do not certify
-+FreeBSD Ports packaging or complete HTTP functionality.
-+
-+Security update: version-4 hashed password metadata, offline verified backups,
-+storage exclusion, and expiring session-bound signed CSRF tokens.
-+See docs/SECURITY-MIGRATION-ja.md before replacing an existing installation.
-+
-+Port revision 4: require Apache-authenticated administration; bound per-IP password attempts and cross-process concurrent hashing; make Locker cleanup non-throwing with error reporting. See SECURITY-MIGRATION-ja.md.
-+
-+Port revision 5: audit fixes validate before eviction, serialize capacity changes, reject malformed text/metadata and unsafe lock takeover, close mail/thumbnail authorization gaps, handle missing payloads and cleanup failures, and escape error/redirect output.
-+The audit also fixes generation checks, concurrent identifiers, shared-state alignment and synchronization, and configuration-pool lifetime across Apache DSO unloading.
-+
-+Port revision 6: support root and subpath VirtualHost mounts with validated URI routing, normalize BaseUrl once, and provide canonical static URLs and explicit static-handler examples. Password format, authentication, upload limits and thumbnail implementation are retained.
-+Correct the FreeBSD -L flag spelling for direct libtool builds, including ImageMagick-enabled configurations.
++++ b/include/ApacheSecurity.h
+@@ -0,0 +1,77 @@
++// SPDX-License-Identifier: Zlib
++#ifndef UPLOADER_APACHE_SECURITY_H
++#define UPLOADER_APACHE_SECURITY_H
++#include "SecurityTokens.h"
++#include <fcntl.h>
++#include <unistd.h>
++#include <sys/stat.h>
++#include <cerrno>
++namespace ApacheSecurity {
++inline std::string key(const char *directory) {
++    std::string path=std::string(directory)+"/.csrf-key";
++    int fd=open(path.c_str(),O_RDONLY|O_NOFOLLOW|O_CLOEXEC);
++    if(fd<0 && errno==ENOENT) {
++        std::string tmp=path+".tmp."+SecurityTokens::random_hex();
++        int out=open(tmp.c_str(),O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW|O_CLOEXEC,0600);
++        if(out<0)throw "Cannot create CSRF secret";
++        unsigned char bytes[32];bool good=RAND_bytes(bytes,32)==1;size_t written=0;
++        while(good && written<sizeof(bytes)) {
++            ssize_t n=write(out,bytes+written,sizeof(bytes)-written);
++            if(n<0 && errno==EINTR)continue;if(n<=0){good=false;break;}written+=n;
++        }
++        if(good && fsync(out)!=0)good=false;
++        if(close(out)!=0)good=false;
++        OPENSSL_cleanse(bytes,sizeof(bytes));
++        if(!good){unlink(tmp.c_str());throw "Cannot write CSRF secret";}
++        int result=link(tmp.c_str(),path.c_str());int saved=errno;unlink(tmp.c_str());
++        if(result!=0 && saved!=EEXIST)throw "Cannot publish CSRF secret";
++        fd=open(path.c_str(),O_RDONLY|O_NOFOLLOW|O_CLOEXEC);
++    }
++    if(fd<0)throw "Cannot open CSRF secret";
++    struct stat st;
++    if(fstat(fd,&st)!=0 || !S_ISREG(st.st_mode) || st.st_size!=32 ||
++        (st.st_mode&077)!=0 || st.st_uid!=geteuid()) {close(fd);throw "Unsafe CSRF secret permissions or owner";}
++    std::string result(32,'\0');size_t count=0;
++    while(count<32) {ssize_t n=read(fd,&result[count],32-count);if(n<0&&errno==EINTR)continue;
++        if(n<=0){close(fd);throw "Cannot read CSRF secret";}count+=n;}
++    close(fd);return result;
++}
++inline const char *cookie_name(const char *base) {return std::strncmp(base,"https://",8)==0?"__Host-mod_uploader_sid":"mod_uploader_sid";}
++inline std::string session(request_rec *r,const char *base) {
++    const char *header=apr_table_get(r->headers_in,"Cookie");if(!header)return "";
++    std::string all(header),name=std::string(cookie_name(base))+"=",value;size_t start=0;int found=0;
++    while(start<all.size()) {
++        size_t end=all.find(';',start);if(end==std::string::npos)end=all.size();
++        while(start<end&&(all[start]==' '||all[start]=='\t'))++start;
++        if(all.compare(start,name.size(),name)==0){value=all.substr(start+name.size(),end-start-name.size());++found;}
++        start=end+1;
++    }
++    return found==1&&SecurityTokens::session_valid(value)?value:"";
++}
++inline bool verify(request_rec *r,const char *token) {
++    if(!token)return false;
++    const char *base=apr_table_get(r->notes,"uploader-csrf-base");
++    const char *dir=apr_table_get(r->notes,"uploader-csrf-dir");
++    return base&&dir&&SecurityTokens::verify(key(dir),base,session(r,base),token,static_cast<uint64_t>(std::time(NULL)));
++}
++inline bool prepare(request_rec *r,const char *directory,const char *base) {
++    apr_table_setn(r->notes,"uploader-csrf-base",base);apr_table_setn(r->notes,"uploader-csrf-dir",directory);
++    if(r->method_number==M_POST) {
++        if(session(r,base).empty())return false;
++        const char *header=apr_table_get(r->headers_in,"X-CSRF-Token");
++        if(header) {if(!verify(r,header))return false;apr_table_setn(r->notes,"uploader-csrf-verified","1");}
++        return true;
++    }
++    std::string sid=session(r,base);
++    if(sid.empty()) {
++        sid=SecurityTokens::random_hex();std::string cookie=std::string(cookie_name(base))+"="+sid+"; Path=/; HttpOnly; SameSite=Strict";
++        if(std::strncmp(base,"https://",8)==0)cookie+="; Secure";
++        apr_table_add(r->headers_out,"Set-Cookie",cookie.c_str());
++    }
++    std::string token=SecurityTokens::issue(key(directory),base,sid,static_cast<uint64_t>(std::time(NULL)));
++    apr_table_set(r->notes,"uploader-csrf-token",token.c_str());
++    apr_table_setn(r->headers_out,"Cache-Control","private, no-store");
++    apr_table_mergen(r->headers_out,"Vary","Cookie");return true;
++}
++}
++#endif
 --- /dev/null
-+++ b/README.md
-@@ -0,0 +1,59 @@
-+# mod_uploader 3.2.0: altered FreeBSD / Apache 2.4 version
++++ b/include/AuthenticationThrottle.h
+@@ -0,0 +1,79 @@
++// SPDX-License-Identifier: Zlib
++#ifndef UPLOADER_AUTHENTICATION_THROTTLE_H
++#define UPLOADER_AUTHENTICATION_THROTTLE_H
++#include <sys/file.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++#include <unistd.h>
++#include <openssl/sha.h>
++#include <cstdint>
++#include <ctime>
++#include <cerrno>
++#include <string>
 +
-+Original software by Tetsuya Kimata: https://github.com/kimata/mod_uploader
++// Fixed-size persistent state and kernel-held slots shared by all httpd workers.
++// Hash bucket collisions conservatively share an IP budget; memory/disk use is bounded.
++class AuthenticationThrottle {
++public:
++    static const unsigned LIMIT = 10, WINDOW = 60, CONCURRENT = 2, BUCKETS = 4096;
++    AuthenticationThrottle(const char *directory, const char *ip, bool needed = true,
++                           uint64_t now = static_cast<uint64_t>(std::time(NULL)))
++        : slot_(-1), allowed_(!needed), retry_(1) {
++        if (!needed) return;
++        if (!ip || !*ip) return;
++        const std::string prefix = std::string(directory) + "/.auth-";
++        for (unsigned i = 0; i < CONCURRENT; ++i) {
++            int fd = safe_open(prefix + "slot-" + char('0' + i));
++            if (fd < 0) return;
++            if (flock(fd, LOCK_EX | LOCK_NB) == 0) { slot_ = fd; break; }
++            close(fd);
++        }
++        if (slot_ < 0) return;
++        int state = safe_open(prefix + "attempts");
++        if (state < 0) return;
++        if (flock(state, LOCK_EX | LOCK_NB) != 0) { close(state); return; }
++        struct stat st;
++        const off_t size = static_cast<off_t>(BUCKETS * sizeof(Bucket));
++        bool good = fstat(state, &st) == 0;
++        if (good && st.st_size == 0) good = ftruncate(state, size) == 0;
++        else if (good) good = st.st_size == size;
++        unsigned char digest[SHA256_DIGEST_LENGTH];
++        SHA256(reinterpret_cast<const unsigned char *>(ip), std::char_traits<char>::length(ip), digest);
++        const off_t offset = ((static_cast<unsigned>(digest[0]) << 8 | digest[1]) % BUCKETS) * sizeof(Bucket);
++        Bucket bucket = {0, 0};
++        if (good) good = pread(state, &bucket, sizeof(bucket), offset) == sizeof(bucket);
++        if (good && bucket.count <= LIMIT && now != UINT64_MAX) {
++            if (bucket.start == 0 || (now >= bucket.start && now - bucket.start >= WINDOW)) {
++                bucket.start = now; bucket.count = 0;
++            }
++            if (now >= bucket.start && bucket.count < LIMIT) {
++                ++bucket.count;
++                allowed_ = pwrite(state, &bucket, sizeof(bucket), offset) == sizeof(bucket);
++            } else {
++                retry_ = now < bucket.start ? WINDOW : static_cast<unsigned>(WINDOW - (now - bucket.start));
++            }
++        }
++        // No passwords, raw IP addresses or tokens are written to state files.
++        close(state);
++        if (!allowed_) { close(slot_); slot_ = -1; }
++    }
++    ~AuthenticationThrottle() noexcept { if (slot_ >= 0) close(slot_); }
++    bool allowed() const { return allowed_; }
++    unsigned retry_after() const { return retry_; }
++private:
++    struct Bucket { uint64_t start, count; };
++    static int safe_open(const std::string& path) {
++        int fd = open(path.c_str(), O_RDWR | O_CREAT | O_NOFOLLOW | O_CLOEXEC | O_NONBLOCK, 0600);
++        if (fd < 0) return -1;
++        struct stat st;
++        if (fstat(fd, &st) != 0 || !S_ISREG(st.st_mode) || st.st_uid != geteuid() ||
++            (st.st_mode & 077) != 0 || st.st_nlink != 1) { close(fd); return -1; }
++        return fd;
++    }
++    AuthenticationThrottle(const AuthenticationThrottle&) = delete;
++    AuthenticationThrottle& operator=(const AuthenticationThrottle&) = delete;
++    int slot_;
++    bool allowed_;
++    unsigned retry_;
++};
++#endif
+--- /dev/null
++++ b/include/ConfigNumber.h
+@@ -0,0 +1,18 @@
++// SPDX-License-Identifier: Zlib
++#ifndef UPLOADER_CONFIG_NUMBER_H
++#define UPLOADER_CONFIG_NUMBER_H
++#include <cstdint>
++namespace ConfigNumber {
++inline bool parse(const char *text, uint64_t maximum, uint64_t& number) {
++    number=0;
++    if (!text || !*text) return false;
++    for (; *text; ++text) {
++        if (*text<'0' || *text>'9') return false;
++        const unsigned digit=static_cast<unsigned>(*text-'0');
++        if (digit>maximum || number>(maximum-digit)/10) return false;
++        number=number*10+digit;
++    }
++    return number!=0;
++}
++}
++#endif
+--- /dev/null
++++ b/include/HtmlSafety.h
+@@ -0,0 +1,21 @@
++// SPDX-License-Identifier: Zlib
++#ifndef UPLOADER_HTML_SAFETY_H
++#define UPLOADER_HTML_SAFETY_H
++#include <string>
++namespace HtmlSafety {
++inline std::string escape(const char *input) {
++    std::string out;
++    for (; *input; ++input) {
++        switch (*input) {
++        case '&': out += "&amp;"; break;
++        case '<': out += "&lt;"; break;
++        case '>': out += "&gt;"; break;
++        case '"': out += "&quot;"; break;
++        case 39: out += "&#39;"; break;
++        default: out += *input;
++        }
++    }
++    return out;
++}
++}
++#endif
+--- /dev/null
++++ b/include/HttpErrorStatus.h
+@@ -0,0 +1,38 @@
++// SPDX-License-Identifier: Zlib
++#ifndef UPLOADER_HTTP_ERROR_STATUS_H
++#define UPLOADER_HTTP_ERROR_STATUS_H
++#include <cstring>
++#include "Message.h"
++namespace HttpErrorStatus {
++inline bool matches(const char *message, const char *code) {
++    const size_t length = std::strlen(code);
++    return std::strncmp(message, code, length) == 0 && (message[length] == '\0' || message[length] == ' ');
++}
++inline int get(const char *message) {
++    if (!message) return 500;
++    if (matches(message, MESSAGE_HANDLER_COMMAND_INVALID) || matches(message, MESSAGE_LIST_ID_INVALID)) return 404;
++    if (matches(message, MESSAGE_DOWNLOAD_PASS_MISMATCH) || matches(message, MESSAGE_REMOVE_PASS_MISMATCH)) return 403;
++    if (matches(message, MESSAGE_POST_INTERVAL_TOO_SHORT)) return 429;
++    if (matches(message, MESSAGE_DOWNLOAD_SESSION_LIMIT_EXCEEDED) || std::strstr(message, "Shared storage lock timed out") ||
++        std::strstr(message, "Storage recovery required") || std::strstr(message, "Storage transaction failed")) return 503;
++    const char *large[] = {MESSAGE_RFC1867_DATA_SIZE_TOO_LARGE, MESSAGE_RFC1867_FILE_SIZE_TOO_LARGE,
++        MESSAGE_RFC1867_TEXT_SIZE_TOO_LARGE, MESSAGE_RFC1867_ITEM_COUNT_EXCEEDED,
++        MESSAGE_RFC2822_FILE_SIZE_TOO_LARGE, MESSAGE_RFC2822_TEXT_SIZE_TOO_LARGE, MESSAGE_RFC2822_ITEM_COUNT_EXCEEDED};
++    for (size_t i=0; i<sizeof(large)/sizeof(*large); ++i) if (matches(message, large[i])) return 413;
++    const char *invalid[] = {MESSAGE_ARGUMENT_INVALID, MESSAGE_FILE_EXT_INVALID, MESSAGE_FILE_MIME_INVALID,
++        MESSAGE_POST_DATA_INVALID, MESSAGE_POST_FILE_EXT_INVALID, MESSAGE_POST_FILE_MIME_INVALID,
++        MESSAGE_POST_FILE_NAME_INVALID, MESSAGE_POST_IMAGE_SIZE_INVALID, MESSAGE_RFC1867_CONTENT_TYPE_INVALID,
++        MESSAGE_RFC1867_FORMAT_INVALID, MESSAGE_RFC2822_CONTENT_TYPE_INVALID, MESSAGE_RFC2822_FORMAT_INVALID,
++        MESSAGE_RFC2822_HEADER_INVALID, MESSAGE_HANDLER_PATH_INFO_TOO_LONG, MESSAGE_ICONV_ENCODING_INVALID,
++        MESSAGE_POST_COMMENT_EMPTY, MESSAGE_POST_COMMENT_TOO_LONG, MESSAGE_POST_FILE_EXT_EMPTY,
++        MESSAGE_POST_FILE_EXT_TOO_LONG, MESSAGE_POST_FILE_MIME_EMPTY, MESSAGE_POST_FILE_MIME_TOO_LONG,
++        MESSAGE_POST_FILE_NAME_EMPTY, MESSAGE_POST_FILE_NAME_TOO_LONG, MESSAGE_POST_FILE_SIZE_ZERO,
++        MESSAGE_POST_REMOVE_PASS_TOO_LONG, MESSAGE_POST_DOWNLOAD_PASS_TOO_LONG,
++        MESSAGE_RFC1867_CONTENT_SIZE_ZERO, MESSAGE_RFC2822_CONTENT_SIZE_ZERO};
++    for (size_t i=0; i<sizeof(invalid)/sizeof(*invalid); ++i) if (matches(message, invalid[i])) return 400;
++    if (matches(message, MESSAGE_DOWNLOAD_GZIP_NEEDED)) return 406;
++    if (matches(message, "Password exceeds 127 bytes")) return 400;
++    return 500;
++}
++}
++#endif
+--- /dev/null
++++ b/include/MetadataSafety.h
+@@ -0,0 +1,38 @@
++// SPDX-License-Identifier: Zlib
++#ifndef UPLOADER_METADATA_SAFETY_H
++#define UPLOADER_METADATA_SAFETY_H
++#include <cstring>
++#include <cstddef>
++namespace MetadataSafety {
++template<size_t N> bool terminated(const char (&s)[N]) { return std::memchr(s, 0, N) != NULL; }
++inline bool path_component(const char *s) {
++    if (!*s || !std::strcmp(s,".") || !std::strcmp(s,"..")) return false;
++    for (; *s; ++s) {
++        unsigned char c = static_cast<unsigned char>(*s);
++        if (c < 32 || c == 127 || std::strchr("/\\<>\"'&", c)) return false;
++    }
++    return true;
++}
++template<class H> bool same_identity(const H& a,const H& b) {
++    return a.id==b.id && a.index==b.index && a.mtime==b.mtime && a.file_size==b.file_size &&
++        std::strcmp(a.file_digest,b.file_digest)==0 && std::strcmp(a.download_pass,b.download_pass)==0 &&
++        std::strcmp(a.remove_pass,b.remove_pass)==0;
++}
++template<class H> bool valid(const H& h) {
++#define TERMINATED(f) if (!terminated(h.f)) return false
++    TERMINATED(identifier); TERMINATED(version); TERMINATED(date); TERMINATED(ip_address);
++    TERMINATED(file_name); TERMINATED(file_mime); TERMINATED(file_ext); TERMINATED(file_digest);
++    TERMINATED(remove_pass); TERMINATED(download_pass); TERMINATED(comment);
++#undef TERMINATED
++    if ((reinterpret_cast<const unsigned char *>(&h.flags)[0] & ~3U) != 0) return false;
++    if (!path_component(h.file_name) || !path_component(h.file_ext) ||
++        std::strpbrk(h.file_ext,".") || std::strpbrk(h.comment,"<>") ||
++        std::strpbrk(h.date,"<>\"'&") || std::strpbrk(h.ip_address,"<>\"'&") ||
++        std::strpbrk(h.file_mime,"<>\"'&\r\n")) return false;
++    if (std::strlen(h.file_digest) != 32) return false;
++    for (const char *p=h.file_digest;*p;++p)
++        if (!((*p>='0'&&*p<='9')||(*p>='a'&&*p<='f')||(*p>='A'&&*p<='F'))) return false;
++    return true;
++}
++}
++#endif
+--- /dev/null
++++ b/include/PasswordHash.h
+@@ -0,0 +1,43 @@
++// SPDX-License-Identifier: Zlib
++#ifndef UPLOADER_PASSWORD_HASH_H
++#define UPLOADER_PASSWORD_HASH_H
++#include <openssl/evp.h>
++#include <openssl/rand.h>
++#include <openssl/crypto.h>
++#include <string>
++#include <cstring>
++namespace PasswordHash {
++static const int ITERATIONS = 600000;
++inline std::string hex(const unsigned char *p, size_t n) {
++    const char *digits="0123456789abcdef"; std::string out(n*2, '0');
++    for(size_t i=0;i<n;++i) {out[2*i]=digits[p[i]>>4];out[2*i+1]=digits[p[i]&15];}return out;
++}
++inline bool unhex(const std::string& s, unsigned char *p, size_t n) {
++    if(s.size()!=n*2)return false;
++    for(size_t i=0;i<n*2;++i) {unsigned char c=static_cast<unsigned char>(s[i]);int v=c>='0'&&c<='9'?c-'0':c>='a'&&c<='f'?c-'a'+10:-1;
++        if(v<0)return false;
++        if(i%2)p[i/2]|=static_cast<unsigned char>(v);else p[i/2]=static_cast<unsigned char>(v<<4);}return true;
++}
++inline bool decode(const std::string& value, unsigned char *salt, unsigned char *digest) {
++    const std::string prefix="pbkdf2-sha256$600000$";
++    return value.size()==prefix.size()+32+1+64 && value.compare(0,prefix.size(),prefix)==0 &&
++        value[prefix.size()+32]=='$' && unhex(value.substr(prefix.size(),32),salt,16) &&
++        unhex(value.substr(prefix.size()+33),digest,32);
++}
++inline bool valid(const char *s) {unsigned char salt[16],digest[32];return *s==0 || decode(s,salt,digest);}
++inline std::string make(const char *password) {
++    size_t n=std::strlen(password);if(n==0)return "";if(n>127)throw "Password exceeds 127 bytes";
++    unsigned char salt[16],digest[32];
++    if(RAND_bytes(salt,16)!=1 || PKCS5_PBKDF2_HMAC(password,static_cast<int>(n),salt,16,ITERATIONS,EVP_sha256(),32,digest)!=1)
++        throw "Password hashing failed";
++    std::string value="pbkdf2-sha256$600000$"+hex(salt,16)+"$"+hex(digest,32);
++    OPENSSL_cleanse(digest,sizeof(digest));return value;
++}
++inline bool verify(const char *stored,const char *password) {
++    size_t n=std::strlen(password);if(n>127)return false;if(*stored==0)return n==0;
++    unsigned char salt[16],expected[32],actual[32];if(!decode(stored,salt,expected))return false;
++    if(PKCS5_PBKDF2_HMAC(password,static_cast<int>(n),salt,16,ITERATIONS,EVP_sha256(),32,actual)!=1)throw "Password verification failed";
++    bool ok=CRYPTO_memcmp(actual,expected,32)==0;OPENSSL_cleanse(actual,sizeof(actual));return ok;
++}
++}
++#endif
+--- /dev/null
++++ b/include/RequestOrigin.h
+@@ -0,0 +1,41 @@
++// SPDX-License-Identifier: Zlib
++// Altered mod_uploader: require a verifiable browser source on Apache POST.
++#ifndef REQUEST_ORIGIN_H
++#define REQUEST_ORIGIN_H
++#include <cstddef>
++#include <cstring>
++namespace RequestOrigin {
++inline unsigned char lower(unsigned char c) {
++    return c >= 'A' && c <= 'Z' ? static_cast<unsigned char>(c + ('a'-'A')) : c;
++}
++inline std::size_t length(const char *url) {
++    if (url == NULL) return 0;
++    std::size_t scheme = 0;
++    if (std::strncmp(url, "https://", 8) == 0) scheme = 8;
++    else if (std::strncmp(url, "http://", 7) == 0) scheme = 7;
++    else return 0;
++    std::size_t end = scheme;
++    while (url[end] && url[end] != '/' && url[end] != '?' && url[end] != '#') {
++        const unsigned char c = static_cast<unsigned char>(url[end]);
++        if (c <= 32 || c >= 127 || c == '@' || c == '\\') return 0;
++        ++end;
++    }
++    return end == scheme ? 0 : end;
++}
++inline bool matches(const char *base, const char *source, bool referer) {
++    const std::size_t a = length(base), b = length(source);
++    if (a == 0 || a != b || (!referer && source[b] != 0)) return false;
++    for (std::size_t i = 0; i < a; ++i)
++        if (lower(static_cast<unsigned char>(base[i])) !=
++            lower(static_cast<unsigned char>(source[i]))) return false;
++    return true;
++}
++inline bool allowed(const char *base, const char *origin,
++                    const char *referer, const char *fetch_site) {
++    if (fetch_site != NULL && std::strcmp(fetch_site, "cross-site") == 0) return false;
++    // An invalid Origin must never fall back to a permissive Referer.
++    if (origin != NULL) return matches(base, origin, false);
++    return referer != NULL && matches(base, referer, true);
++}
++}
++#endif
+--- /dev/null
++++ b/include/SecurityTokens.h
+@@ -0,0 +1,33 @@
++// SPDX-License-Identifier: Zlib
++#ifndef UPLOADER_SECURITY_TOKENS_H
++#define UPLOADER_SECURITY_TOKENS_H
++#include "PasswordHash.h"
++#include <openssl/hmac.h>
++#include <ctime>
++#include <cstdint>
++namespace SecurityTokens {
++static const uint64_t LIFETIME=7200;
++inline std::string random_hex() {unsigned char value[32];if(RAND_bytes(value,32)!=1)throw "Random generator failed";return PasswordHash::hex(value,32);}
++inline bool session_valid(const std::string& sid) {unsigned char value[32];return PasswordHash::unhex(sid,value,32);}
++inline std::string sign(const std::string& key,const std::string& base,const std::string& sid,const std::string& stamp) {
++    std::string input=base+"\n"+sid+"\n"+stamp;unsigned char mac[EVP_MAX_MD_SIZE];unsigned int size=0;
++    if(key.size()!=32 || !HMAC(EVP_sha256(),key.data(),32,reinterpret_cast<const unsigned char*>(input.data()),input.size(),mac,&size) || size!=32)
++        throw "Token signing failed";
++    return PasswordHash::hex(mac,size);
++}
++inline std::string issue(const std::string& key,const std::string& base,const std::string& sid,uint64_t now) {
++    if(!session_valid(sid))throw "Invalid session";
++    std::string stamp=std::to_string(now);return stamp+"."+sign(key,base,sid,stamp);
++}
++inline bool verify(const std::string& key,const std::string& base,const std::string& sid,const std::string& token,uint64_t now) {
++    if(!session_valid(sid))return false;
++    size_t dot=token.find('.');
++    if(dot==std::string::npos || dot==0 || dot>20 || token.size()!=dot+65)return false;
++    uint64_t stamp=0;
++    for(size_t i=0;i<dot;++i) {if(token[i]<'0'||token[i]>'9' || stamp>(UINT64_MAX-9)/10)return false;stamp=stamp*10+token[i]-'0';}
++    if(std::to_string(stamp)!=token.substr(0,dot) || stamp>now || now-stamp>LIFETIME)return false;
++    unsigned char mac[32];if(!PasswordHash::unhex(token.substr(dot+1),mac,32))return false;
++    std::string expected=sign(key,base,sid,token.substr(0,dot));return CRYPTO_memcmp(expected.data(),token.data()+dot+1,64)==0;
++}
++}
++#endif
+--- /dev/null
++++ b/include/StorageLock.h
+@@ -0,0 +1,23 @@
++// SPDX-License-Identifier: Zlib
++#ifndef UPLOADER_STORAGE_LOCK_H
++#define UPLOADER_STORAGE_LOCK_H
++#include <sys/file.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++#include <unistd.h>
++#include <string>
++namespace StorageLock {
++inline apr_status_t release(void *data) {int *fd=static_cast<int*>(data);close(*fd);return APR_SUCCESS;}
++inline void hold(apr_pool_t *pool,const char *directory) {
++    std::string path=std::string(directory)+"/.format-lock";
++    int fd=open(path.c_str(),O_RDONLY|O_CREAT|O_NOFOLLOW|O_CLOEXEC,0600);
++    if(fd<0)throw "Cannot open storage lock";
++    struct stat st;
++    if(fstat(fd,&st)!=0||!S_ISREG(st.st_mode)||flock(fd,LOCK_SH|LOCK_NB)!=0) {
++        close(fd);throw "Storage migration is running; stop and retry later";
++    }
++    int *handle=static_cast<int*>(apr_palloc(pool,sizeof(int)));*handle=fd;
++    apr_pool_cleanup_register(pool,handle,release,apr_pool_cleanup_null);
++}
++}
++#endif
+--- /dev/null
++++ b/include/StorageTransaction.h
+@@ -0,0 +1,194 @@
++// SPDX-License-Identifier: Zlib
++// Altered source: durable staging and reversible eviction under the manager lock.
++#ifndef UPLOADER_STORAGE_TRANSACTION_H
++#define UPLOADER_STORAGE_TRANSACTION_H
++#include <sys/stat.h>
++#include <fcntl.h>
++#include <unistd.h>
++#include <cerrno>
++#include <cstdio>
++#include <cstring>
++#include <string>
++#include <vector>
 +
-+This repository contains an altered version based on upstream commit
-+`31632a29138b18b7adbf533416a0ec660f1b07ac`. It is not an official upstream
-+release. Copyright and zlib license notices are retained in [COPYING](COPYING).
-+See [MODIFICATIONS](MODIFICATIONS) for attribution and modification notice.
++#ifndef UPLOADER_TXN_POINT
++#define UPLOADER_TXN_POINT(name) do {} while (0)
++#endif
 +
-+The user reported successful operation on their FreeBSD / Apache setup
-+following the build correction. The Port has now built and passed stage, check-plist, stage-qa and package
-+on FreeBSD 15.1 amd64 / Clang 19.1.7 / Apache 2.4.69 (THUMBNAIL off).
-+Isolated real Apache HTTP/HTTPS, concurrent requests, migration and rollback tests
-+also pass; their coverage and limits are recorded in docs/validation.
-+Production package installation, poudriere and exhaustive HTTP behavior remain unverified.
++class StorageTransaction {
++    struct Operation { char kind; std::string path; };
++    std::string directory_;
++    std::vector<Operation> operations_;
++    int journal_;
++    bool committed_;
++    static std::string parent(const std::string& p) { return p.substr(0, p.rfind('/')); }
++    static void fail() { throw "Storage transaction failed; stop Apache and inspect the recovery journal"; }
++    static void write_all(int fd, const void *data, size_t size) {
++        const char *p = static_cast<const char *>(data);
++        while (size) {
++            ssize_t count = ::write(fd, p, size);
++            if (count < 0 && errno == EINTR) continue;
++            if (count <= 0) fail();
++            p += count; size -= static_cast<size_t>(count);
++        }
++    }
++    static bool exists(const std::string& path) {
++        struct stat st;
++        if (lstat(path.c_str(), &st) == 0) {
++            if (!S_ISREG(st.st_mode) || st.st_nlink != 1) fail();
++            return true;
++        }
++        if (errno != ENOENT) fail();
++        return false;
++    }
++    static void erase(const std::string& path) {
++        if (!exists(path)) return;
++        if (unlink(path.c_str()) != 0) fail();
++        sync_directory(parent(path));
++    }
++    void record(char kind, const std::string& path) {
++        if (path.empty() || path[0] != '/' || path.find('\n') != std::string::npos) fail();
++        for (size_t i = 0; i < operations_.size(); ++i)
++            if (operations_[i].path == path) fail();
++        // Check real directory, and reserve sidecar names before recording any mutation.
++        sync_directory(parent(path));
++        if (exists(path + ".uploader-new") || exists(path + ".uploader-old")) fail();
++        if ((kind == 'C' || kind == 'P') && exists(path)) fail();
++        static const char hex[] = "0123456789abcdef";
++        std::string row; row += kind; row += ' ';
++        for (size_t i = 0; i < path.size(); ++i) {
++            unsigned char c = static_cast<unsigned char>(path[i]);
++            row += hex[c >> 4]; row += hex[c & 15];
++        }
++        row += '\n';
++        Operation operation = {kind, path}; operations_.push_back(operation);
++        write_all(journal_, row.data(), row.size());
++        if (fsync(journal_) != 0) fail();
++        UPLOADER_TXN_POINT("record");
++    }
++    void finish_cleanup() {
++        for (size_t i = 0; i < operations_.size(); ++i) {
++            if (operations_[i].kind == 'P') erase(operations_[i].path);
++            erase(operations_[i].path + ".uploader-old");
++            erase(operations_[i].path + ".uploader-new");
++        }
++        if (journal_ >= 0) { close(journal_); journal_ = -1; }
++        // Keep the commit marker until the plan is gone: cleanup is idempotent.
++        erase(directory_ + "/commit-ready");
++        erase(directory_ + "/plan");
++        erase(directory_ + "/COMMITTED");
++        if (rmdir(directory_.c_str()) != 0) fail();
++        sync_directory(parent(directory_));
++    }
++    void rollback() {
++        for (size_t i = operations_.size(); i > 0; --i) {
++            const Operation& op = operations_[i-1];
++            if (op.kind == 'P') { erase(op.path); }
++            else if (op.kind == 'C') {
++                erase(op.path); erase(op.path + ".uploader-new");
++            } else if (exists(op.path + ".uploader-old")) {
++                if (exists(op.path)) fail();
++                if (rename((op.path + ".uploader-old").c_str(), op.path.c_str()) != 0) fail();
++                sync_directory(parent(op.path));
++            }
++        }
++        finish_cleanup();
++    }
++public:
++    static void sync_directory(const std::string& path) {
++        int fd = open(path.c_str(), O_RDONLY | O_DIRECTORY | O_NOFOLLOW | O_CLOEXEC);
++        if (fd < 0) fail();
++        int status = fsync(fd); close(fd);
++        if (status != 0) fail();
++    }
++    static void require_clean(const char *root) {
++        struct stat st; const std::string path = std::string(root) + "/.storage-transaction";
++        if (lstat(path.c_str(), &st) == 0 || errno != ENOENT)
++            throw "Storage recovery required; stop Apache and run storage_recover.py";
++    }
++    explicit StorageTransaction(const char *root)
++        : directory_(std::string(root) + "/.storage-transaction"), journal_(-1), committed_(false) {
++        require_clean(root);
++        if (mkdir(directory_.c_str(), 0700) != 0) fail();
++        try {
++            sync_directory(root);
++            journal_ = open((directory_ + "/plan").c_str(), O_WRONLY | O_CREAT | O_EXCL | O_NOFOLLOW | O_CLOEXEC, 0600);
++            if (journal_ < 0) fail();
++            const char magic[] = "UPLOADER-TXN-1\n";
++            write_all(journal_, magic, sizeof(magic)-1);
++            if (fsync(journal_) != 0) fail();
++            sync_directory(directory_);
++            UPLOADER_TXN_POINT("begin");
++        } catch (...) { if (journal_ >= 0) close(journal_); throw; }
++    }
++    ~StorageTransaction() noexcept {
++        try { if (!committed_) rollback(); }
++        catch (...) { std::fprintf(stderr, "mod_uploader: storage journal retained; offline recovery required\n"); }
++        if (journal_ >= 0) close(journal_);
++    }
++    void create_bytes(const char *target, const void *data, size_t size) {
++        record('C', target);
++        const std::string stage = std::string(target) + ".uploader-new";
++        int fd = open(stage.c_str(), O_WRONLY | O_CREAT | O_EXCL | O_NOFOLLOW | O_CLOEXEC, 0600);
++        if (fd < 0) fail();
++        try {
++            write_all(fd, data, size);
++            if (fsync(fd) != 0) fail();
++            if (close(fd) != 0) { fd = -1; fail(); } fd = -1;
++            sync_directory(parent(stage)); UPLOADER_TXN_POINT("staged");
++        } catch (...) { if (fd >= 0) close(fd); throw; }
++    }
++    void create_file(const char *target, const char *source) {
++        record('C', target);
++        const std::string stage = std::string(target) + ".uploader-new";
++        int input = open(source, O_RDONLY | O_NOFOLLOW | O_NONBLOCK | O_CLOEXEC);
++        int output = -1;
++        try {
++            struct stat st;
++            if (input < 0 || fstat(input, &st) != 0 || !S_ISREG(st.st_mode) || st.st_nlink != 1) fail();
++            output = open(stage.c_str(), O_WRONLY | O_CREAT | O_EXCL | O_NOFOLLOW | O_CLOEXEC, 0600);
++            if (output < 0) fail();
++            char buffer[65536];
++            for (;;) {
++                ssize_t count = read(input, buffer, sizeof(buffer));
++                if (count < 0 && errno == EINTR) continue;
++                if (count < 0) fail();
++                if (count == 0) break;
++                write_all(output, buffer, static_cast<size_t>(count));
++            }
++            if (fsync(output) != 0) fail();
++            if (close(output) != 0) { output = -1; fail(); } output = -1;
++            close(input); input = -1;
++            sync_directory(parent(stage)); UPLOADER_TXN_POINT("staged");
++        } catch (...) { if (input >= 0) close(input); if (output >= 0) close(output); throw; }
++    }
++    void remove_file(const char *target) {
++        if (exists(target)) record('D', target);
++    }
++    void temporary_file(const char *target) { record('P', target); }
++    void commit() {
++        for (size_t i = 0; i < operations_.size(); ++i) {
++            const Operation& op = operations_[i];
++            if (op.kind == 'P') continue;
++            if (op.kind == 'D') {
++                if (rename(op.path.c_str(), (op.path + ".uploader-old").c_str()) != 0) fail();
++            } else {
++                if (exists(op.path)) fail();
++                if (rename((op.path + ".uploader-new").c_str(), op.path.c_str()) != 0) fail();
++            }
++            sync_directory(parent(op.path)); UPLOADER_TXN_POINT("applied");
++        }
++        int fd = open((directory_ + "/commit-ready").c_str(), O_WRONLY | O_CREAT | O_EXCL | O_NOFOLLOW | O_CLOEXEC, 0600);
++        if (fd < 0) fail();
++        int result = fsync(fd); close(fd);
++        if (result != 0) fail();
++        if (rename((directory_ + "/commit-ready").c_str(), (directory_ + "/COMMITTED").c_str()) != 0) fail();
++        committed_ = true; UPLOADER_TXN_POINT("committed");
++        // A cleanup failure must never roll back a committed on-disk transaction.
++        try { sync_directory(directory_); finish_cleanup(); }
++        catch (...) { std::fprintf(stderr, "mod_uploader: committed storage cleanup pending; offline recovery required\n"); }
++    }
++    StorageTransaction(const StorageTransaction&) = delete;
++    StorageTransaction& operator=(const StorageTransaction&) = delete;
++};
++#endif
+--- /dev/null
++++ b/include/UploadSafety.h
+@@ -0,0 +1,22 @@
++// Altered mod_uploader port: bounded multipart helpers, independent of APR.
++#ifndef UPLOAD_SAFETY_H
++#define UPLOAD_SAFETY_H
++#include <cstddef>
++#include <cstring>
++namespace UploadSafety {
++inline const char *boundary(const char *data, std::size_t size,
++                            const char *token, std::size_t length) {
++    if (length > size || size - length < 6) return NULL;
++    for (std::size_t i = 4; i <= size - length - 2; ++i) {
++        if (std::memcmp(data+i-4, "\r\n--", 4) == 0 &&
++            std::memcmp(data+i, token, length) == 0 &&
++            (std::memcmp(data+i+length, "\r\n", 2) == 0 ||
++             std::memcmp(data+i+length, "--", 2) == 0)) return data+i;
++    }
++    return NULL;
++}
++inline bool allowed(std::size_t current, std::size_t extra, std::size_t limit) {
++    return current <= limit && extra <= limit-current;
++}
++}
++#endif
+--- /dev/null
++++ b/include/UrlRouting.h
+@@ -0,0 +1,70 @@
++// SPDX-License-Identifier: Zlib
++// Altered mod_uploader: one mount-relative route for root and subpath installs.
++#ifndef UPLOADER_URL_ROUTING_H
++#define UPLOADER_URL_ROUTING_H
 +
-+## Build
++#include <string>
++#include <cstring>
++#include "RequestOrigin.h"
 +
-+Install Apache 2.4 development tools, APR, GNU make, Perl and GNU libtool.
-+Use the paths appropriate to your FreeBSD installation:
++namespace UrlRouting {
++// Apache supplies a decoded path without the query. Never decode it a second time.
++inline bool safe_path(const char *path) {
++    if (!path || *path != '/') return false;
++    const char *segment = path + 1;
++    for (const char *p = segment; ; ++p) {
++        const unsigned char c = static_cast<unsigned char>(*p);
++        if (c && (c < 32 || c == 127 || std::strchr("\\%?#\"'<>\x20", c))) return false;
++        if (c == '/' || c == 0) {
++            const std::size_t size = static_cast<std::size_t>(p - segment);
++            if ((size == 0 && c == '/') ||
++                (size == 1 && segment[0] == '.') ||
++                (size == 2 && segment[0] == '.' && segment[1] == '.')) return false;
++            segment = p + 1;
++        }
++        if (c == 0) return true;
++    }
++}
 +
-+```sh
-+./configure --with-apxs=/usr/local/sbin/apxs \
-+  --with-aprconf=/usr/local/bin/apr-1-config \
-+  --with-libtool=/usr/local/bin/libtool --with-writer=basic \
-+  CC=clang CXX=clang++
-+gmake LANG=ja_JP.eucJP apache-module
-+```
++inline std::string normalize_base(const char *base) {
++    const std::size_t origin_size = RequestOrigin::length(base);
++    if (!origin_size) throw "UploaderBaseUrl requires an absolute http(s) URL";
++    std::string result(base);
++    // Remove only trailing path separators; preserve the scheme's :// delimiter.
++    while (result.size() > origin_size && result[result.size()-1] == '/') result.resize(result.size()-1);
++    if (result.size() > origin_size && !safe_path(result.c_str()+origin_size))
++        throw "UploaderBaseUrl has an invalid path (query, fragment or ambiguous path)";
++    for (std::size_t i = 0; i < origin_size; ++i)
++        if (std::strchr("\"'<>&", result[i])) throw "UploaderBaseUrl has an invalid authority";
++    return result;
++}
 +
-+The Port candidate is in `ports/www/mod_uploader`. It downloads the pinned
-+original upstream source and applies the bundled patch. It does not fetch
-+this repository recursively or automatically enable the module.
++// Static resources retain their historical location beside the uploader mount.
++inline std::string asset_base(const char *base) {
++    std::string result(base);
++    const std::size_t origin_size = RequestOrigin::length(base);
++    if (result.size() > origin_size) result.resize(result.rfind('/'));
++    return result;
++}
 +
-+## Tests and migration report
++enum Status { ROUTE, REDIRECT, COLLISION, INVALID };
++inline Status resolve(const char *base, const char *uri, const char *path_info,
++                      const char **argument) {
++    *argument = NULL;
++    if (!safe_path(uri)) return INVALID;
++    const std::size_t origin_size = RequestOrigin::length(base);
++    if (!origin_size) return INVALID;
++    const char *mount = base + origin_size;
++    const std::size_t mount_size = std::strlen(mount);
++    if (std::strncmp(uri, mount, mount_size) != 0 ||
++        (mount_size && uri[mount_size] && uri[mount_size] != '/')) return INVALID;
++    *argument = uri + mount_size;
++    if (**argument == 0) return REDIRECT; // /up -> /up/; root always has '/'.
++    // Preserve the historical physical-directory collision check for subpaths.
++    // The VirtualHost's DocumentRoot is necessarily a directory at the root mount.
++    if (mount_size && (!path_info || !*path_info) && uri[std::strlen(uri)-1] == '/')
++        return COLLISION;
++    return ROUTE;
++}
++}
++#endif
+--- /dev/null
++++ b/util/dependency_audit.py
+@@ -0,0 +1,56 @@
++#!/usr/bin/env python3
++# SPDX-License-Identifier: Zlib
++"""Read-only FreeBSD package audit; downloads VuXML into a new private report directory."""
++import argparse
++import datetime
++import json
++import os
++from pathlib import Path
++import subprocess
++import sys
 +
-+```sh
-+sh tests/run_native.sh
-+python3 tests/handler_test.py
-+```
++def command(args):
++    result=subprocess.run(args,capture_output=True,text=True,errors='replace',timeout=300)
++    return result.returncode,result.stdout+result.stderr
 +
-+Tests substitute APR/httpd interfaces where stated; they are not full
-+module integration tests. See [the Japanese migration report](docs/FREEBSD-ja.md)
-+for changes, security limitations, FreeBSD verification steps and layout details.
-+Downloads use attachments. Password metadata now uses version 4 and salted
-+PBKDF2-HMAC-SHA256 (600,000 iterations). Existing version 2/3 data requires an
-+offline, verified-backup-first migration; the new module refuses legacy data.
-+Signed, session-bound CSRF tokens protect Apache POST in addition to origin
-+checks. See [the migration and rollback guide](docs/SECURITY-MIGRATION-ja.md).
-+No production data is automatically migrated by installing or loading this module.
++def main():
++    parser=argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('--output',type=Path,required=True)
++    args=parser.parse_args(); os.umask(0o077); args.output.mkdir(mode=0o700)
++    if not sys.platform.startswith('freebsd'): raise RuntimeError('This tool requires FreeBSD pkg')
++    pkg='/usr/local/sbin/pkg'
++    status,listing=command([pkg,'query','%n-%v'])
++    if status: raise RuntimeError(listing)
++    roots=[n for n in listing.splitlines() if n.startswith(('apache24-','apr-','ImageMagick6-','ImageMagick7-','python31','libiconv-'))]
++    packages=set(); pending=roots[:]
++    while pending:
++        name=pending.pop()
++        if name in packages: continue
++        packages.add(name)
++        code,deps=command([pkg,'query','%dn-%dv',name])
++        if code not in (0,1): raise RuntimeError(deps)
++        if code==0: pending.extend(n for n in deps.splitlines() if n)
++    database=args.output/'vuln.xml'
++    code,output=command([pkg,'audit','-F','-f',str(database)])
++    (args.output/'host-audit.log').write_text(output,encoding='utf8')
++    if code not in (0,1) or not database.exists(): raise RuntimeError('Vulnerability database refresh failed; see host-audit.log')
++    results=[]
++    for name in sorted(packages):
++        code,text=command([pkg,'audit','-f',str(database),name])
++        (args.output/(name+'.log')).write_text(text,encoding='utf8')
++        if code not in (0,1): raise RuntimeError('Package audit failed: '+name)
++        results.append({'package':name,'audit_exit':code,'vulnerable':code==1})
++    version={}
++    for label,cmd in [('freebsd',['freebsd-version','-ku']),('openssl',['/usr/bin/openssl','version','-a']),('apache',['/usr/local/sbin/httpd','-v'])]:
++        code,text=command(cmd); version[label]={'exit':code,'output':text}
++    report={'checked_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'scope':roots,'environment':version,'packages':results,
++        'limits':'pkg audit covers registered packages and published VuXML entries; base-system OpenSSL and private prefixes need separate advisory review.'}
++    (args.output/'report.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf8')
++    bad=[r['package'] for r in results if r['vulnerable']]
++    print(f'{len(results)} packages checked; {len(bad)} with VuXML findings')
++    for name in bad: print(name)
++    return 1 if bad else 0
 +
-+Validation logs are checked in under `docs/validation/`.
++if __name__=='__main__':
++    try: raise SystemExit(main())
++    except Exception as exc: print('Audit incomplete: '+str(exc),file=sys.stderr); raise SystemExit(2)
+--- /dev/null
++++ b/util/migrate_passwords.py
+@@ -0,0 +1,138 @@
++#!/usr/bin/env python3
++# SPDX-License-Identifier: Zlib
++"""Offline migration. Back up and verify all roots before replacing any metadata."""
++import argparse, fcntl, hashlib, json, os, shutil, stat, subprocess, tempfile
++from pathlib import Path
 +
-+Port revision 6 supports VirtualHost root (`/`) and subpath (`/up`) deployments.
-+Base URLs with or without a trailing slash are normalized, and bundled templates
-+use canonical static-resource URLs. See [the root/subpath configuration guide](docs/ROOT-DEPLOYMENT-ja.md)
-+for static handlers, administration, TLS, migration and rollback, and
-+[the revision 6 validation report](docs/ROOT-VALIDATION-ja.md) for measured coverage.
++def digest(path):
++    h=hashlib.sha256()
++    with path.open('rb') as f:
++        for block in iter(lambda:f.read(1024*1024),b''): h.update(block)
++    return h.hexdigest()
 +
-+管理画面はApacheでの独立した認証が必須です。Portの初期設定では閉鎖しています。IP別のパスワード処理回数と、プロセス間の同時実行数も制限します。設定・制限値は[セキュリティと移行手順](docs/SECURITY-MIGRATION-ja.md)を参照してください。
++def scan(root):
++    result={}
++    for base, dirs, files in os.walk(root,followlinks=False):
++        for name in dirs+files:
++            p=Path(base)/name;s=p.lstat()
++            if stat.S_ISLNK(s.st_mode) or not (stat.S_ISDIR(s.st_mode) or stat.S_ISREG(s.st_mode)):
++                raise RuntimeError('Symlinks and special files are not supported: '+str(p))
++            if stat.S_ISREG(s.st_mode):
++                if s.st_nlink!=1: raise RuntimeError('Hard-linked files are not supported: '+str(p))
++                result[str(p.relative_to(root))]={'sha256':digest(p),'size':s.st_size,'mode':stat.S_IMODE(s.st_mode),'uid':s.st_uid,'gid':s.st_gid}
++    return result
++
++def syncdir(path):
++    fd=os.open(path,os.O_RDONLY)
++    try: os.fsync(fd)
++    finally: os.close(fd)
++
++def journal(backup,state):
++    p=backup/'journal.json';tmp=backup/'journal.tmp'
++    with tmp.open('w',encoding='utf8') as f:
++        json.dump(state,f,indent=2);f.write('\n');f.flush();os.fsync(f.fileno())
++    os.replace(tmp,p);syncdir(backup)
++
++def tool_run(tool,*args):
++    return subprocess.run([str(tool),*map(str,args)],check=True,capture_output=True)
++
++def migrate_locked(args):
++    if not args.server_stopped: raise RuntimeError('Stop every server using these directories and pass --server-stopped')
++    tool=Path(args.tool).resolve(strict=True)
++    roots={name:Path(getattr(args,name+'_dir')).resolve(strict=True) for name in ['data','file','thumb']}
++    if args.temp_dir:roots['temp']=Path(args.temp_dir).resolve(strict=True)
++    backup=Path(args.backup_dir).absolute()
++    if backup.exists() or backup.is_symlink():raise RuntimeError('Backup destination must not exist')
++    parent=backup.parent.resolve(strict=True);backup=parent/backup.name
++    for a in roots.values():
++        if not a.is_dir():raise RuntimeError('Every source must be a directory')
++        if backup==a or a in backup.parents or backup in a.parents:raise RuntimeError('Backup and source roots must be disjoint')
++    paths=list(roots.values())
++    for i,a in enumerate(paths):
++        for b in paths[i+1:]:
++            if a==b or a in b.parents or b in a.parents:raise RuntimeError('Source roots must be disjoint')
++    inventory={name:scan(path) for name,path in roots.items()}
++    sentinel=roots['data']/'.migration-in-progress'
++    if sentinel.exists():raise RuntimeError('Previous migration is incomplete: restore its backup first')
++    backup.mkdir(mode=0o700);os.chmod(backup,0o700)
++    state={'state':'backup-in-progress','format':1,'inventory':inventory,'converted':[]}
++    journal(backup,state)
++    # No source changes before this entire backup is complete and verified.
++    for name,root in roots.items():
++        target=backup/'snapshot'/name
++        target.parent.mkdir(mode=0o700,exist_ok=True)
++        # FreeBSD cp -a preserves ACLs, flags, ownership, modes and timestamps.
++        subprocess.run(['/bin/cp','-a',str(root),str(target)],check=True,capture_output=True)
++        copied=scan(target)
++        if any(n not in copied or copied[n]['sha256']!=meta['sha256'] for n,meta in inventory[name].items()) or set(copied)!=set(inventory[name]):
++            raise RuntimeError('Backup verification failed; no metadata was changed')
++        for base,dirs,files in os.walk(target):
++            for file in files:
++                with (Path(base)/file).open('rb') as f:os.fsync(f.fileno())
++            syncdir(base)
++    syncdir(backup/'snapshot');syncdir(backup)
++    state['state']='backup-verified';journal(backup,state)
++    prepared=backup/'prepared';prepared.mkdir(mode=0o700)
++    candidates=[]
++    for rel in sorted(inventory['data']):
++        # This is the exact two-hex-digit / decimal filename layout used by UploadItemIO.
++        parts=Path(rel).parts
++        if len(parts)!=2 or len(parts[0])!=2 or any(c not in '0123456789abcdef' for c in parts[0]) or not parts[1].isascii() or not parts[1].isdigit():continue
++        source=roots['data']/rel
++        info=json.loads(tool_run(tool,'--inspect',source).stdout)
++        if info['id']!=int(parts[1]) or parts[0]!=format(info['id']&255,'02x'):raise RuntimeError('Metadata id/path mismatch: '+rel)
++        dest=prepared/rel;dest.parent.mkdir(mode=0o700,parents=True,exist_ok=True)
++        tool_run(tool,'--convert',source,dest)
++        if json.loads(tool_run(tool,'--inspect',dest).stdout)['version']!=4:raise RuntimeError('Prepared metadata was not v4')
++        candidates.append(rel)
++    # Reject any concurrent source modification, including payload/thumbnail changes.
++    if any(scan(root)!=inventory[name] for name,root in roots.items()):raise RuntimeError('Source changed during backup/preparation; no metadata was changed')
++    state['state']='prepared';state['candidates']=candidates;journal(backup,state)
++    # The new module refuses startup while this marker exists. Old processes must be stopped.
++    fd=os.open(sentinel,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
++    os.write(fd,b'Offline password migration in progress. Restore backup if interrupted.\n');os.fsync(fd);os.close(fd);syncdir(roots['data'])
++    try:
++        state['state']='converting';journal(backup,state)
++        for rel in candidates:
++            source=roots['data']/rel;meta=inventory['data'][rel]
++            if digest(source)!=meta['sha256']:raise RuntimeError('Metadata changed before replacement')
++            fd,name=tempfile.mkstemp(prefix='.password-migration-',dir=source.parent)
++            try:
++                with os.fdopen(fd,'wb') as f:
++                    f.write((prepared/rel).read_bytes());f.flush();os.fsync(f.fileno())
++                if os.geteuid()==0:os.chown(name,meta['uid'],meta['gid'])
++                elif source.stat().st_uid!=os.geteuid():raise RuntimeError('Run as the file owner or root')
++                os.chmod(name,0o600);os.replace(name,source);syncdir(source.parent)
++            finally:
++                if os.path.exists(name):os.unlink(name)
++            state['converted'].append(rel);journal(backup,state)
++        state['state']='complete';journal(backup,state)
++        sentinel.unlink();syncdir(roots['data'])
++    except BaseException:
++        state['state']='interrupted-restore-backup';journal(backup,state)
++        raise
++    print('Migration complete: '+str(len(candidates))+' metadata files. Verified backup: '+str(backup))
++    print('Rollback: stop Apache, restore the entire snapshot (data/file/thumb and optional temp), then reinstall the old module and templates.')
++
++def migrate(args):
++    if not args.server_stopped:raise RuntimeError('Stop every old server and pass --server-stopped')
++    root=Path(args.data_dir).resolve(strict=True)
++    fd=os.open(root/'.format-lock',os.O_RDONLY|os.O_CREAT|os.O_NOFOLLOW,0o600)
++    try:
++        if not stat.S_ISREG(os.fstat(fd).st_mode):raise RuntimeError('Unsafe lock file')
++        try:fcntl.flock(fd,fcntl.LOCK_EX|fcntl.LOCK_NB)
++        except BlockingIOError:raise RuntimeError('The new server or another migration is using this data directory')
++        return migrate_locked(args)
++    finally:os.close(fd)
++
++def main():
++    p=argparse.ArgumentParser(description=__doc__)
++    for name in ['data','file','thumb']:p.add_argument('--'+name+'-dir',required=True)
++    p.add_argument('--temp-dir');p.add_argument('--backup-dir',required=True)
++    p.add_argument('--tool',required=True);p.add_argument('--server-stopped',action='store_true')
++    args=p.parse_args()
++    try:migrate(args)
++    except Exception as e:
++        # Converter errors never include password bytes. Do not print its captured input.
++        print('Migration failed: '+str(e));raise SystemExit(1)
++if __name__=='__main__':main()
+--- /dev/null
++++ b/util/password_tool.cpp
+@@ -0,0 +1,95 @@
++// SPDX-License-Identifier: Zlib
++// Native ABI converter. This tool never edits its input file.
++#include "Environment.h"
++#include "UploadItem.h"
++#include "PasswordHash.h"
++#include "MetadataSafety.h"
++#include <fstream>
++#include <iostream>
++#include <vector>
++#include <cstring>
++#include <sys/stat.h>
++#include <unistd.h>
++#include <fcntl.h>
++typedef UploadItem::header_t Header;
++
++static std::vector<char> read_file(const char *path) {
++    struct stat st;if(lstat(path,&st)!=0||!S_ISREG(st.st_mode)||st.st_nlink!=1||st.st_size<24||st.st_size>4096)
++        throw "Not a regular native metadata file";
++    std::ifstream in(path,std::ios::binary);std::vector<char> data(static_cast<size_t>(st.st_size));
++    if(!in.read(data.data(),static_cast<std::streamsize>(data.size())))throw "Cannot read metadata";return data;
++}
++template<size_t N> static void terminated(const char (&s)[N]) {if(!memchr(s,0,N))throw "Unterminated metadata field";}
++template<class T> static void validate_fields(const T& h) {
++    terminated(h.identifier);terminated(h.version);terminated(h.date);terminated(h.ip_address);
++    terminated(h.file_name);terminated(h.file_mime);terminated(h.file_ext);terminated(h.file_digest);
++    terminated(h.remove_pass);terminated(h.download_pass);terminated(h.comment);
++    if(strcmp(h.identifier,"mod_uploader")!=0)throw "Invalid metadata identifier";
++    if ((reinterpret_cast<const unsigned char*>(&h.flags)[0]&~3U)!=0)throw "Invalid metadata flags";
++}
++template<class T> static Header convert(const T& old) {
++    validate_fields(old);Header h;
++    h.id=old.id;h.index=old.index;h.download_count=old.download_count;memcpy(&h.flags,&old.flags,sizeof(h.flags));
++    h.is_need_sync=false;h.file_size=old.file_size;h.mtime=old.mtime;
++#define COPY_FIELD(field) memcpy(h.field,old.field,sizeof(h.field))
++    COPY_FIELD(date);COPY_FIELD(ip_address);COPY_FIELD(file_name);COPY_FIELD(file_mime);
++    COPY_FIELD(file_ext);COPY_FIELD(file_digest);COPY_FIELD(comment);
++#undef COPY_FIELD
++    std::string remove=PasswordHash::make(old.remove_pass),download=PasswordHash::make(old.download_pass);
++    memcpy(h.remove_pass,remove.c_str(),remove.size()+1);memcpy(h.download_pass,download.c_str(),download.size()+1);
++    return h;
++}
++static Header load(const std::vector<char>& data,bool migrate) {
++    int version=data[16]-'0';Header h;
++    if(version==4) {
++        if(data.size()!=sizeof(Header))throw "Wrong native v4 metadata size";
++        memcpy(&h,data.data(),sizeof(h));validate_fields(h);
++        if(!PasswordHash::valid(h.remove_pass)||!PasswordHash::valid(h.download_pass))throw "Invalid v4 password encoding";
++    } else if(version==3) {
++        if(data.size()!=sizeof(UploadItem::header_ver3_t))throw "Wrong native v3 metadata size";
++        UploadItem::header_ver3_t old;memcpy(&old,data.data(),sizeof(old));validate_fields(old);
++        if(migrate){h=convert(old);h.atime=old.atime;}else {h.id=old.id;}
++    } else if(version==2) {
++        if(data.size()!=sizeof(UploadItem::header_ver2x_t))throw "Wrong native v2 metadata size";
++        UploadItem::header_ver2x_t old;memcpy(&old,data.data(),sizeof(old));validate_fields(old);
++        if(migrate){h=convert(old);h.atime=old.mtime;}else {h.id=old.id;}
++    } else throw "Unsupported metadata version";
++    if(migrate && !MetadataSafety::valid(h)) throw "Unsafe metadata strings or path components";
++    return h;
++}
++static void write_file(const char *path,const void *data,size_t size) {
++    int fd=open(path,O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW,0600);if(fd<0)throw "Output must not already exist";
++    size_t n=0;while(n<size){ssize_t count=write(fd,static_cast<const char*>(data)+n,size-n);if(count<0&&errno==EINTR)continue;
++        if(count<=0){close(fd);throw "Write failed";}n+=static_cast<size_t>(count);}
++    if(fsync(fd)!=0){close(fd);throw "fsync failed";}if(close(fd)!=0)throw "close failed";
++}
++int main(int argc,char **argv) {
++    try {
++        if(argc==3&&(strcmp(argv[1],"--fixture3")==0||strcmp(argv[1],"--fixture2")==0||strcmp(argv[1],"--fixture3-empty")==0)) {
++            UploadItem::header_ver3_t h;h.id=1;h.index=0;h.file_size=16;h.mtime=1700000000000000LL;h.atime=h.mtime;
++            strcpy(h.date,"23/11/14(Tue) 22:13:20");strcpy(h.ip_address,"127.0.0.1");strcpy(h.file_name,"fixture.txt");
++            strcpy(h.file_mime,"text/plain");strcpy(h.file_ext,"txt");strcpy(h.file_digest,"0123456789abcdef0123456789abcdef");
++            strcpy(h.remove_pass,"remove123");strcpy(h.download_pass,"download123");strcpy(h.comment,"migration fixture");
++            if(strcmp(argv[1],"--fixture3-empty")==0){h.remove_pass[0]=0;h.download_pass[0]=0;}
++            if(strcmp(argv[1],"--fixture2")!=0)write_file(argv[2],&h,sizeof(h));
++            else {UploadItem::header_ver2x_t v;v.id=h.id;v.index=h.index;v.file_size=h.file_size;v.mtime=h.mtime;
++#define COPY_OLD(field) memcpy(v.field,h.field,sizeof(v.field))
++                COPY_OLD(date);COPY_OLD(ip_address);COPY_OLD(file_name);COPY_OLD(file_mime);COPY_OLD(file_ext);COPY_OLD(file_digest);COPY_OLD(remove_pass);COPY_OLD(download_pass);COPY_OLD(comment);
++#undef COPY_OLD
++                strcpy(v.version,"2.0.0");write_file(argv[2],&v,sizeof(v));}return 0;
++        }
++        if(argc<3)throw "Usage: password_tool --inspect FILE | --convert IN OUT | --verify-remove FILE | --verify-download FILE";
++        std::vector<char> data=read_file(argv[2]);bool inspect=strcmp(argv[1],"--inspect")==0;
++        Header h=load(data,!inspect);
++        if(inspect){std::cout<<"{\"version\":"<<static_cast<int>(data[16]-'0')<<",\"id\":"<<h.id<<",\"bytes\":"<<data.size()<<"}\n";return 0;}
++        if(strcmp(argv[1],"--convert")==0&&argc==4){write_file(argv[3],&h,sizeof(h));return 0;}
++        if(strcmp(argv[1],"--verify-remove")==0||strcmp(argv[1],"--verify-download")==0) {
++            if(data[16]!='4')throw "Verify requires migrated metadata";
++            std::string password;std::getline(std::cin,password);
++            bool ok=PasswordHash::verify(strcmp(argv[1],"--verify-remove")==0?h.remove_pass:h.download_pass,password.c_str());
++            if(!password.empty())OPENSSL_cleanse(&password[0],password.size());return ok?0:3;
++        }
++        throw "Invalid arguments";
++    }catch(const char *message){std::cerr<<message<<"\n";return 1;}
++    catch(...){std::cerr<<"Metadata operation failed\n";return 1;}
++}
+--- /dev/null
++++ b/util/storage_backup.py
+@@ -0,0 +1,207 @@
++#!/usr/bin/env python3
++# SPDX-License-Identifier: Zlib
++"""Verified offline snapshots. Restore only into a new, private destination."""
++import argparse
++import contextlib
++import fcntl
++import hashlib
++import json
++import os
++from pathlib import Path, PurePosixPath
++import stat
++import subprocess
++import sys
++import tempfile
++
++ROOTS = ('data', 'file', 'thumb', 'temp')
++FORMAT = 'mod_uploader-backup-1'
++
++def syncdir(path):
++    fd = os.open(path, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
++    try: os.fsync(fd)
++    finally: os.close(fd)
++
++def directory(path):
++    path = Path(os.path.abspath(path))
++    # Canonicalize administrator-provided ancestors (FreeBSD /home can be a link),
++    # but never follow a snapshot entry or dataset root that is itself a link.
++    if not stat.S_ISDIR(path.lstat().st_mode):
++        raise ValueError('Not a real directory: ' + str(path))
++    return path.resolve(strict=True)
++
++def regular(path):
++    info = path.lstat()
++    if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1:
++        raise ValueError('Links and special files are not supported: ' + str(path))
++    return info
++
++def digest(path):
++    before = regular(path)
++    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
++    with os.fdopen(fd, 'rb') as stream:
++        current = os.fstat(stream.fileno())
++        if (before.st_dev, before.st_ino) != (current.st_dev, current.st_ino):
++            raise ValueError('File changed during open')
++        value = hashlib.sha256()
++        for block in iter(lambda: stream.read(1024 * 1024), b''): value.update(block)
++    after = regular(path)
++    if (before.st_ino, before.st_size, before.st_mtime_ns, before.st_ctime_ns) != (after.st_ino, after.st_size, after.st_mtime_ns, after.st_ctime_ns):
++        raise ValueError('File changed while hashing')
++    return value.hexdigest()
++
++def inventory(root):
++    result = {}
++    for base, dirs, files in os.walk(root, followlinks=False):
++        for name in sorted(dirs + files):
++            path = Path(base) / name
++            info = path.lstat()
++            rel = path.relative_to(root).as_posix()
++            if stat.S_ISDIR(info.st_mode):
++                result[rel] = {'kind': 'dir', 'mode': stat.S_IMODE(info.st_mode), 'uid': info.st_uid, 'gid': info.st_gid}
++            else:
++                regular(path)
++                result[rel] = {'kind': 'file', 'size': info.st_size, 'sha256': digest(path), 'mode': stat.S_IMODE(info.st_mode), 'uid': info.st_uid, 'gid': info.st_gid}
++    return result
++
++def content(inventory):
++    return {name: {key: value for key, value in row.items() if key in ('kind', 'size', 'sha256')} for name, row in inventory.items()}
++
++def safe_name(name):
++    path = PurePosixPath(name)
++    if not isinstance(name, str) or not name or path.is_absolute() or any(p in ('', '.', '..') for p in name.split('/')) or '\\' in name or '\0' in name:
++        raise ValueError('Unsafe snapshot path')
++    return path
++
++@contextlib.contextmanager
++def stopped_lock(root):
++    fd = os.open(root / '.format-lock', os.O_RDONLY | os.O_CREAT | os.O_NOFOLLOW | os.O_NONBLOCK, 0o600)
++    try:
++        info = os.fstat(fd)
++        if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1:
++            raise ValueError('Unsafe storage lock')
++        try: fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
++        except BlockingIOError: raise ValueError('Stop all Apache processes using this storage first')
++        yield
++    finally: os.close(fd)
++
++def copy_tree(source, target):
++    # FreeBSD cp preserves ACLs, flags, modes and ownership where permitted.
++    subprocess.run(['/bin/cp', '-a', str(source), str(target)], check=True)
++    for base, _, files in os.walk(target):
++        for name in files:
++            fd = os.open(Path(base) / name, os.O_RDONLY | os.O_NOFOLLOW)
++            try: os.fsync(fd)
++            finally: os.close(fd)
++        syncdir(base)
++
++def create(args, already_locked=False):
++    if not args.server_stopped:
++        raise ValueError('Stop every Apache using this storage and pass --server-stopped')
++    roots = {name: directory(getattr(args, name + '_dir')) for name in ROOTS}
++    for extra in args.extra:
++        name, separator, path = extra.partition('=')
++        if not separator or not name.isascii() or not name.replace('-', '').replace('_', '').isalnum() or name in roots:
++            raise ValueError('--extra requires a unique simple NAME=DIRECTORY')
++        roots[name] = directory(path)
++    destination = Path(os.path.abspath(args.output))
++    parent = directory(destination.parent)
++    destination = parent / destination.name
++    if destination.exists() or destination.is_symlink(): raise ValueError('Snapshot destination already exists')
++    all_paths = [*roots.values(), destination]
++    for i, a in enumerate(all_paths):
++        for b in all_paths[i + 1:]:
++            if a == b or a in b.parents or b in a.parents: raise ValueError('Source and destination roots must be disjoint')
++    with contextlib.nullcontext() if already_locked else stopped_lock(roots['data']):
++        if not getattr(args, 'allow_incomplete', False) and any((roots['data'] / marker).exists() for marker in ('.migration-in-progress', '.storage-transaction')):
++            raise ValueError('Recover interrupted storage work before creating a regular backup')
++        before = {name: inventory(path) for name, path in roots.items()}
++        temporary = Path(tempfile.mkdtemp(prefix='.' + destination.name + '.incomplete-', dir=parent))
++        # Incomplete snapshots are retained for diagnosis; only a verified one is published.
++        snapshot = temporary / 'snapshot'; snapshot.mkdir(mode=0o700)
++        for name, source in roots.items():
++            copy_tree(source, snapshot / name)
++            if content(inventory(snapshot / name)) != content(before[name]): raise ValueError('Backup content verification failed')
++        if any(inventory(path) != before[name] for name, path in roots.items()): raise ValueError('Source changed during backup')
++        manifest = {'format': FORMAT, 'recovery_snapshot': getattr(args, 'allow_incomplete', False), 'roots': before, 'source_paths': {name: str(path) for name, path in roots.items()}}
++        with (temporary / 'manifest.json').open('x', encoding='utf8') as stream:
++            json.dump(manifest, stream, ensure_ascii=True, indent=2); stream.write('\n'); stream.flush(); os.fsync(stream.fileno())
++        syncdir(snapshot); syncdir(temporary)
++        # Rename is within the same parent filesystem; destination is new and private.
++        if destination.exists(): raise ValueError('Snapshot destination appeared during backup')
++        os.rename(temporary, destination); syncdir(parent)
++    verify(destination)
++    print('Backup created and verified: ' + str(destination))
++
++def verify(path):
++    path = directory(path)
++    regular(path / 'manifest.json')
++    if (path / 'manifest.json').stat().st_size > 64 * 1024 * 1024: raise ValueError('Manifest exceeds safety limit')
++    manifest = json.loads((path / 'manifest.json').read_text(encoding='utf8'))
++    if manifest.get('format') != FORMAT or not isinstance(manifest.get('roots'), dict): raise ValueError('Unsupported backup manifest')
++    if not set(ROOTS).issubset(manifest['roots']): raise ValueError('Required storage roots missing')
++    snapshot = directory(path / 'snapshot')
++    if {p.name for p in snapshot.iterdir()} != set(manifest['roots']): raise ValueError('Unexpected snapshot roots')
++    for name, expected in manifest['roots'].items():
++        if len(safe_name(name).parts) != 1 or not isinstance(expected, dict): raise ValueError('Invalid snapshot root')
++        for rel, row in expected.items():
++            safe_name(rel)
++            if row.get('kind') not in ('dir', 'file'): raise ValueError('Invalid inventory record')
++            if any(type(row.get(k)) is not int or row[k] < 0 for k in ('mode', 'uid', 'gid')) or row['mode'] > 0o7777:
++                raise ValueError('Invalid ownership or mode')
++        if content(inventory(directory(snapshot / name))) != content(expected): raise ValueError('Snapshot content mismatch: ' + name)
++    return manifest
++
++def restore(args):
++    backup = directory(args.backup)
++    manifest = verify(backup)
++    destination = Path(os.path.abspath(args.destination))
++    parent = directory(destination.parent)
++    destination = parent / destination.name
++    if destination.exists() or destination.is_symlink(): raise ValueError('Restore destination must not exist; live storage is never overwritten')
++    if backup == destination or backup in destination.parents or destination in backup.parents: raise ValueError('Restore and backup paths overlap')
++    for value in manifest.get('source_paths', {}).values():
++        source = Path(value)
++        if destination == source or source in destination.parents or destination in source.parents:
++            raise ValueError('Restore destination overlaps original live storage')
++    if args.preserve_owner and os.geteuid() != 0: raise ValueError('--preserve-owner requires root')
++    temporary = Path(tempfile.mkdtemp(prefix='.' + destination.name + '.incomplete-', dir=parent))
++    for name, expected in manifest['roots'].items():
++        target = temporary / name
++        copy_tree(backup / 'snapshot' / name, target)
++        if content(inventory(target)) != content(expected): raise ValueError('Restored content mismatch')
++        # Dataset roots stay private. Root can restore original per-file owners on request.
++        os.chmod(target, 0o700)
++        for rel, row in sorted(expected.items(), key=lambda item: len(PurePosixPath(item[0]).parts), reverse=True):
++            path = target / rel
++            if args.preserve_owner: os.chown(path, row['uid'], row['gid'], follow_symlinks=False)
++            os.chmod(path, row['mode'] & 0o777, follow_symlinks=False)
++        if args.preserve_owner:
++            source = backup / 'snapshot' / name
++            info = source.stat(); os.chown(target, info.st_uid, info.st_gid)
++    verify(backup)
++    syncdir(temporary)
++    if destination.exists(): raise ValueError('Restore destination appeared')
++    os.rename(temporary, destination); syncdir(parent)
++    print('Restored and verified into NEW destination: ' + str(destination))
++    print('Keep Apache stopped during the administrator-controlled switch; confirm owners and config before startup.')
++
++def main():
++    parser = argparse.ArgumentParser(description=__doc__)
++    sub = parser.add_subparsers(dest='command', required=True)
++    p = sub.add_parser('create')
++    for name in ROOTS: p.add_argument('--' + name + '-dir', required=True)
++    p.add_argument('--extra', action='append', default=[], metavar='NAME=DIRECTORY')
++    p.add_argument('--output', required=True); p.add_argument('--server-stopped', action='store_true')
++    p = sub.add_parser('verify'); p.add_argument('backup')
++    p = sub.add_parser('restore'); p.add_argument('backup'); p.add_argument('--destination', required=True)
++    p.add_argument('--preserve-owner', action='store_true')
++    args = parser.parse_args(); os.umask(0o077)
++    try:
++        if args.command == 'create': create(args)
++        elif args.command == 'restore': restore(args)
++        else: verify(args.backup); print('Backup content verified')
++    except Exception as exc:
++        print('Backup operation failed: ' + str(exc), file=sys.stderr); return 1
++    return 0
++
++if __name__ == '__main__': raise SystemExit(main())
+--- /dev/null
++++ b/util/storage_health.py
+@@ -0,0 +1,33 @@
++#!/usr/bin/env python3
++# SPDX-License-Identifier: Zlib
++"""Read-only storage capacity and unfinished-work check, suitable for cron."""
++import argparse
++import json
++import os
++from pathlib import Path
++import sys
++
++def main():
++    p=argparse.ArgumentParser(description=__doc__)
++    for name in ('data','file','thumb','temp'): p.add_argument('--'+name+'-dir',type=Path,required=True)
++    p.add_argument('--min-free-mib',type=int,default=512)
++    p.add_argument('--min-free-percent',type=float,default=10)
++    args=p.parse_args()
++    if args.min_free_mib<0 or not 0<=args.min_free_percent<=100: p.error('Invalid threshold')
++    problems=[]; report={}
++    for name in ('data','file','thumb','temp'):
++        path=getattr(args,name+'_dir'); info=os.statvfs(path)
++        free=info.f_bavail*info.f_frsize; total=info.f_blocks*info.f_frsize
++        percent=100*free/total if total else 0
++        report[name]={'path':str(path),'available_bytes':free,'available_percent':round(percent,2),'available_inodes':info.f_favail}
++        if free<args.min_free_mib*1024*1024 or percent<args.min_free_percent: problems.append(name+': low disk space')
++        if info.f_files and info.f_favail<100: problems.append(name+': low free inode count')
++    for marker in ('.storage-transaction','.migration-in-progress'):
++        path=args.data_dir/marker
++        if path.exists() or path.is_symlink(): problems.append('Offline recovery required: '+marker)
++    print(json.dumps({'storage':report,'problems':problems},indent=2))
++    return 1 if problems else 0
++
++if __name__=='__main__':
++    try: raise SystemExit(main())
++    except Exception as exc: print('Storage health check failed: '+str(exc),file=sys.stderr); raise SystemExit(2)
+--- /dev/null
++++ b/util/storage_recover.py
+@@ -0,0 +1,106 @@
++#!/usr/bin/env python3
++# SPDX-License-Identifier: Zlib
++"""Inspect/recover an interrupted storage transaction, with Apache stopped."""
++import argparse
++import os
++from pathlib import Path
++import re
++import sys
++from types import SimpleNamespace
++import storage_backup as backup
++
++def remove(path):
++    if path.exists() or path.is_symlink():
++        backup.regular(path); path.unlink(); backup.syncdir(path.parent)
++
++def plan(roots):
++    journal = roots['data'] / '.storage-transaction'
++    if not journal.exists(): return journal, [], False
++    backup.directory(journal)
++    allowed = {'plan', 'commit-ready', 'COMMITTED'}
++    if any(p.name not in allowed for p in journal.iterdir()): raise ValueError('Unexpected journal entry')
++    for p in journal.iterdir(): backup.regular(p)
++    committed = (journal / 'COMMITTED').exists()
++    if not (journal / 'plan').exists(): return journal, [], committed
++    if (journal / 'plan').stat().st_size > 64 * 1024 * 1024: raise ValueError('Journal too large')
++    raw = (journal / 'plan').read_bytes()
++    magic = b'UPLOADER-TXN-1\n'
++    if not raw.startswith(magic):
++        if magic.startswith(raw): return journal, [], committed
++        raise ValueError('Unknown journal format')
++    operations = []
++    seen = set()
++    # A final partial row cannot have mutated a file: C++ fsyncs the row first.
++    for row in raw[len(magic):].split(b'\n')[:-1]:
++        kind, encoded = row.split(b' ', 1)
++        if kind not in (b'C', b'D', b'P') or not re.fullmatch(b'[0-9a-f]+', encoded):
++            raise ValueError('Invalid journal operation')
++        name = os.fsdecode(bytes.fromhex(encoded.decode('ascii')))
++        path = Path(name)
++        if '\x00' in name or '..' in path.parts or str(path) != name or not path.is_absolute():
++            raise ValueError('Unsafe journal path')
++        canonical_parent = backup.directory(path.parent)
++        matches = [(label, root) for label, root in roots.items() if root == canonical_parent.parent]
++        if len(matches) != 1: raise ValueError('Journal path outside supplied storage roots: ' + name)
++        label, root = matches[0]
++        if label == 'temp' or not re.fullmatch(r'[0-9a-f]{2}', path.parent.name): raise ValueError('Invalid storage bucket')
++        path = canonical_parent / path.name
++        filename = path.name
++        if kind == b'P':
++            if label != 'thumb' or not filename.endswith('.uploader-preview'): raise ValueError('Invalid preview entry')
++            filename = filename.removesuffix('.uploader-preview')
++        pattern = r'[1-9][0-9]*' if label == 'data' else r'''[1-9][0-9]*\.[^./\\\x00-\x1f\x7f<>"'&]+'''
++        if not re.fullmatch(pattern, filename): raise ValueError('Invalid storage filename')
++        number = int(filename.split('.')[0])
++        if path.parent.name != f'{number & 255:02x}': raise ValueError('Incorrect storage bucket')
++        if name in seen: raise ValueError('Duplicate journal target')
++        seen.add(name)
++        for p in (path, Path(name + '.uploader-new'), Path(name + '.uploader-old')):
++            if p.exists() or p.is_symlink(): backup.regular(p)
++        operations.append((kind, path))
++    return journal, operations, committed
++
++def run(args):
++    if not args.server_stopped: raise ValueError('Stop every Apache using this storage and pass --server-stopped')
++    roots = {name: backup.directory(getattr(args, name + '_dir')) for name in backup.ROOTS}
++    for a in roots.values():
++        for b in roots.values():
++            if a != b and (a in b.parents or b in a.parents): raise ValueError('Storage roots overlap')
++    if len(set(roots.values())) != 4: raise ValueError('Storage roots overlap')
++    with backup.stopped_lock(roots['data']):
++        journal, operations, committed = plan(roots)
++        if not journal.exists(): print('No pending storage transaction'); return
++        print(('Finish committed transaction' if committed else 'Roll back interrupted transaction') + f': {len(operations)} operations')
++        if not args.apply:
++            print('Inspection only; use --apply --rescue-backup NEW_DIRECTORY after reviewing'); return
++        if not args.rescue_backup: raise ValueError('--apply requires --rescue-backup NEW_DIRECTORY')
++        snapshot_args = SimpleNamespace(**{name + '_dir': str(root) for name, root in roots.items()},
++            output=args.rescue_backup, extra=[], server_stopped=True, allow_incomplete=True)
++        backup.create(snapshot_args, already_locked=True)
++        for kind, path in reversed(operations):
++            old = Path(str(path) + '.uploader-old')
++            stage = Path(str(path) + '.uploader-new')
++            if kind == b'P': remove(path)
++            elif not committed:
++                if kind == b'C': remove(path)
++                elif old.exists():
++                    if path.exists(): raise ValueError('Both original and rollback file exist; manual review needed')
++                    old.rename(path); backup.syncdir(path.parent)
++            remove(stage)
++            if committed: remove(old)
++        for name in ('commit-ready', 'plan', 'COMMITTED'): remove(journal / name)
++        journal.rmdir(); backup.syncdir(journal.parent)
++        print('Storage recovery complete; restart Apache to reconstruct shared state')
++
++def main():
++    parser = argparse.ArgumentParser(description=__doc__)
++    for name in backup.ROOTS: parser.add_argument('--' + name + '-dir', required=True)
++    parser.add_argument('--server-stopped', action='store_true')
++    parser.add_argument('--apply', action='store_true')
++    parser.add_argument('--rescue-backup')
++    args = parser.parse_args(); os.umask(0o077)
++    try: run(args)
++    except Exception as exc: print('Recovery stopped: ' + str(exc), file=sys.stderr); return 1
++    return 0
++
++if __name__ == '__main__': raise SystemExit(main())

@@ -41,6 +41,17 @@ static unsigned parse(const std::string& body,size_t chunk,const char *directory
 }
 int main(int argc,char **argv) {
     assert(argc==2);assert(apr_initialize()==APR_SUCCESS);unsigned checks=0;
+    apr_pool_t *offset_pool; assert(apr_pool_create(&offset_pool,NULL)==APR_SUCCESS);
+    {
+        std::string path=std::string(argv[1])+"/offset-boundary";
+        File file(offset_pool,path.c_str());file.open(APR_CREATE|APR_READ|APR_WRITE);
+        try{file.seek(UINT64_MAX);assert(false);}catch(const char *){++checks;}
+        try{file.mmap(UINT64_MAX,1,APR_MMAP_READ,false);assert(false);}catch(const char *){++checks;}
+        if(sizeof(apr_size_t)>=sizeof(apr_off_t)) {
+            try{file.trunc(std::numeric_limits<apr_size_t>::max());assert(false);}catch(const char *){++checks;}
+        }
+    }
+    apr_pool_destroy(offset_pool);
     apr_atomic_t lock=0x7fff;
     try {ReadLocker guard(&lock);assert(false);}catch(const char *){assert(lock==0x7fff);++checks;}
     try {WriteLocker guard(&lock);assert(false);}catch(const char *){assert((lock&0x7fff)==0x7fff && (lock&0x3f0000)==0);++checks;}

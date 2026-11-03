@@ -84,7 +84,7 @@ protected:
             return false;
         }
 
-        return (strncmp(paddress_a + 1, paddress_b + 1, paddress_a[0]) == 0);
+        return (strncmp(paddress_a + 1, paddress_b + 1, static_cast<unsigned char>(paddress_a[0])) == 0);
     };
 };
 
