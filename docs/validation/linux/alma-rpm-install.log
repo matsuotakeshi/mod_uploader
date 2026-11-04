@@ -1,0 +1,76 @@
+Last metadata expiration check: 0:23:52 ago on Wed Nov  4 03:14:51 2026.
+Dependencies resolved.
+================================================================================
+ Package                   Arch       Version               Repository     Size
+================================================================================
+Installing:
+ httpd                     x86_64     2.4.62-13.el9_8.9     appstream      47 k
+Installing dependencies:
+ almalinux-logos-httpd     noarch     90.7-1.el9            appstream      18 k
+Installing weak dependencies:
+ mod_http2                 x86_64     2.0.26-6.el9_8.2      appstream     163 k
+ mod_lua                   x86_64     2.4.62-13.el9_8.9     appstream      61 k
+
+Transaction Summary
+================================================================================
+Install  4 Packages
+
+Total download size: 289 k
+Installed size: 659 k
+Downloading Packages:
+(1/4): almalinux-logos-httpd-90.7-1.el9.noarch. 249 kB/s |  18 kB     00:00    
+(2/4): httpd-2.4.62-13.el9_8.9.x86_64.rpm       580 kB/s |  47 kB     00:00    
+(3/4): mod_http2-2.0.26-6.el9_8.2.x86_64.rpm    1.5 MB/s | 163 kB     00:00    
+(4/4): mod_lua-2.4.62-13.el9_8.9.x86_64.rpm     1.7 MB/s |  61 kB     00:00    
+--------------------------------------------------------------------------------
+Total                                           382 kB/s | 289 kB     00:00     
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                        1/1 
+  Installing       : mod_lua-2.4.62-13.el9_8.9.x86_64                       1/4 
+  Installing       : almalinux-logos-httpd-90.7-1.el9.noarch                2/4 
+  Installing       : mod_http2-2.0.26-6.el9_8.2.x86_64                      3/4 
+  Installing       : httpd-2.4.62-13.el9_8.9.x86_64                         4/4 
+  Running scriptlet: httpd-2.4.62-13.el9_8.9.x86_64                         4/4 
+  Verifying        : almalinux-logos-httpd-90.7-1.el9.noarch                1/4 
+  Verifying        : httpd-2.4.62-13.el9_8.9.x86_64                         2/4 
+  Verifying        : mod_http2-2.0.26-6.el9_8.2.x86_64                      3/4 
+  Verifying        : mod_lua-2.4.62-13.el9_8.9.x86_64                       4/4 
+
+Installed:
+  almalinux-logos-httpd-90.7-1.el9.noarch    httpd-2.4.62-13.el9_8.9.x86_64     
+  mod_http2-2.0.26-6.el9_8.2.x86_64          mod_lua-2.4.62-13.el9_8.9.x86_64   
+
+Complete!
+Dependencies resolved.
+================================================================================
+ Package             Architecture  Version            Repository           Size
+================================================================================
+Installing:
+ mod_uploader        x86_64        3.2.0-9.el9        @commandline        227 k
+
+Transaction Summary
+================================================================================
+Install  1 Package
+
+Total size: 227 k
+Installed size: 592 k
+Downloading Packages:
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                        1/1 
+  Installing       : mod_uploader-3.2.0-9.el9.x86_64                        1/1 
+  Running scriptlet: mod_uploader-3.2.0-9.el9.x86_64                        1/1 
+  Verifying        : mod_uploader-3.2.0-9.el9.x86_64                        1/1 
+
+Installed:
+  mod_uploader-3.2.0-9.el9.x86_64                                               
+
+Complete!
+ALMA_INSTALL_RC=0

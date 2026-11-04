@@ -1,0 +1,2 @@
+http-security: 42 checks passed (real loopback Apache, migration, passwords, CSRF, restart)
+Disposable test data retained for review: /home/takeshi/mod-uploader-linux-20261104/test-on/http-security-kvmfau_u

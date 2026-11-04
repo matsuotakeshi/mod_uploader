@@ -5,6 +5,7 @@ import base64
 import concurrent.futures
 import argparse, hashlib, hmac, http.client, json, os, pwd, re, shutil, socket, ssl, subprocess, tempfile, time
 from pathlib import Path
+from apache_paths import httpd, load_module, program
 
 def run(*args,input=None,code=0):
     p=subprocess.run(list(map(str,args)),input=input,capture_output=True)
@@ -13,13 +14,14 @@ def run(*args,input=None,code=0):
 
 class Server:
     def __init__(self,root,build,port,admin_auth=True):
+        if os.geteuid()==0:raise RuntimeError('Run HTTP tests as a non-root user')
         self.root=root;self.port=port;self.conf=root/'httpd.conf';self.proc=None
-        mods=Path('/usr/local/libexec/apache24');base='http://127.0.0.1:'+str(port)+'/up'
+        base='http://127.0.0.1:'+str(port)+'/up'
         (root/'www').mkdir(exist_ok=True)
         text='DocumentRoot \"'+str(root/'www')+'\"\n'
         text+='ServerRoot "'+str(root)+'"\nPidFile "'+str(root/'httpd.pid')+'"\n'
         text+='Listen 127.0.0.1:'+str(port)+'\nServerName 127.0.0.1\nErrorLog "'+str(root/'error.log')+'"\nLogLevel info\n'
-        for name in ['mpm_event','unixd','authz_core','authz_host','auth_basic','authn_core','authn_file','authz_user']:text+='LoadModule '+name+'_module "'+str(mods/('mod_'+name+'.so'))+'"\n'
+        for name in ['mpm_event','unixd','authz_core','authz_host','auth_basic','authn_core','authn_file','authz_user']:text+=load_module(name)
         text+='LoadModule uploader_module "'+str(build/'src/mod_uploader.so')+'"\n'
         text+='User '+pwd.getpwuid(os.geteuid()).pw_name+'\nGroup #'+str(os.getegid())+'\n'
         text+='<Location /up>\nSetHandler uploader\nRequire all granted\nUploaderBaseUrl "'+base+'"\n'
@@ -30,7 +32,7 @@ class Server:
         text+='</Location>\n<Location /up/admin>\n'
         if admin_auth:
             auth=root/'admin.htpasswd'
-            auth.write_bytes(run('/usr/local/bin/htpasswd','-niB','-C','5','review',input=b'fixture-admin-pass\n').stdout)
+            auth.write_bytes(run(program('HTPASSWD','htpasswd'),'-niB','-C','5','review',input=b'fixture-admin-pass\n').stdout)
             os.chmod(auth,0o600)
             text+='AuthType Basic\nAuthName "Uploader administration"\nAuthBasicProvider file\nAuthUserFile "'+str(auth)+'"\nRequire valid-user\n'
         else:text+='Require local\n'
@@ -38,7 +40,7 @@ class Server:
         self.conf.write_text(text)
     def start(self,success=True):
         self.log=(self.root/'process.log').open('ab')
-        self.proc=subprocess.Popen(['/usr/local/sbin/httpd','-DFOREGROUND','-f',str(self.conf)],stdout=self.log,stderr=self.log)
+        self.proc=subprocess.Popen([httpd(),'-DFOREGROUND','-f',str(self.conf)],stdout=self.log,stderr=self.log)
         deadline=time.monotonic()+15
         while time.monotonic()<deadline:
             if self.proc.poll() is not None:

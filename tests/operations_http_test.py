@@ -13,6 +13,7 @@ import time
 import zlib
 from security_http_test import Server, Client, setup, run
 from root_http_test import png
+from apache_paths import program
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--build-root',type=Path,required=True);p.add_argument('--workdir',type=Path,required=True);p.add_argument('--thumbnail',action='store_true');p.add_argument('--tools-root',type=Path);a=p.parse_args()
@@ -55,7 +56,7 @@ def main():
         cases.append(('huge.png',bytes(oversized),False))
         if a.thumbnail:
             # Generate real JPEG/GIF/WebP fixtures with the configured ImageMagick command.
-            binary=os.environ.get('MAGICK_CONVERT','/usr/local/bin/convert')
+            binary=program('MAGICK_CONVERT','magick','convert')
             for fmt in ['jpg','gif','webp']:
                 image=root/('fixture.'+fmt);run(binary,'-size','24x18','xc:#2277aa',image)
                 cases.append(('valid.'+fmt,image.read_bytes(),True))

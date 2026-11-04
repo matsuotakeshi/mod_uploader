@@ -1,0 +1,25 @@
+native: PASS
+thumbnail-limits: 2 process scenarios passed (inherited VM, stricter limit)
+handler: PASS
+handler: 5 assertions passed (mock httpd; not a module build)
+storage: PASS
+storage: 655 checks passed; fixtures retained: /var/tmp/mod-uploader-linux-20261104/test-on/storage-test-_08xhiz3
+migration: PASS
+Disposable fixture directory retained for review: /var/tmp/mod-uploader-linux-20261104/test-on/migration-tests-bhpv42zi
+security_http: PASS
+Disposable test data retained for review: /var/tmp/mod-uploader-linux-20261104/test-on/http-security-d2qctrnh
+security_https: PASS
+Disposable test directory retained: /var/tmp/mod-uploader-linux-20261104/test-on/https-security-krr5q6q7
+hardening_http: PASS
+Disposable test directory retained: /var/tmp/mod-uploader-linux-20261104/test-on/hardening-http-g1sqwadp
+audit_http: PASS
+Disposable fixtures retained: /var/tmp/mod-uploader-linux-20261104/test-on/audit-http-_4ayy57f
+root_http: PASS
+root-http: 939 checks passed across 7 VirtualHost configurations
+operations_http: PASS
+operations-http: 73 checks passed; thumbnail=True; fixtures retained: /var/tmp/mod-uploader-linux-20261104/test-on/operations-http-68sau4gj
+freebsd_samples: PASS
+root-samples: 20 checks passed across 2 distributed configuration samples
+linux_samples: PASS
+root-samples: 20 checks passed across 2 distributed configuration samples
+THUMBNAIL_RC=0

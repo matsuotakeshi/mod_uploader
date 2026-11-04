@@ -1,0 +1,5 @@
+static-analysis: 43 configured module translation units; 0 diagnostics; 0 compile errors
+STATIC_RC=0
+/usr/bin/ld: /usr/lib64/libasan.so.8.0.0 が見つかりません: そのようなファイルやディレクトリはありません
+collect2: エラー: ld はステータス 1 で終了しました
+SANITIZERS_RC=1

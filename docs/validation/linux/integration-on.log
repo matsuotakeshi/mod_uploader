@@ -1,0 +1,34 @@
+native: PASS
+config-number: 14 checks passed
+handler: PASS
+handler: 5 assertions passed (mock httpd; not a module build)
+storage: PASS
+storage: 655 checks passed; fixtures retained: /var/tmp/mod-uploader-linux-20261104/test-on/storage-test-3fo_g7jq
+migration: PASS
+Disposable fixture directory retained for review: /var/tmp/mod-uploader-linux-20261104/test-on/migration-tests-210upmug
+security_http: PASS
+Disposable test data retained for review: /var/tmp/mod-uploader-linux-20261104/test-on/http-security-e4g0cslg
+security_https: PASS
+Disposable test directory retained: /var/tmp/mod-uploader-linux-20261104/test-on/https-security-_w1t0ig4
+hardening_http: PASS
+Disposable test directory retained: /var/tmp/mod-uploader-linux-20261104/test-on/hardening-http-ac4txr7d
+audit_http: PASS
+Disposable fixtures retained: /var/tmp/mod-uploader-linux-20261104/test-on/audit-http-ehzpajt_
+root_http: FAIL (see /var/tmp/mod-uploader-linux-20261104/test-on/logs/root_http.log)
+Traceback (most recent call last):
+  File "/var/tmp/mod-uploader-linux-20261104/candidate-on/tests/root_http_test.py", line 148, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/var/tmp/mod-uploader-linux-20261104/candidate-on/tests/root_http_test.py", line 146, in main
+    count=sum(exercise(args,*case) for case in cases)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/tmp/mod-uploader-linux-20261104/candidate-on/tests/root_http_test.py", line 146, in <genexpr>
+    count=sum(exercise(args,*case) for case in cases)
+              ^^^^^^^^^^^^^^^^^^^^
+  File "/var/tmp/mod-uploader-linux-20261104/candidate-on/tests/root_http_test.py", line 119, in exercise
+    check(status==200 and thumb[:6] in (b'GIF87a',b'GIF89a'),'generated thumbnail')
+  File "/var/tmp/mod-uploader-linux-20261104/candidate-on/tests/root_http_test.py", line 73, in check
+    assert condition,description+' in '+str(root);checks+=1
+           ^^^^^^^^^
+AssertionError: generated thumbnail in /var/tmp/mod-uploader-linux-20261104/test-on/root-http-1ukcq4bc
+THUMBNAIL_RC=1

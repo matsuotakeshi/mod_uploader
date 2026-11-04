@@ -25,7 +25,7 @@ def main():
         if path.is_file():
             data=path.read_bytes().replace(b'\r\n',b'\n')
             if data!=old:changed.append(name);patch+=delta(name,old,data)
-    new=['MODIFICATIONS','README.md','docs/ROOT-DEPLOYMENT-ja.md','docs/SECURITY-MIGRATION-ja.md','docs/OPERATIONS-ja.md']
+    new=['MODIFICATIONS','README.md','docs/ROOT-DEPLOYMENT-ja.md','docs/SECURITY-MIGRATION-ja.md','docs/OPERATIONS-ja.md','docs/LINUX-ja.md']
     new += [str(p.relative_to(root)).replace('\\','/') for directory in ['include','util'] for p in (root/directory).iterdir()
         if p.is_file() and p.suffix in ('.h','.cpp','.py') and str(p.relative_to(root)).replace('\\','/') not in base and p.name!='update_port_patch.py']
     for name in sorted(set(new)):

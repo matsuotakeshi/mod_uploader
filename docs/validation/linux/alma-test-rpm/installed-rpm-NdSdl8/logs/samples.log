@@ -1,0 +1,3 @@
+mod_uploader-root.conf.sample: 10 checks passed; /work/test-rpm/root-sample-colh67o6
+mod_uploader.conf.sample: 10 checks passed; /work/test-rpm/root-sample-eg6b3emj
+root-samples: 20 checks passed across 2 distributed configuration samples

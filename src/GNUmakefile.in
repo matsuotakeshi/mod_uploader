@@ -74,7 +74,7 @@ HEADERDIR   := ../include
 # のヘッダーは Mac OSX Tiger で不都合が出たので指定しない．
 INCLUDES    := @CPPFLAGS@ -I$(HEADERDIR) \
 	-I $(shell @APXS@ -q INCLUDEDIR) \
-	$(shell @MCONF@ --cppflags) \
+	@MAGICK_CPPFLAGS@ \
 	-isystem $(shell @APRCONF@ --includedir)
 
 CFLAGS      := @CFLAGS@ -MMD \
@@ -83,9 +83,9 @@ CFLAGS      := @CFLAGS@ -MMD \
 	$(shell @APRCONF@ --cflags)
 CXXFLAGS    = $(CFLAGS) @CXXFLAGS@ -std=c++11
 LDFLAGS     := @LDFLAGS@ -Wall \
-	$(shell @APRCONF@ --ldflags) $(shell @MCONF@ --ldflags)
+	$(shell @APRCONF@ --ldflags) @MAGICK_LDFLAGS@
 LIBS        := -lcrypto -lm $(shell @APRCONF@ --link-ld --libs ) \
-	$(shell @MCONF@ --libs) @LIB_ICONV@
+	@MAGICK_LIBS@ @LIB_ICONV@
 
 ifneq ($(findstring freebsd,@target_os@),)
 # iconv 用

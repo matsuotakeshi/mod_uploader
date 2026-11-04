@@ -1,0 +1,12 @@
+safety: 80012 checks passed
+buffer: 7 checks passed
+reader: 7 checks passed (mock APR/Apache)
+origin: 16 checks passed
+security: 21 checks passed
+throttle: 20 checks passed (persistent IP budget, threads, processes, crash release, unsafe state)
+routing: 62 checks passed (base URLs, root/subpath routes, collision and invalid paths)
+http-status: 32 checks passed
+config-number: 14 checks passed
+NATIVE_RC=0
+handler: 5 assertions passed (mock httpd; not a module build)
+HANDLER_RC=0

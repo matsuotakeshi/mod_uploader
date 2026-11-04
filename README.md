@@ -1,4 +1,4 @@
-# mod_uploader 3.2.0: altered FreeBSD / Apache 2.4 version
+# mod_uploader 3.2.0: altered FreeBSD / Enterprise Linux / Apache 2.4 version
 
 Original software by Tetsuya Kimata: https://github.com/kimata/mod_uploader
 
@@ -16,7 +16,14 @@ Production package installation and exhaustive HTTP behavior remain unverified.
 See the [dependency and poudriere report](docs/DEPENDENCY-PORT-VALIDATION-ja.md)
 for the additional package validation and remaining dependency warnings.
 
-## Build
+## Enterprise Linux
+
+Rocky Linux / AlmaLinux support includes GCC builds, optional ImageMagick 6/7
+thumbnails, RPM packaging, root/subpath samples and SELinux setup instructions.
+See [the Linux guide](docs/LINUX-ja.md) and [validation results](docs/LINUX-VALIDATION-ja.md).
+The UI and version-4 storage format are shared with the FreeBSD version.
+
+## Build (FreeBSD)
 
 Install Apache 2.4 development tools, APR, GNU make, Perl and GNU libtool.
 Use the paths appropriate to your FreeBSD installation:
@@ -68,3 +75,8 @@ pkg-config search path for ImageMagick 7 thumbnail builds. The module source,
 templates and password storage format are unchanged from revision 7.
 
 管理画面はApacheでの独立した認証が必須です。Portの初期設定では閉鎖しています。IP別のパスワード処理回数と、プロセス間の同時実行数も制限します。設定・制限値は[セキュリティと移行手順](docs/SECURITY-MIGRATION-ja.md)を参照してください。
+
+Revision 9 adds Enterprise Linux support and accounts for inherited glibc arena
+reservations when limiting thumbnail children. Tighter administrator limits and
+ImageMagick cache/decoder limits remain enforced. FreeBSD retains its absolute
+address-space limit. The Port passes ImageMagick pkg-config paths at configure time.

@@ -1,0 +1,9 @@
+configure.ac:52: warning: The macro `AC_CONFIG_HEADER' is obsolete.
+configure.ac:52: You should run autoupdate.
+./lib/autoconf/status.m4:719: AC_CONFIG_HEADER is expanded from...
+configure.ac:52: the top level
+configure.ac:73: warning: The macro `AC_HEADER_STDC' is obsolete.
+configure.ac:73: You should run autoupdate.
+./lib/autoconf/headers.m4:704: AC_HEADER_STDC is expanded from...
+configure.ac:73: the top level
+CANDIDATE_BUILD_RC=0

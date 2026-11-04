@@ -1,0 +1,186 @@
+checking build system type... x86_64-unknown-linux-gnu
+checking host system type... x86_64-unknown-linux-gnu
+checking target system type... x86_64-unknown-linux-gnu
+checking for gcc... gcc
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... 
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether the compiler supports GNU C... yes
+checking whether gcc accepts -g... yes
+checking for gcc option to enable C11 features... none needed
+checking how to run the C preprocessor... gcc -E
+checking for gcc... (cached) gcc
+checking whether the compiler supports GNU C... (cached) yes
+checking whether gcc accepts -g... (cached) yes
+checking for gcc option to enable C11 features... (cached) none needed
+checking for g++... g++
+checking whether the compiler supports GNU C++... yes
+checking whether g++ accepts -g... yes
+checking for g++ option to enable C++11 features... none needed
+checking for glibtool... no
+checking for libtool... /usr/bin/libtool
+checking for inline... inline
+checking for an ANSI C-conforming const... yes
+checking for working volatile... yes
+checking for stdio.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for strings.h... yes
+checking for sys/stat.h... yes
+checking for sys/types.h... yes
+checking for unistd.h... yes
+checking for size_t... yes
+checking for uint32_t... yes
+checking for uint16_t... yes
+checking for uint8_t... yes
+checking for grep that handles long lines and -e... /usr/bin/grep
+checking for egrep... /usr/bin/grep -E
+checking for whether to use GCC Atomic Builtins... no
+checking for CPU type... no
+checking for ctype.h... yes
+checking for fcntl.h... yes
+checking for iconv.h... yes
+checking for limits.h... yes
+checking for setjmp.h... yes
+checking for signal.h... yes
+checking for stdlib.h... (cached) yes
+checking for string.h... (cached) yes
+checking for sys/mman.h... yes
+checking for sys/mman.h... (cached) yes
+checking for sys/types.h... (cached) yes
+checking for sys/wait.h... yes
+checking for unistd.h... (cached) yes
+checking for utime.h... yes
+checking for sched.h... yes
+checking for fork... yes
+checking for getpagesize... yes
+checking for memmem... yes
+checking for strndup... yes
+checking for wait... yes
+checking for madvise... yes
+checking for mprotect... yes
+checking for type of iconv 2nd argument... char *
+checking for isalpha... yes
+checking for isalnum... yes
+checking for isdigit... yes
+checking for isxdigit... yes
+checking for malloc... yes
+checking for realloc... yes
+checking for memchr... yes
+checking for memcpy... yes
+checking for memmove... yes
+checking for memset... yes
+checking for strcpy... yes
+checking for strlen... yes
+checking for strcmp... yes
+checking for strncmp... yes
+checking for strstr... yes
+checking for apxs2... no
+checking for apxs... /usr/bin/apxs
+checking for apache2ctl... no
+checking for apachectl... /usr/sbin/apachectl
+checking for apr-1-config... /usr/bin/apr-1-config
+checking target Apache version... 2.x
+checking for Apache version... ok
+checking for DSO enabled... ok
+checking for grep... (cached) /usr/bin/grep
+checking for sed... /usr/bin/sed
+checking for ruby... ruby
+checking for rst2html... rst2html
+checking for doxygen... doxygen
+checking for dot... /usr/bin/dot
+checking for ps2pdf... ps2pdf
+checking for svn... svn
+checking for find... /usr/bin/find
+checking for cat... /usr/bin/cat
+checking for tar... /usr/bin/tar
+checking for tee... /usr/bin/tee
+checking for nkf... nkf
+checking for grep... (cached) /usr/bin/grep
+checking for wc... /usr/bin/wc
+checking for ipcs... /usr/bin/ipcs
+checking for ipcrm... /usr/bin/ipcrm
+checking for awk... /usr/bin/awk
+checking for diff... /usr/bin/diff
+checking for env... /usr/bin/env
+checking for dot... (cached) /usr/bin/dot
+checking for xargs... /usr/bin/xargs
+checking for gdb... /usr/bin/gdb
+checking for valgrind... /usr/bin/valgrind
+checking for lsb_release... lsb_release
+checking for whether to accept empty comment... no
+checking for whether to accept empty password... no
+checking for whether to remove files based on popularity... no
+checking for whether to enable making thumbnail... yes
+checking for Magick++-config... (cached) no
+checking for pkg-config... /usr/bin/pkg-config
+checking for whether to use numbered file name... no
+checking for whether to omit dynamic template checking... no
+checking for write method... BasicFileWriter
+checking for whether to use use Content-Encoding: gzip... no
+checking for debugging... off
+configure: creating ./config.status
+config.status: creating conf/apache.conf
+config.status: creating conf/en/apache.conf
+config.status: creating conf/cgi.apache.conf
+config.status: creating conf/cgi.conf
+config.status: creating conf/stand.conf
+config.status: creating test/conf/sample.conf
+config.status: creating GNUmakefile
+config.status: creating GNUmakefile.apache
+config.status: creating GNUmakefile.dist
+config.status: creating src/GNUmakefile.dep
+config.status: creating src/GNUmakefile.arg
+config.status: creating src/GNUmakefile.tst
+config.status: creating src/GNUmakefile.cln
+config.status: creating src/GNUmakefile
+config.status: creating src/GNUmakefile.win32
+config.status: creating include/MultipartMessageParser.h
+config.status: creating include/RFC1867Parser.h
+config.status: creating include/Base64FileWriter.h
+config.status: creating include/ZipFileWriter.h
+config.status: creating src/ZipFileWriter.cpp
+config.status: creating doc/GNUmakefile
+config.status: creating doc/doxygen.conf
+config.status: creating tmpl/index.htm
+config.status: creating tmpl/index_swf.htm
+config.status: creating tmpl/info.htm
+config.status: creating tmpl/progress.htm
+config.status: creating tmpl/download.htm
+config.status: creating tmpl/thumbnail.htm
+config.status: creating tmpl/admin.htm
+config.status: creating tmpl/error.htm
+config.status: creating tmpl/en/index.htm
+config.status: creating tmpl/en/info.htm
+config.status: creating tmpl/en/progress.htm
+config.status: creating tmpl/en/download.htm
+config.status: creating tmpl/en/thumbnail.htm
+config.status: creating tmpl/en/admin.htm
+config.status: creating tmpl/en/error.htm
+config.status: creating util/mod_uploader.rc
+config.status: creating util/UploaderConfigSetup/UploaderConfigSetup.vdproj
+config.status: creating util/UploaderConfig/Properties/AssemblyInfo.cs
+config.status: creating util/mod_uploader.spec
+config.status: creating debian/files
+config.status: creating include/mod_uploader_config.h
+
+Configuration:
+    * Enviorment            :   Linux
+        - apxs              :   /usr/bin/apxs
+        - apachectl         :   /usr/sbin/apachectl
+        - apr-config        :   /usr/bin/apr-1-config
+
+    * Compiler              :   g++
+        - march             :   
+        - mcpu              :   
+
+    * Libtool               :   /usr/bin/libtool
+
+    * Thumbnail             :   on
+
+    * Debug                 :   off
+

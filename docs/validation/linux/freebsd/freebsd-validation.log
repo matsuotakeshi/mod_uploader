@@ -1,0 +1,25 @@
+native: PASS
+thumbnail-limits: 2 process scenarios passed (inherited VM, stricter limit)
+handler: PASS
+handler: 5 assertions passed (mock httpd; not a module build)
+storage: PASS
+storage: 655 checks passed; fixtures retained: /home/takeshi/mod-uploader-linux-20261104/test-on/storage-test-hcg1wrsp
+migration: PASS
+Disposable fixture directory retained for review: /home/takeshi/mod-uploader-linux-20261104/test-on/migration-tests-m2jxan_7
+security_http: PASS
+Disposable test data retained for review: /home/takeshi/mod-uploader-linux-20261104/test-on/http-security-kvmfau_u
+security_https: PASS
+Disposable test directory retained: /home/takeshi/mod-uploader-linux-20261104/test-on/https-security-dmkbh2n4
+hardening_http: PASS
+Disposable test directory retained: /home/takeshi/mod-uploader-linux-20261104/test-on/hardening-http-gfboz0x2
+audit_http: PASS
+Disposable fixtures retained: /home/takeshi/mod-uploader-linux-20261104/test-on/audit-http-3pbwz22i
+root_http: PASS
+root-http: 946 checks passed across 7 VirtualHost configurations
+operations_http: PASS
+operations-http: 73 checks passed; thumbnail=True; fixtures retained: /home/takeshi/mod-uploader-linux-20261104/test-on/operations-http-mwb10g69
+freebsd_samples: PASS
+root-samples: 20 checks passed across 2 distributed configuration samples
+linux_samples: PASS
+root-samples: 20 checks passed across 2 distributed configuration samples
+FREEBSD_RC=0

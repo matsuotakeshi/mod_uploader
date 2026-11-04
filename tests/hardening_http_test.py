@@ -3,6 +3,7 @@
 """Real loopback proxy/backend Apache; dedicated metadata and no production changes."""
 import argparse, base64, concurrent.futures, fcntl, os, socket, tempfile
 from pathlib import Path
+from apache_paths import load_module
 from security_http_test import Server, Client, setup, run
 
 def freeport():
@@ -13,7 +14,7 @@ class Proxy(Server):
         root.mkdir();self.root=root;self.port=port;self.conf=root/'httpd.conf';self.proc=None
         text='Mutex file:'+str(root)+' default\nServerRoot "'+str(root)+'"\nPidFile "'+str(root/'httpd.pid')+'"\nListen 127.0.0.1:'+str(port)+'\nServerName 127.0.0.1\nErrorLog "'+str(root/'error.log')+'"\n'
         for name in ['mpm_event','unixd','authz_core','proxy','proxy_http']:
-            text+='LoadModule '+name+'_module /usr/local/libexec/apache24/mod_'+name+'.so\n'
+            text+=load_module(name)
         text+='ProxyRequests Off\nProxyPass / http://127.0.0.1:'+str(backend)+'/\nProxyPassReverse / http://127.0.0.1:'+str(backend)+'/\n'
         self.conf.write_text(text)
 

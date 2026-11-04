@@ -21,3 +21,6 @@ docs/validation/security-audit/*.log -whitespace
 docs/validation/root-deployment/**/*.log -whitespace
 docs/validation/root-deployment/*.log -whitespace
 docs/validation/archive-lf/*.log -whitespace
+
+packaging/** text eol=lf
+docs/validation/linux/**/*.log -whitespace

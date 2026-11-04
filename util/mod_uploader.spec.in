@@ -1,82 +1,86 @@
-%define name mod_uploader
-%define version @PACKAGE_VERSION@
-%define source mod_uploader-@PACKAGE_VERSION@.tgz
+# Altered mod_uploader; see MODIFICATIONS and COPYING (Zlib).
+# Build with --with thumbnail for ImageMagick raster thumbnails.
+%bcond_with thumbnail
 
-Summary: A file upload application works as Apache module
-Name: %{name}
-Version: %{version}
-Release: 1
-License: The zlib/libpng License
-Group: System Environment/Daemons
-Vendor: Tetsuya Kimata
-URL: http://acapulco.dyndns.org/mod_uploader/
+Name:           mod_uploader
+Version:        @PACKAGE_VERSION@
+Release:        9%{?dist}
+Summary:        Apache file uploader with hardened storage and authentication
+License:        Zlib
+URL:            https://github.com/matsuotakeshi/mod_uploader
+Source0:        %{name}-%{version}.tar.gz
 
-Source: %{source}
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-
-BuildRequires: gcc-c++, make, libtool, httpd-devel, ImageMagick-c++-devel 
-Requires: httpd, ImageMagick-c++
+BuildRequires:  gcc-c++, make, libtool, perl, httpd-devel
+BuildRequires:  apr-devel, apr-util-devel, openssl-devel, python3
+BuildRequires:  redhat-rpm-config
+%if %{with thumbnail}
+BuildRequires:  ImageMagick-c++-devel, pkgconf-pkg-config
+%endif
+Requires:       httpd, python3
+%{?_httpd_requires}
 
 %description
-mod_uploader is a file upload application works as Apache module.
-The following features are provided:
-- It works faster than the thing made with Perl or PHP or Ruby,
-  because it is made with C++ and works as Apache module. 
-- It includes simple template engine, so you can change page layouts
-  without re-compilation. 
-- it can show progress report when uploading. 
+Altered version of Tetsuya Kimata's Apache file uploader. Supports root and
+subpath mounts, hashed passwords, CSRF tokens and offline backup/recovery.
+Configuration samples are disabled by default. Existing data is never
+initialized or migrated by RPM scriptlets. Review LINUX-ja.md before enabling.
 
 %prep
-%setup -q -n %{name}-%{version}
-
-%{__cat} <<EOF >uploader.conf
-LoadModule uploader_module modules/mod_uploader.so
-
-# <Location /up>
-#     SetHandler uploader
-
-#     UploaderBaseUrl                 
-#     UploaderDataDirectory           
-#     UploaderFileDirectory           
-#     UploaderThumbDirectory          
-#     UploaderTempDirectory           
-
-#     UploaderTotalFileSizeLimit      
-#     UploaderTotalFileNumberLimit    
-#     UploaderFileSizeLimit           
-#     UploaderPerPageItemNumber       
-
-#     UploaderIndexViewTemplate       
-#     UploaderInfoViewTemplate        
-#     UploaderProgressViewTemplate    
-#     UploaderDownloadViewTemplate    
-#     UploaderThumbnailViewTemplate   
-#     UploaderAdminViewTemplate       
-#     UploaderErrorViewTemplate       
-# </Location>
-EOF
+%setup -q
 
 %build
-%configure --enable-thumbnail
-%{__make} clean
-%{__make} all
+%configure --with-apxs=%{_httpd_apxs} --with-writer=basic \
+%if %{with thumbnail}
+    --enable-thumbnail
+%else
+    --disable-thumbnail
+%endif
+%make_build LANG=ja_JP.eucJP apache-module password-tool
 
 %install
-%{__rm} -rf %{buildroot}
-%{__mkdir} -p %{buildroot}%{_sysconfdir}/httpd/conf.d
-%{__mkdir} -p %{buildroot}%{_libdir}/httpd/modules
-%{__install} -m0644 uploader.conf %{buildroot}%{_sysconfdir}/httpd/conf.d/uploader.conf
-%{__install} -m0755 mod_uploader.so %{buildroot}%{_libdir}/httpd/modules/mod_uploader.so
+install -Dpm0755 src/mod_uploader.so %{buildroot}%{_httpd_moddir}/mod_uploader.so
+install -Dpm0755 src/password_tool %{buildroot}%{_libexecdir}/mod_uploader/password_tool
+for tool in migrate_passwords storage_backup storage_recover storage_health; do
+    install -pm0755 util/$tool.py %{buildroot}%{_libexecdir}/mod_uploader/
+    sed -i '1c#!/usr/bin/python3' %{buildroot}%{_libexecdir}/mod_uploader/$tool.py
+done
+install -d %{buildroot}%{_httpd_modconfdir} %{buildroot}%{_sysconfdir}/mod_uploader
+printf 'LoadModule uploader_module modules/mod_uploader.so\n' > %{buildroot}%{_httpd_modconfdir}/20-uploader.conf
+install -pm0644 packaging/rpm/*.conf.sample %{buildroot}%{_sysconfdir}/mod_uploader/
+install -d %{buildroot}%{_datadir}/mod_uploader/tmpl/en
+install -pm0644 tmpl/*.htm %{buildroot}%{_datadir}/mod_uploader/tmpl/
+install -pm0644 tmpl/en/*.htm %{buildroot}%{_datadir}/mod_uploader/tmpl/en/
+for dir in img css js; do
+    cp -a $dir %{buildroot}%{_datadir}/mod_uploader/
+done
+install -d -m0700 %{buildroot}%{_localstatedir}/lib/mod_uploader
+for dir in data file thumb temp; do
+    install -d -m0700 %{buildroot}%{_localstatedir}/lib/mod_uploader/$dir
+done
 
-%clean
-%{__rm} -rf %{buildroot}
+%check
+sh tests/run_native.sh
+python3 tests/handler_test.py
 
 %files
-%defattr(-, root, root)
-%doc AUTHORS ChangeLog COPYING
-%config(noreplace) %{_sysconfdir}/httpd/conf.d/uploader.conf
-%{_libdir}/httpd/modules/mod_uploader.so
+%license COPYING
+%doc AUTHORS MODIFICATIONS README.md docs/LINUX-ja.md
+%doc docs/SECURITY-MIGRATION-ja.md docs/ROOT-DEPLOYMENT-ja.md docs/OPERATIONS-ja.md
+%config(noreplace) %{_httpd_modconfdir}/20-uploader.conf
+%dir %{_sysconfdir}/mod_uploader
+%config(noreplace) %{_sysconfdir}/mod_uploader/*.conf.sample
+%{_httpd_moddir}/mod_uploader.so
+%{_libexecdir}/mod_uploader/
+%{_datadir}/mod_uploader/
+%dir %attr(0700,apache,apache) %{_localstatedir}/lib/mod_uploader
+%dir %attr(0700,apache,apache) %{_localstatedir}/lib/mod_uploader/data
+%dir %attr(0700,apache,apache) %{_localstatedir}/lib/mod_uploader/file
+%dir %attr(0700,apache,apache) %{_localstatedir}/lib/mod_uploader/thumb
+%dir %attr(0700,apache,apache) %{_localstatedir}/lib/mod_uploader/temp
 
 %changelog
+* Wed Nov 04 2026 Takeshi Matsuo <takeshi@ysni.org> - 3.2.0-9
+- Enterprise Linux build and optional ImageMagick support; preserve Zlib notices.
+- Ship disabled root/subpath samples, private storage and migration/backup tools.
 * Sun Feb 17 2008 Tetsuya Kimata <kimata@acapulco.dyndns.org> - 3.0.4-1
 - Initial package.

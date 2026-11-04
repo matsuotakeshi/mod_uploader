@@ -40,3 +40,9 @@ Metadata remains version 4. See docs/OPERATIONS-ja.md and OPERATIONS-VALIDATION-
 Port revision 8: declare the patch-phase Perl dependency and the FreeBSD
 pkg-config search path for ImageMagick 7 thumbnail builds. Module source,
 templates and storage format are unchanged from revision 7.
+
+Revision 9: Enterprise Linux (Rocky/AlmaLinux) build discovery, RPM packaging,
+portable integration tests and SELinux deployment instructions. Honor explicit
+--disable-thumbnail, support Magick++ pkg-config discovery, and account for
+inherited Linux virtual address reservations without raising stricter inherited
+limits. FreeBSD behavior, UI and metadata format are preserved.

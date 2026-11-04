@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Zlib
 import argparse, os, socket, ssl, tempfile
 from pathlib import Path
+from apache_paths import load_module
 from security_http_test import Server,Client,setup,run
 
 def main():
@@ -15,7 +16,7 @@ def main():
     os.chmod(root/'server.key',0o600)
     with socket.socket() as s:s.bind(('127.0.0.1',0));port=s.getsockname()[1]
     server=Server(root,build,port);text=server.conf.read_text().replace('http://127.0.0.1:','https://127.0.0.1:')
-    text+='\nLoadModule ssl_module /usr/local/libexec/apache24/mod_ssl.so\nSSLEngine on\nSSLCertificateFile "'+str(root/'server.crt')+'"\nSSLCertificateKeyFile "'+str(root/'server.key')+'"\n'
+    text+='\n'+load_module('ssl')+'SSLEngine on\nSSLCertificateFile "'+str(root/'server.crt')+'"\nSSLCertificateKeyFile "'+str(root/'server.key')+'"\n'
     server.conf.write_text(text);checks=0
     try:
         server.start();client=Client(port,ssl.create_default_context(cafile=str(root/'server.crt')));headers,_=client.index();cookie=headers['Set-Cookie']

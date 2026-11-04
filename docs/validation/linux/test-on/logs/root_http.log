@@ -1,0 +1,8 @@
+mount='/' trailing=True tls=False thumbnail=True: 133 checks passed; /var/tmp/mod-uploader-linux-20261104/test-on/root-http-fl0kktka
+mount='/' trailing=False tls=False thumbnail=True: 133 checks passed; /var/tmp/mod-uploader-linux-20261104/test-on/root-http-h1b9r_tf
+mount='/up' trailing=False tls=False thumbnail=True: 135 checks passed; /var/tmp/mod-uploader-linux-20261104/test-on/root-http-2lofjoi5
+mount='/up' trailing=True tls=False thumbnail=True: 135 checks passed; /var/tmp/mod-uploader-linux-20261104/test-on/root-http-qxdr75vp
+mount='/board/up' trailing=True tls=False thumbnail=True: 135 checks passed; /var/tmp/mod-uploader-linux-20261104/test-on/root-http-pwvcbufm
+mount='/' trailing=True tls=True thumbnail=True: 133 checks passed; /var/tmp/mod-uploader-linux-20261104/test-on/root-http-e4px_mxi
+mount='/up' trailing=True tls=True thumbnail=True: 135 checks passed; /var/tmp/mod-uploader-linux-20261104/test-on/root-http-7rel18kp
+root-http: 939 checks passed across 7 VirtualHost configurations

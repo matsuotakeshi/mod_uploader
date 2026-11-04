@@ -47,6 +47,7 @@
 #include "TemporaryPool.h"
 #include "TemporaryFile.h"
 #include "ImageFile.h"
+#include "ThumbnailLimits.h"
 #include "Message.h"
 #include "Macro.h"
 #include "SourceInfo.h"
@@ -172,9 +173,12 @@ bool UploadItemWriter::write_thumb(apr_pool_t *pool, UploadItem *uitem)
         nice(NICE_VALUE);
         alarm(TIMEOUT_SEC);
         {
-            struct rlimit cpu = {3, 3}, memory = {512UL*1024*1024, 512UL*1024*1024}, output = {2UL*1024*1024, 2UL*1024*1024};
-            if (setrlimit(RLIMIT_CPU, &cpu) != 0 || setrlimit(RLIMIT_AS, &memory) != 0 ||
-                setrlimit(RLIMIT_FSIZE, &output) != 0) _exit(EXIT_FAILURE);
+            struct rlimit cpu = {3, 3}, output = {2UL*1024*1024, 2UL*1024*1024};
+            if (setrlimit(RLIMIT_CPU, &cpu) != 0 || !ThumbnailLimits::apply_address_space_limit() ||
+                setrlimit(RLIMIT_FSIZE, &output) != 0) {
+                std::fprintf(stderr, "mod_uploader: cannot apply thumbnail resource limits: %s\n", std::strerror(errno));
+                _exit(EXIT_FAILURE);
+            }
         }
         _exit(write_thumb_impl(pool, uitem) ? EXIT_SUCCESS : EXIT_FAILURE);
     case -1: // エラー．
@@ -183,6 +187,8 @@ bool UploadItemWriter::write_thumb(apr_pool_t *pool, UploadItem *uitem)
         pid_t waited;
         do { waited = waitpid(pid, &status, 0); } while (waited < 0 && errno == EINTR);
         if (waited == pid && WIFEXITED(status) && WEXITSTATUS(status) == EXIT_SUCCESS) return true;
+        if (waited == pid && WIFSIGNALED(status))
+            std::fprintf(stderr, "mod_uploader: thumbnail worker terminated by signal %d\n", WTERMSIG(status));
         apr_file_remove(preview.c_str(), pool);
         return false;
     }

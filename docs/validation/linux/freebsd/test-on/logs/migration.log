@@ -1,0 +1,2 @@
+migration: 38 checks passed (native v2/v3, backups, idempotency, corrupt/symlink rejection, interruption/restore)
+Disposable fixture directory retained for review: /home/takeshi/mod-uploader-linux-20261104/test-on/migration-tests-m2jxan_7

@@ -1,0 +1,25 @@
+native: PASS
+thumbnail-limits: 2 process scenarios passed (inherited VM, stricter limit)
+handler: PASS
+handler: 5 assertions passed (mock httpd; not a module build)
+storage: PASS
+storage: 655 checks passed; fixtures retained: /work/test-on/storage-test-21uix202
+migration: PASS
+Disposable fixture directory retained for review: /work/test-on/migration-tests-r4rtkb5h
+security_http: PASS
+Disposable test data retained for review: /work/test-on/http-security-l8w6jw6d
+security_https: PASS
+Disposable test directory retained: /work/test-on/https-security-tq9yyrfq
+hardening_http: PASS
+Disposable test directory retained: /work/test-on/hardening-http-kp5i2ze0
+audit_http: PASS
+Disposable fixtures retained: /work/test-on/audit-http-v2ok2gr3
+root_http: PASS
+root-http: 939 checks passed across 7 VirtualHost configurations
+operations_http: PASS
+operations-http: 73 checks passed; thumbnail=True; fixtures retained: /work/test-on/operations-http-g43b5geq
+freebsd_samples: PASS
+root-samples: 20 checks passed across 2 distributed configuration samples
+linux_samples: PASS
+root-samples: 20 checks passed across 2 distributed configuration samples
+ALMA_ON_RC=0

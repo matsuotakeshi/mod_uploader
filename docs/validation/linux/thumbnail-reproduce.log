@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "/var/tmp/mod-uploader-linux-20261104/candidate-on/tests/root_http_test.py", line 148, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/var/tmp/mod-uploader-linux-20261104/candidate-on/tests/root_http_test.py", line 146, in main
+    count=sum(exercise(args,*case) for case in cases)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/tmp/mod-uploader-linux-20261104/candidate-on/tests/root_http_test.py", line 146, in <genexpr>
+    count=sum(exercise(args,*case) for case in cases)
+              ^^^^^^^^^^^^^^^^^^^^
+  File "/var/tmp/mod-uploader-linux-20261104/candidate-on/tests/root_http_test.py", line 119, in exercise
+    check(status==200 and thumb[:6] in (b'GIF87a',b'GIF89a'),'generated thumbnail')
+  File "/var/tmp/mod-uploader-linux-20261104/candidate-on/tests/root_http_test.py", line 73, in check
+    assert condition,description+' in '+str(root);checks+=1
+           ^^^^^^^^^
+AssertionError: generated thumbnail in /var/tmp/mod-uploader-linux-20261104/test-on/root-http-5gd_jr4p

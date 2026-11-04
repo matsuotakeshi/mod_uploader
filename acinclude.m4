@@ -108,7 +108,7 @@ fi
 if test ! -x $APXS; then
     AC_MSG_ERROR([apxs is required. Try --with-apxs option.])
 fi
-AP_BUILD_DIR=`env GREP_OPTIONS= grep installbuilddir $APXS | head -n 1 | awk -F '"' '{print $(2)}'`
+AP_BUILD_DIR=`"$APXS" -q installbuilddir`
 AC_SUBST(AP_BUILD_DIR)
 ])
 
@@ -217,11 +217,27 @@ AC_ARG_WITH(mconf,
 if test "$MCONF" = no; then
     AC_PATH_PROG(MCONF, Magick++-config, no, /sw/bin:/usr/sbin:/usr/local/sbin:/usr/bin:/usr/local/bin)
 fi
-if test ! -x $MCONF; then
-    AC_MSG_ERROR([Magick++-config is required. Try --with-mconf option.])
-fi 
+if test "$MCONF" != no; then
+    if test ! -x "$MCONF"; then
+        AC_MSG_ERROR([Magick++-config is not executable. Check --with-mconf.])
+    fi
+    MAGICK_CPPFLAGS=`"$MCONF" --cppflags` || AC_MSG_ERROR([Magick++ compiler flags unavailable])
+    MAGICK_LDFLAGS=`"$MCONF" --ldflags` || AC_MSG_ERROR([Magick++ linker flags unavailable])
+    MAGICK_LIBS=`"$MCONF" --libs` || AC_MSG_ERROR([Magick++ libraries unavailable])
+else
+    AC_PATH_TOOL([PKG_CONFIG], [pkg-config], [no])
+    if test "$PKG_CONFIG" = no || ! "$PKG_CONFIG" --exists Magick++; then
+        AC_MSG_ERROR([Magick++ development files are required for thumbnails (Magick++-config or pkg-config Magick++).])
+    fi
+    MAGICK_CPPFLAGS=`"$PKG_CONFIG" --cflags Magick++`
+    MAGICK_LDFLAGS=""
+    MAGICK_LIBS=`"$PKG_CONFIG" --libs Magick++`
+fi
 ])
 
+AC_SUBST(MAGICK_CPPFLAGS)
+AC_SUBST(MAGICK_LDFLAGS)
+AC_SUBST(MAGICK_LIBS)
 AC_SUBST(MCONF)
 
 AC_DEFUN([AC_CHECK_ICONV_2ND_ARG_TYPE], [

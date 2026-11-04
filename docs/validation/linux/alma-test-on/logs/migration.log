@@ -1,0 +1,2 @@
+migration: 38 checks passed (native v2/v3, backups, idempotency, corrupt/symlink rejection, interruption/restore)
+Disposable fixture directory retained for review: /work/test-on/migration-tests-r4rtkb5h

@@ -281,7 +281,8 @@ fi
 
 AC_ARG_ENABLE(thumbnail,
         [  --enable-thumbnail      trun making thumbnail on],
-        [THUMBNAIL=on], [THUMBNAIL=off])
+        [AS_CASE([$enableval], [yes], [THUMBNAIL=on], [no], [THUMBNAIL=off],
+                 [AC_MSG_ERROR([--enable-thumbnail accepts yes or no])])], [THUMBNAIL=off])
 AC_MSG_CHECKING([for whether to enable making thumbnail])
 if test "$THUMBNAIL" = on; then
     AC_MSG_RESULT(yes)

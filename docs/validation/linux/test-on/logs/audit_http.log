@@ -1,0 +1,2 @@
+audit-http: 20 checks passed (invalid-upload retention, NUL/duplicates/encoding, protected thumbnail, missing payload, corrupt metadata, capacity, concurrency)
+Disposable fixtures retained: /var/tmp/mod-uploader-linux-20261104/test-on/audit-http-_4ayy57f

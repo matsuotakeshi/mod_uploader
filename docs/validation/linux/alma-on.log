@@ -1,0 +1,30 @@
+native: PASS
+config-number: 14 checks passed
+handler: PASS
+handler: 5 assertions passed (mock httpd; not a module build)
+storage: PASS
+storage: 655 checks passed; fixtures retained: /work/test-on/storage-test-bzv1yr60
+migration: PASS
+Disposable fixture directory retained for review: /work/test-on/migration-tests-umuxykx_
+security_http: PASS
+Disposable test data retained for review: /work/test-on/http-security-zm3pb6gu
+security_https: PASS
+Disposable test directory retained: /work/test-on/https-security-csx2bd0w
+hardening_http: PASS
+Disposable test directory retained: /work/test-on/hardening-http-nxw50hsc
+audit_http: PASS
+Disposable fixtures retained: /work/test-on/audit-http-vkw078p8
+root_http: FAIL (see /work/test-on/logs/root_http.log)
+Traceback (most recent call last):
+  File "/work/candidate/tests/root_http_test.py", line 148, in <module>
+    if __name__=='__main__':main()
+  File "/work/candidate/tests/root_http_test.py", line 146, in main
+    count=sum(exercise(args,*case) for case in cases)
+  File "/work/candidate/tests/root_http_test.py", line 146, in <genexpr>
+    count=sum(exercise(args,*case) for case in cases)
+  File "/work/candidate/tests/root_http_test.py", line 119, in exercise
+    check(status==200 and thumb[:6] in (b'GIF87a',b'GIF89a'),'generated thumbnail')
+  File "/work/candidate/tests/root_http_test.py", line 73, in check
+    assert condition,description+' in '+str(root);checks+=1
+AssertionError: generated thumbnail in /work/test-on/root-http-5vp_a6c0
+ALMA_ON_RC=1

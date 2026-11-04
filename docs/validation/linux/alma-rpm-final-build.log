@@ -1,0 +1,862 @@
+setting SOURCE_DATE_EPOCH=1793750400
+Executing(%prep): /bin/sh -e /var/tmp/rpm-tmp.d0CpAg
++ umask 022
++ cd /work/rpm-on/BUILD
++ cd /work/rpm-on/BUILD
++ rm -rf mod_uploader-3.2.0
++ /usr/bin/gzip -dc /work/rpm-on/SOURCES/mod_uploader-3.2.0.tar.gz
++ /usr/bin/tar -xof -
++ STATUS=0
++ '[' 0 -ne 0 ']'
++ cd mod_uploader-3.2.0
++ /usr/bin/chmod -Rf a+rX,u+w,g-w,o-w .
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Executing(%build): /bin/sh -e /var/tmp/rpm-tmp.TdMKii
++ umask 022
++ cd /work/rpm-on/BUILD
++ cd mod_uploader-3.2.0
++ CFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection'
++ export CFLAGS
++ CXXFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection'
++ export CXXFLAGS
++ FFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -I/usr/lib64/gfortran/modules'
++ export FFLAGS
++ FCFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -I/usr/lib64/gfortran/modules'
++ export FCFLAGS
++ LDFLAGS='-Wl,-z,relro -Wl,--as-needed  -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1 '
++ export LDFLAGS
++ LT_SYS_LIBRARY_PATH=/usr/lib64:
++ export LT_SYS_LIBRARY_PATH
++ CC=gcc
++ export CC
++ CXX=g++
++ export CXX
++ '[' '-flto=auto -ffat-lto-objectsx' '!=' x ']'
+++ find . -type f -name configure -print
++ for file in $(find . -type f -name configure -print)
++ /usr/bin/sed -r --in-place=.backup 's/^char \(\*f\) \(\) = /__attribute__ ((used)) char (*f) () = /g' ./configure
++ diff -u ./configure.backup ./configure
++ mv ./configure.backup ./configure
++ /usr/bin/sed -r --in-place=.backup 's/^char \(\*f\) \(\);/__attribute__ ((used)) char (*f) ();/g' ./configure
++ diff -u ./configure.backup ./configure
++ mv ./configure.backup ./configure
++ /usr/bin/sed -r --in-place=.backup 's/^char \$2 \(\);/__attribute__ ((used)) char \$2 ();/g' ./configure
++ diff -u ./configure.backup ./configure
+--- ./configure.backup	2026-11-04 03:19:37.465213800 +0000
++++ ./configure	2026-11-04 03:43:25.540635876 +0000
+@@ -2031,7 +2031,7 @@
+ #ifdef __cplusplus
+ extern "C"
+ #endif
+-char $2 ();
++__attribute__ ((used)) char $2 ();
+ /* The GNU C library defines this for functions which it implements
+     to always fail with ENOSYS.  Some functions are actually named
+     something starting with __ and the normal name is an alias.  */
++ /usr/bin/sed --in-place=.backup '1{$!N;$!N};$!N;s/int x = 1;\nint y = 0;\nint z;\nint nan;/volatile int x = 1; volatile int y = 0; volatile int z, nan;/;P;D' ./configure
++ diff -u ./configure.backup ./configure
++ mv ./configure.backup ./configure
++ /usr/bin/sed --in-place=.backup 's#^lt_cv_sys_global_symbol_to_cdecl=.*#lt_cv_sys_global_symbol_to_cdecl="sed -n -e '\''s/^T .* \\(.*\\)$/extern int \\1();/p'\'' -e '\''s/^$symcode* .* \\(.*\\)$/extern char \\1;/p'\''"#' ./configure
++ diff -u ./configure.backup ./configure
++ mv ./configure.backup ./configure
++ '[' 1 = 1 ']'
++++ dirname ./configure
+++ find . -name config.guess -o -name config.sub
++ for i in $(find $(dirname ./configure) -name config.guess -o -name config.sub)
+++ basename ./build/config.guess
++ '[' -f /usr/lib/rpm/redhat/config.guess ']'
++ /usr/bin/rm -f ./build/config.guess
+++ basename ./build/config.guess
++ /usr/bin/cp -fv /usr/lib/rpm/redhat/config.guess ./build/config.guess
+'/usr/lib/rpm/redhat/config.guess' -> './build/config.guess'
++ for i in $(find $(dirname ./configure) -name config.guess -o -name config.sub)
+++ basename ./build/config.sub
++ '[' -f /usr/lib/rpm/redhat/config.sub ']'
++ /usr/bin/rm -f ./build/config.sub
+++ basename ./build/config.sub
++ /usr/bin/cp -fv /usr/lib/rpm/redhat/config.sub ./build/config.sub
+'/usr/lib/rpm/redhat/config.sub' -> './build/config.sub'
++ '[' 1 = 1 ']'
++ '[' x '!=' 'x-Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld' ']'
+++ find . -name ltmain.sh
++ ./configure --build=x86_64-redhat-linux-gnu --host=x86_64-redhat-linux-gnu --program-prefix= --disable-dependency-tracking --prefix=/usr --exec-prefix=/usr --bindir=/usr/bin --sbindir=/usr/sbin --sysconfdir=/etc --datadir=/usr/share --includedir=/usr/include --libdir=/usr/lib64 --libexecdir=/usr/libexec --localstatedir=/var --sharedstatedir=/var/lib --mandir=/usr/share/man --infodir=/usr/share/info --with-apxs=/usr/lib64/httpd/build/vendor-apxs --with-writer=basic --enable-thumbnail
+configure: WARNING: unrecognized options: --disable-dependency-tracking
+checking build system type... x86_64-redhat-linux-gnu
+checking host system type... x86_64-redhat-linux-gnu
+checking target system type... x86_64-redhat-linux-gnu
+checking for x86_64-redhat-linux-gnu-gcc... gcc
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... 
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc accepts -g... yes
+checking for gcc option to accept ISO C89... none needed
+checking how to run the C preprocessor... gcc -E
+checking for x86_64-redhat-linux-gnu-gcc... (cached) gcc
+checking whether we are using the GNU C compiler... (cached) yes
+checking whether gcc accepts -g... (cached) yes
+checking for gcc option to accept ISO C89... (cached) none needed
+checking whether we are using the GNU C++ compiler... yes
+checking whether g++ accepts -g... yes
+checking for glibtool... no
+checking for libtool... /usr/bin/libtool
+checking for inline... inline
+checking for an ANSI C-conforming const... yes
+checking for working volatile... yes
+checking how to run the C++ preprocessor... g++ -E
+checking for grep that handles long lines and -e... /usr/bin/grep
+checking for egrep... /usr/bin/grep -E
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for unistd.h... yes
+checking for size_t... yes
+checking for uint32_t... yes
+checking for uint16_t... yes
+checking for uint8_t... yes
+checking for ANSI C header files... (cached) yes
+checking for whether to use GCC Atomic Builtins... no
+checking for CPU type... no
+checking ctype.h usability... yes
+checking ctype.h presence... yes
+checking for ctype.h... yes
+checking fcntl.h usability... yes
+checking fcntl.h presence... yes
+checking for fcntl.h... yes
+checking iconv.h usability... yes
+checking iconv.h presence... yes
+checking for iconv.h... yes
+checking limits.h usability... yes
+checking limits.h presence... yes
+checking for limits.h... yes
+checking setjmp.h usability... yes
+checking setjmp.h presence... yes
+checking for setjmp.h... yes
+checking signal.h usability... yes
+checking signal.h presence... yes
+checking for signal.h... yes
+checking for stdlib.h... (cached) yes
+checking for string.h... (cached) yes
+checking sys/mman.h usability... yes
+checking sys/mman.h presence... yes
+checking for sys/mman.h... yes
+checking for sys/mman.h... (cached) yes
+checking for sys/types.h... (cached) yes
+checking sys/wait.h usability... yes
+checking sys/wait.h presence... yes
+checking for sys/wait.h... yes
+checking for unistd.h... (cached) yes
+checking utime.h usability... yes
+checking utime.h presence... yes
+checking for utime.h... yes
+checking sched.h usability... yes
+checking sched.h presence... yes
+checking for sched.h... yes
+checking for fork... yes
+checking for getpagesize... yes
+checking for memmem... yes
+checking for strndup... yes
+checking for wait... yes
+checking for madvise... yes
+checking for mprotect... yes
+checking for type of iconv 2nd argument... char *
+checking for isalpha... yes
+checking for isalnum... yes
+checking for isdigit... yes
+checking for isxdigit... yes
+checking for malloc... yes
+checking for realloc... yes
+checking for memchr... yes
+checking for memcpy... yes
+checking for memmove... yes
+checking for memset... yes
+checking for strcpy... yes
+checking for strlen... yes
+checking for strcmp... yes
+checking for strncmp... yes
+checking for strstr... yes
+checking for apache2ctl... no
+checking for apachectl... /usr/sbin/apachectl
+checking for apr-1-config... /usr/bin/apr-1-config
+checking target Apache version... 2.x
+checking for Apache version... ok
+checking for DSO enabled... ok
+checking for grep... (cached) /usr/bin/grep
+checking for sed... /usr/bin/sed
+checking for ruby... ruby
+checking for rst2html... rst2html
+checking for doxygen... doxygen
+checking for dot... /usr/bin/dot
+checking for ps2pdf... ps2pdf
+checking for svn... svn
+checking for find... /usr/bin/find
+checking for cat... /usr/bin/cat
+checking for tar... /usr/bin/tar
+checking for tee... /usr/bin/tee
+checking for nkf... nkf
+checking for grep... (cached) /usr/bin/grep
+checking for wc... /usr/bin/wc
+checking for ipcs... /usr/bin/ipcs
+checking for ipcrm... /usr/bin/ipcrm
+checking for awk... /usr/bin/awk
+checking for diff... /usr/bin/diff
+checking for env... /usr/bin/env
+checking for dot... (cached) /usr/bin/dot
+checking for xargs... /usr/bin/xargs
+checking for gdb... gdb
+checking for valgrind... valgrind
+checking for lsb_release... lsb_release
+checking for whether to accept empty comment... no
+checking for whether to accept empty password... no
+checking for whether to remove files based on popularity... no
+checking for whether to enable making thumbnail... yes
+checking for Magick++-config... /usr/bin/Magick++-config
+checking for whether to use numbered file name... no
+checking for whether to omit dynamic template checking... no
+checking for write method... BasicFileWriter
+checking for whether to use use Content-Encoding: gzip... no
+checking for debugging... off
+configure: creating ./config.status
+config.status: creating conf/apache.conf
+config.status: creating conf/en/apache.conf
+config.status: creating conf/cgi.apache.conf
+config.status: creating conf/cgi.conf
+config.status: creating conf/stand.conf
+config.status: creating test/conf/sample.conf
+config.status: creating GNUmakefile
+config.status: creating GNUmakefile.apache
+config.status: creating GNUmakefile.dist
+config.status: creating src/GNUmakefile.dep
+config.status: creating src/GNUmakefile.arg
+config.status: creating src/GNUmakefile.tst
+config.status: creating src/GNUmakefile.cln
+config.status: creating src/GNUmakefile
+config.status: creating src/GNUmakefile.win32
+config.status: creating include/MultipartMessageParser.h
+config.status: creating include/RFC1867Parser.h
+config.status: creating include/Base64FileWriter.h
+config.status: creating include/ZipFileWriter.h
+config.status: creating src/ZipFileWriter.cpp
+config.status: creating doc/GNUmakefile
+config.status: creating doc/doxygen.conf
+config.status: creating tmpl/index.htm
+config.status: creating tmpl/index_swf.htm
+config.status: creating tmpl/info.htm
+config.status: creating tmpl/progress.htm
+config.status: creating tmpl/download.htm
+config.status: creating tmpl/thumbnail.htm
+config.status: creating tmpl/admin.htm
+config.status: creating tmpl/error.htm
+config.status: creating tmpl/en/index.htm
+config.status: creating tmpl/en/info.htm
+config.status: creating tmpl/en/progress.htm
+config.status: creating tmpl/en/download.htm
+config.status: creating tmpl/en/thumbnail.htm
+config.status: creating tmpl/en/admin.htm
+config.status: creating tmpl/en/error.htm
+config.status: creating util/mod_uploader.rc
+config.status: creating util/UploaderConfigSetup/UploaderConfigSetup.vdproj
+config.status: creating util/UploaderConfig/Properties/AssemblyInfo.cs
+config.status: creating util/mod_uploader.spec
+config.status: creating debian/files
+config.status: creating include/mod_uploader_config.h
+configure: WARNING: unrecognized options: --disable-dependency-tracking
+
+Configuration:
+    * Enviorment            :   Linux
+        - apxs              :   /usr/lib64/httpd/build/vendor-apxs
+        - apachectl         :   /usr/sbin/apachectl
+        - apr-config        :   /usr/bin/apr-1-config
+
+    * Compiler              :   g++
+        - march             :   
+        - mcpu              :   
+
+    * Libtool               :   /usr/bin/libtool
+
+    * Thumbnail             :   on
+
+    * Debug                 :   off
+
++ /usr/bin/make -O -j1 V=1 VERBOSE=1 LANG=ja_JP.eucJP apache-module password-tool
+cd src && /usr/bin/make -f GNUmakefile
+make[1]: Entering directory '/work/rpm-on/BUILD/mod_uploader-3.2.0/src'
+make[1]: Leaving directory '/work/rpm-on/BUILD/mod_uploader-3.2.0/src'
+perl: warning: Setting locale failed.
+perl: warning: Please check that your locale settings:
+	LANGUAGE = (unset),
+	LC_ALL = (unset),
+	LANG = "ja_JP.eucJP"
+    are supported and installed on your system.
+perl: warning: Falling back to the standard locale ("C").
+make[1]: Entering directory '/work/rpm-on/BUILD/mod_uploader-3.2.0/src'
+\033[0;36mGenerating \033[1;36m../include/MessageJA.h.in\033[0m
+../util/unpack_literal.pl < ../include/MessageJA.h.in > ../include/MessageJA.h
+perl: warning: Setting locale failed.
+perl: warning: Please check that your locale settings:
+	LANGUAGE = (unset),
+	LC_ALL = (unset),
+	LANG = "ja_JP.eucJP"
+    are supported and installed on your system.
+perl: warning: Falling back to the standard locale ("C").
+[0;36mCompiling [1;36mmod_uploader.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o mod_uploader.o mod_uploader.cpp
+In file included from uploader_handler.cpp:48,
+                 from mod_uploader.cpp:66:
+../include/ApacheSecurity.h: In function 'std::string ApacheSecurity::key(const char*)':
+../include/ApacheSecurity.h:20:13: warning: this 'if' clause does not guard... [-Wmisleading-indentation]
+   20 |             if(n<0 && errno==EINTR)continue;if(n<=0){good=false;break;}written+=n;
+      |             ^~
+../include/ApacheSecurity.h:20:45: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+   20 |             if(n<0 && errno==EINTR)continue;if(n<=0){good=false;break;}written+=n;
+      |                                             ^~
+In file included from mod_uploader.cpp:66:
+uploader_handler.cpp: In function 'bool check_csrf(typename Response::Handle*, apr_array_header_t*)':
+uploader_handler.cpp:145:9: warning: this 'if' clause does not guard... [-Wmisleading-indentation]
+  145 |         if(entries[i].type!=Parser::TEXT)return false;token=entries[i].text;++count;
+      |         ^~
+uploader_handler.cpp:145:55: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+  145 |         if(entries[i].type!=Parser::TEXT)return false;token=entries[i].text;++count;
+      |                                                       ^~~~~
+In file included from mod_uploader.cpp:48:
+mod_uploader.cpp: At global scope:
+mod_uploader.cpp:140:19: warning: cast between incompatible function types from 'const char* (*)(cmd_parms*, void*, char*)' {aka 'const char* (*)(cmd_parms_struct*, void*, char*)'} to 'const char* (*)()' [-Wcast-function-type]
+  140 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/httpd/http_config.h:177:18: note: in definition of macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:445:5: note: in expansion of macro 'DIRECTIVE_ENTRY'
+  445 |     DIRECTIVE_ENTRY(BASE_URL, base_url),
+      |     ^~~~~~~~~~~~~~~
+mod_uploader.cpp:140:19: warning: cast between incompatible function types from 'const char* (*)(cmd_parms*, void*, char*)' {aka 'const char* (*)(cmd_parms_struct*, void*, char*)'} to 'const char* (*)()' [-Wcast-function-type]
+  140 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/httpd/http_config.h:177:18: note: in definition of macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:446:5: note: in expansion of macro 'DIRECTIVE_ENTRY'
+  446 |     DIRECTIVE_ENTRY(DATA_DIRECTORY, data_dir_path),
+      |     ^~~~~~~~~~~~~~~
+mod_uploader.cpp:140:19: warning: cast between incompatible function types from 'const char* (*)(cmd_parms*, void*, char*)' {aka 'const char* (*)(cmd_parms_struct*, void*, char*)'} to 'const char* (*)()' [-Wcast-function-type]
+  140 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/httpd/http_config.h:177:18: note: in definition of macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:447:5: note: in expansion of macro 'DIRECTIVE_ENTRY'
+  447 |     DIRECTIVE_ENTRY(FILE_DIRECTORY, file_dir_path),
+      |     ^~~~~~~~~~~~~~~
+mod_uploader.cpp:140:19: warning: cast between incompatible function types from 'const char* (*)(cmd_parms*, void*, char*)' {aka 'const char* (*)(cmd_parms_struct*, void*, char*)'} to 'const char* (*)()' [-Wcast-function-type]
+  140 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/httpd/http_config.h:177:18: note: in definition of macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:448:5: note: in expansion of macro 'DIRECTIVE_ENTRY'
+  448 |     DIRECTIVE_ENTRY(THUMB_DIRECTORY, thumb_dir_path),
+      |     ^~~~~~~~~~~~~~~
+mod_uploader.cpp:140:19: warning: cast between incompatible function types from 'const char* (*)(cmd_parms*, void*, char*)' {aka 'const char* (*)(cmd_parms_struct*, void*, char*)'} to 'const char* (*)()' [-Wcast-function-type]
+  140 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/httpd/http_config.h:177:18: note: in definition of macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:449:5: note: in expansion of macro 'DIRECTIVE_ENTRY'
+  449 |     DIRECTIVE_ENTRY(TEMP_DIRECTORY, temp_dir_path),
+      |     ^~~~~~~~~~~~~~~
+mod_uploader.cpp:140:19: warning: cast between incompatible function types from 'const char* (*)(cmd_parms*, void*, char*)' {aka 'const char* (*)(cmd_parms_struct*, void*, char*)'} to 'const char* (*)()' [-Wcast-function-type]
+  140 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/httpd/http_config.h:177:18: note: in definition of macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:451:5: note: in expansion of macro 'DIRECTIVE_ENTRY'
+  451 |     DIRECTIVE_ENTRY(TOTAL_FILE_SIZE, total_file_size_limit),
+      |     ^~~~~~~~~~~~~~~
+mod_uploader.cpp:140:19: warning: cast between incompatible function types from 'const char* (*)(cmd_parms*, void*, char*)' {aka 'const char* (*)(cmd_parms_struct*, void*, char*)'} to 'const char* (*)()' [-Wcast-function-type]
+  140 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/httpd/http_config.h:177:18: note: in definition of macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:452:5: note: in expansion of macro 'DIRECTIVE_ENTRY'
+  452 |     DIRECTIVE_ENTRY(TOTAL_FILE_NUMBER, total_file_number_limit),
+      |     ^~~~~~~~~~~~~~~
+mod_uploader.cpp:140:19: warning: cast between incompatible function types from 'const char* (*)(cmd_parms*, void*, char*)' {aka 'const char* (*)(cmd_parms_struct*, void*, char*)'} to 'const char* (*)()' [-Wcast-function-type]
+  140 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/httpd/http_config.h:177:18: note: in definition of macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:453:5: note: in expansion of macro 'DIRECTIVE_ENTRY'
+  453 |     DIRECTIVE_ENTRY(FILE_SIZE_LIMIT, file_size_limit),
+      |     ^~~~~~~~~~~~~~~
+mod_uploader.cpp:140:19: warning: cast between incompatible function types from 'const char* (*)(cmd_parms*, void*, char*)' {aka 'const char* (*)(cmd_parms_struct*, void*, char*)'} to 'const char* (*)()' [-Wcast-function-type]
+  140 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/httpd/http_config.h:177:18: note: in definition of macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:454:5: note: in expansion of macro 'DIRECTIVE_ENTRY'
+  454 |     DIRECTIVE_ENTRY(PER_PAGE_ITEM_NUMBER, per_page_item_number),
+      |     ^~~~~~~~~~~~~~~
+mod_uploader.cpp:140:19: warning: cast between incompatible function types from 'const char* (*)(cmd_parms*, void*, char*)' {aka 'const char* (*)(cmd_parms_struct*, void*, char*)'} to 'const char* (*)()' [-Wcast-function-type]
+  140 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/httpd/http_config.h:177:18: note: in definition of macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:456:5: note: in expansion of macro 'DIRECTIVE_ENTRY'
+  456 |     DIRECTIVE_ENTRY(INDEX_VIEW_TEMPLATE, INDEX_VIEW),
+      |     ^~~~~~~~~~~~~~~
+mod_uploader.cpp:140:19: warning: cast between incompatible function types from 'const char* (*)(cmd_parms*, void*, char*)' {aka 'const char* (*)(cmd_parms_struct*, void*, char*)'} to 'const char* (*)()' [-Wcast-function-type]
+  140 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/httpd/http_config.h:177:18: note: in definition of macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:457:5: note: in expansion of macro 'DIRECTIVE_ENTRY'
+  457 |     DIRECTIVE_ENTRY(INFO_VIEW_TEMPLATE, INFO_VIEW),
+      |     ^~~~~~~~~~~~~~~
+mod_uploader.cpp:140:19: warning: cast between incompatible function types from 'const char* (*)(cmd_parms*, void*, char*)' {aka 'const char* (*)(cmd_parms_struct*, void*, char*)'} to 'const char* (*)()' [-Wcast-function-type]
+  140 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/httpd/http_config.h:177:18: note: in definition of macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:458:5: note: in expansion of macro 'DIRECTIVE_ENTRY'
+  458 |     DIRECTIVE_ENTRY(PROGRESS_VIEW_TEMPLATE, PROGRESS_VIEW),
+      |     ^~~~~~~~~~~~~~~
+mod_uploader.cpp:140:19: warning: cast between incompatible function types from 'const char* (*)(cmd_parms*, void*, char*)' {aka 'const char* (*)(cmd_parms_struct*, void*, char*)'} to 'const char* (*)()' [-Wcast-function-type]
+  140 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/httpd/http_config.h:177:18: note: in definition of macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:459:5: note: in expansion of macro 'DIRECTIVE_ENTRY'
+  459 |     DIRECTIVE_ENTRY(DOWNLOAD_VIEW_TEMPLATE, DOWNLOAD_VIEW),
+      |     ^~~~~~~~~~~~~~~
+mod_uploader.cpp:140:19: warning: cast between incompatible function types from 'const char* (*)(cmd_parms*, void*, char*)' {aka 'const char* (*)(cmd_parms_struct*, void*, char*)'} to 'const char* (*)()' [-Wcast-function-type]
+  140 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/httpd/http_config.h:177:18: note: in definition of macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:460:5: note: in expansion of macro 'DIRECTIVE_ENTRY'
+  460 |     DIRECTIVE_ENTRY(THUMBNAIL_VIEW_TEMPLATE, THUMBNAIL_VIEW),
+      |     ^~~~~~~~~~~~~~~
+mod_uploader.cpp:140:19: warning: cast between incompatible function types from 'const char* (*)(cmd_parms*, void*, char*)' {aka 'const char* (*)(cmd_parms_struct*, void*, char*)'} to 'const char* (*)()' [-Wcast-function-type]
+  140 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/httpd/http_config.h:177:18: note: in definition of macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:461:5: note: in expansion of macro 'DIRECTIVE_ENTRY'
+  461 |     DIRECTIVE_ENTRY(ADMIN_VIEW_TEMPLATE, ADMIN_VIEW),
+      |     ^~~~~~~~~~~~~~~
+mod_uploader.cpp:140:19: warning: cast between incompatible function types from 'const char* (*)(cmd_parms*, void*, char*)' {aka 'const char* (*)(cmd_parms_struct*, void*, char*)'} to 'const char* (*)()' [-Wcast-function-type]
+  140 |                   reinterpret_cast<const char*(*)()>(set_ ## member),   \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/httpd/http_config.h:177:18: note: in definition of macro 'AP_INIT_TAKE1'
+  177 |     { directive, func, mconfig, where, TAKE1, help }
+      |                  ^~~~
+mod_uploader.cpp:462:5: note: in expansion of macro 'DIRECTIVE_ENTRY'
+  462 |     DIRECTIVE_ENTRY(ERROR_VIEW_TEMPLATE, ERROR_VIEW),
+      |     ^~~~~~~~~~~~~~~
+mod_uploader.cpp:498:1: warning: missing initializer for member 'module_struct::flags' [-Wmissing-field-initializers]
+  498 | };
+      | ^
+[0;36mCompiling [1;36mUploaderConfig.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o UploaderConfig.o UploaderConfig.cpp
+[0;36mCompiling [1;36mUploadItem.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o UploadItem.o UploadItem.cpp
+In file included from /usr/include/string.h:535,
+                 from /usr/include/apr-1/apr_want.h:63,
+                 from /usr/include/apr-1/apr_pools.h:47,
+                 from /usr/include/apr-1/apr_atomic.h:26,
+                 from ../include/AtomicWrapper.h:36,
+                 from ../include/All.h:31,
+                 from ../include/Environment.h:83,
+                 from UploadItem.cpp:28:
+In function 'strncpy',
+    inlined from 'UploadItem::get_instance(void*, unsigned long, unsigned long, unsigned long, long, char const*, char const*, char const*, char const*, char const*, char const*, char const*, char const*, bool)' at UploadItem.cpp:100:12:
+/usr/include/bits/string_fortified.h:95:34: warning: 'strncpy' specified bound 32 equals destination size [-Wstringop-truncation]
+   95 |   return __builtin___strncpy_chk (__dest, __src, __len,
+      |          ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+   96 |                                   __glibc_objsize (__dest));
+      |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~
+In function 'strncpy',
+    inlined from 'UploadItem::get_instance(void*, unsigned long, unsigned long, unsigned long, long, char const*, char const*, char const*, char const*, char const*, char const*, char const*, char const*, bool)' at UploadItem.cpp:101:12:
+/usr/include/bits/string_fortified.h:95:34: warning: 'strncpy' specified bound 40 equals destination size [-Wstringop-truncation]
+   95 |   return __builtin___strncpy_chk (__dest, __src, __len,
+      |          ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+   96 |                                   __glibc_objsize (__dest));
+      |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~
+In function 'strncpy',
+    inlined from 'UploadItem::get_instance(void*, unsigned long, unsigned long, unsigned long, long, char const*, char const*, char const*, char const*, char const*, char const*, char const*, char const*, bool)' at UploadItem.cpp:102:12:
+/usr/include/bits/string_fortified.h:95:34: warning: 'strncpy' specified bound 64 equals destination size [-Wstringop-truncation]
+   95 |   return __builtin___strncpy_chk (__dest, __src, __len,
+      |          ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+   96 |                                   __glibc_objsize (__dest));
+      |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~
+In function 'strncpy',
+    inlined from 'UploadItem::get_instance(void*, unsigned long, unsigned long, unsigned long, long, char const*, char const*, char const*, char const*, char const*, char const*, char const*, char const*, bool)' at UploadItem.cpp:103:12:
+/usr/include/bits/string_fortified.h:95:34: warning: 'strncpy' specified bound 64 equals destination size [-Wstringop-truncation]
+   95 |   return __builtin___strncpy_chk (__dest, __src, __len,
+      |          ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+   96 |                                   __glibc_objsize (__dest));
+      |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~
+In function 'strncpy',
+    inlined from 'UploadItem::get_instance(void*, unsigned long, unsigned long, unsigned long, long, char const*, char const*, char const*, char const*, char const*, char const*, char const*, char const*, bool)' at UploadItem.cpp:104:12:
+/usr/include/bits/string_fortified.h:95:34: warning: 'strncpy' specified bound 8 equals destination size [-Wstringop-truncation]
+   95 |   return __builtin___strncpy_chk (__dest, __src, __len,
+      |          ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+   96 |                                   __glibc_objsize (__dest));
+      |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~
+In function 'strncpy',
+    inlined from 'UploadItem::get_instance(void*, unsigned long, unsigned long, unsigned long, long, char const*, char const*, char const*, char const*, char const*, char const*, char const*, char const*, bool)' at UploadItem.cpp:105:12:
+/usr/include/bits/string_fortified.h:95:34: warning: 'strncpy' specified bound 48 equals destination size [-Wstringop-truncation]
+   95 |   return __builtin___strncpy_chk (__dest, __src, __len,
+      |          ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+   96 |                                   __glibc_objsize (__dest));
+      |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~
+In function 'strncpy',
+    inlined from 'UploadItem::get_instance(void*, unsigned long, unsigned long, unsigned long, long, char const*, char const*, char const*, char const*, char const*, char const*, char const*, char const*, bool)' at UploadItem.cpp:110:12:
+/usr/include/bits/string_fortified.h:95:34: warning: 'strncpy' specified bound 256 equals destination size [-Wstringop-truncation]
+   95 |   return __builtin___strncpy_chk (__dest, __src, __len,
+      |          ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+   96 |                                   __glibc_objsize (__dest));
+      |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~
+[0;36mCompiling [1;36mUploadItemList.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o UploadItemList.o UploadItemList.cpp
+[0;36mCompiling [1;36mUploadItemListReader.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o UploadItemListReader.o UploadItemListReader.cpp
+[0;36mCompiling [1;36mUploadItemIO.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o UploadItemIO.o UploadItemIO.cpp
+[0;36mCompiling [1;36mUploadItemWriter.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o UploadItemWriter.o UploadItemWriter.cpp
+UploadItemWriter.cpp: In member function 'bool UploadItemWriter::write_thumb(apr_pool_t*, UploadItem*)':
+UploadItemWriter.cpp:173:13: warning: ignoring return value of 'int nice(int)' declared with attribute 'warn_unused_result' [-Wunused-result]
+  173 |         nice(NICE_VALUE);
+      |         ~~~~^~~~~~~~~~~~
+[0;36mCompiling [1;36mUploadItemReader.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o UploadItemReader.o UploadItemReader.cpp
+UploadItemReader.cpp: In member function 'void UploadItemReader::read(apr_size_t, UploadItem*)':
+UploadItemReader.cpp:70:11: warning: 'void* memcpy(void*, const void*, size_t)' writing to an object of type 'class UploadItem' with no trivial copy-assignment [-Wclass-memaccess]
+   70 |     memcpy(uitem, uitem_file_map->mm, sizeof(UploadItem::header_t));
+      |     ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from ../include/All.h:62,
+                 from ../include/Environment.h:83,
+                 from UploadItemReader.cpp:28:
+../include/UploadItem.h:50:7: note: 'class UploadItem' declared here
+   50 | class UploadItem: public Uncopyable
+      |       ^~~~~~~~~~
+[0;36mCompiling [1;36mUploadItemManager.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o UploadItemManager.o UploadItemManager.cpp
+UploadItemManager.cpp: In member function 'UploadItem* UploadItemManager::get_item(apr_pool_t*, apr_size_t)':
+UploadItemManager.cpp:162:11: warning: 'void* memcpy(void*, const void*, size_t)' writing to an object of type 'class UploadItem' with no trivial copy-assignment [-Wclass-memaccess]
+  162 |     memcpy(uitem, item_list_->get_by_id(item_id), sizeof(UploadItem));
+      |     ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from ../include/All.h:62,
+                 from ../include/Environment.h:83,
+                 from UploadItemManager.cpp:29:
+../include/UploadItem.h:50:7: note: 'class UploadItem' declared here
+   50 | class UploadItem: public Uncopyable
+      |       ^~~~~~~~~~
+[0;36mCompiling [1;36mTemporaryFile.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o TemporaryFile.o TemporaryFile.cpp
+[0;36mCompiling [1;36mAuxiliary.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o Auxiliary.o Auxiliary.cpp
+[0;36mCompiling [1;36mSourceInfo.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o SourceInfo.o SourceInfo.cpp
+[0;36mCompiling [1;36mApacheLogger.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o ApacheLogger.o ApacheLogger.cpp
+[0;36mCompiling [1;36mUploaderTemplate.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o UploaderTemplate.o UploaderTemplate.cpp
+[0;36mCompiling [1;36mTemplateParser.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o TemplateParser.o TemplateParser.cpp
+[0;36mCompiling [1;36mTemplateLexer.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o TemplateLexer.o TemplateLexer.cpp
+[0;36mCompiling [1;36mTemplateVariableCreator.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o TemplateVariableCreator.o TemplateVariableCreator.cpp
+In file included from /usr/include/string.h:535,
+                 from /usr/include/apr-1/apr_want.h:63,
+                 from /usr/include/apr-1/apr_pools.h:47,
+                 from /usr/include/apr-1/apr_atomic.h:26,
+                 from ../include/AtomicWrapper.h:36,
+                 from ../include/All.h:31,
+                 from ../include/Environment.h:83,
+                 from TemplateVariableCreator.cpp:28:
+In function 'strncpy',
+    inlined from 'TemplateVariableCreator::convert_array(apr_array_header_t*, void*)' at TemplateVariableCreator.cpp:151:16:
+/usr/include/bits/string_fortified.h:95:34: warning: 'strncpy' specified bound depends on the length of the source argument [-Wstringop-truncation]
+   95 |   return __builtin___strncpy_chk (__dest, __src, __len,
+      |          ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+   96 |                                   __glibc_objsize (__dest));
+      |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~
+TemplateVariableCreator.cpp: In function 'TemplateVariableCreator::convert_array(apr_array_header_t*, void*)':
+TemplateVariableCreator.cpp:152:23: note: length computed here
+  152 |                 strlen(AS_CONST_CHAR_P(AVOID_ALIGN_WARN array->elts)[i])+1);
+      |                 ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[0;36mCompiling [1;36mThumbnailList.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o ThumbnailList.o ThumbnailList.cpp
+[0;36mCompiling [1;36mThumbnailIterator.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o ThumbnailIterator.o ThumbnailIterator.cpp
+[0;36mCompiling [1;36mThumbnailVariableCreator.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o ThumbnailVariableCreator.o ThumbnailVariableCreator.cpp
+[0;36mCompiling [1;36mTemplateVariable.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o TemplateVariable.o TemplateVariable.cpp
+[0;36mCompiling [1;36mApacheTemplateExecutor.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o ApacheTemplateExecutor.o ApacheTemplateExecutor.cpp
+[0;36mCompiling [1;36mApacheRFC1867Parser.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o ApacheRFC1867Parser.o ApacheRFC1867Parser.cpp
+[0;36mCompiling [1;36muploader_util.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o uploader_util.o uploader_util.cpp
+[0;36mCompiling [1;36mApacheRequestReader.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o ApacheRequestReader.o ApacheRequestReader.cpp
+[0;36mCompiling [1;36mRequestReader.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o RequestReader.o RequestReader.cpp
+[0;36mCompiling [1;36mMultipartMessageParserBuffer.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o MultipartMessageParserBuffer.o MultipartMessageParserBuffer.cpp
+[0;36mCompiling [1;36mMultipartMessageParser.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o MultipartMessageParser.o MultipartMessageParser.cpp
+[0;36mCompiling [1;36mDirectoryCleaner.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o DirectoryCleaner.o DirectoryCleaner.cpp
+[0;36mCompiling [1;36mMessageDigest5.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o MessageDigest5.o MessageDigest5.cpp
+[0;36mCompiling [1;36mImageFile.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o ImageFile.o ImageFile.cpp
+In file included from /usr/include/ImageMagick-6/magick/MagickCore.h:78,
+                 from /usr/include/ImageMagick-6/Magick++/Include.h:45,
+                 from /usr/include/ImageMagick-6/Magick++.h:10,
+                 from ImageFile.cpp:46:
+/usr/include/ImageMagick-6/magick/quantum.h: In function 'MagickCore::Quantum MagickCore::ClampToQuantum(MagickCore::MagickRealType)':
+/usr/include/ImageMagick-6/magick/magick-type.h:223:25: warning: comparing floating-point with '==' or '!=' is unsafe [-Wfloat-equal]
+  223 | #  define IsNaN(a) ((a) != (a))
+      |                     ~~~~^~~~~~
+/usr/include/ImageMagick-6/magick/quantum.h:93:8: note: in expansion of macro 'IsNaN'
+   93 |   if ((IsNaN(quantum) != 0) || (quantum <= 0.0))
+      |        ^~~~~
+In file included from /usr/include/ImageMagick-6/magick/MagickCore.h:135,
+                 from /usr/include/ImageMagick-6/Magick++/Include.h:45,
+                 from /usr/include/ImageMagick-6/Magick++.h:10,
+                 from ImageFile.cpp:46:
+/usr/include/ImageMagick-6/magick/pixel-accessor.h: In function 'MagickCore::MagickBooleanType MagickCore::IsPixelAtDepth(MagickCore::Quantum, MagickCore::QuantumAny)':
+/usr/include/ImageMagick-6/magick/pixel-accessor.h:173:57: warning: conversion from 'long long unsigned int' to 'MagickCore::MagickRealType' {aka 'double'} may change value [-Wconversion]
+  173 |     (((MagickRealType) range*pixel)/QuantumRange+0.5)))/range+0.5);
+      |                                                         ^~~~~
+[0;36mCompiling [1;36mPostDataChecker.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o PostDataChecker.o PostDataChecker.cpp
+[0;36mCompiling [1;36mPostFlowController.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o PostFlowController.o PostFlowController.cpp
+[0;36mCompiling [1;36mPostProgressList.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o PostProgressList.o PostProgressList.cpp
+[0;36mCompiling [1;36mDownloadFlowController.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o DownloadFlowController.o DownloadFlowController.cpp
+[0;36mCompiling [1;36mUploadItemVariableCreator.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o UploadItemVariableCreator.o UploadItemVariableCreator.cpp
+[0;36mCompiling [1;36mUploadItemIterator.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o UploadItemIterator.o UploadItemIterator.cpp
+[0;36mCompiling [1;36mApacheResponseWriter.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o ApacheResponseWriter.o ApacheResponseWriter.cpp
+[0;36mCompiling [1;36mCharCodeConverter.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o CharCodeConverter.o CharCodeConverter.cpp
+[0;36mCompiling [1;36mApacheUploadItemRss.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o ApacheUploadItemRss.o ApacheUploadItemRss.cpp
+[0;36mCompiling [1;36mApacheRFC2822Parser.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o ApacheRFC2822Parser.o ApacheRFC2822Parser.cpp
+[0;36mCompiling [1;36mFileWriter.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o FileWriter.o FileWriter.cpp
+[0;36mCompiling [1;36mReadWriteLocker.cpp[0m
+/usr/bin/libtool --silent --mode=compile --tag=CXX g++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -o ReadWriteLocker.o ReadWriteLocker.cpp
+perl: warning: Setting locale failed.
+perl: warning: Please check that your locale settings:
+	LANGUAGE = (unset),
+	LC_ALL = (unset),
+	LANG = "ja_JP.eucJP"
+    are supported and installed on your system.
+perl: warning: Falling back to the standard locale ("C").
+[1;34mGenerating [1;31mmod_uploader.so[0m
+/usr/bin/libtool --silent --mode=link --tag=CXX g++ -Wl,-z,relro -Wl,--as-needed  -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -Wall   -lMagick++-6.Q16 -lMagickWand-6.Q16 -lMagickCore-6.Q16  -Wl,-z,now,-z,relro -lcrypto -lm  -lapr-1  -lpthread -lMagick++-6.Q16 -lMagickWand-6.Q16 -lMagickCore-6.Q16   \
+	-export-dynamic -module -avoid-version \
+	-rpath /usr/lib64/httpd/modules \
+	-o mod_uploader.la ApacheLogger.lo ApacheRFC1867Parser.lo ApacheRFC2822Parser.lo ApacheRequestReader.lo ApacheResponseWriter.lo ApacheTemplateExecutor.lo ApacheUploadItemRss.lo Auxiliary.lo CharCodeConverter.lo DirectoryCleaner.lo DownloadFlowController.lo FileWriter.lo ImageFile.lo MessageDigest5.lo MultipartMessageParser.lo MultipartMessageParserBuffer.lo PostDataChecker.lo PostFlowController.lo PostProgressList.lo ReadWriteLocker.lo RequestReader.lo SourceInfo.lo TemplateLexer.lo TemplateParser.lo TemplateVariable.lo TemplateVariableCreator.lo TemporaryFile.lo ThumbnailIterator.lo ThumbnailList.lo ThumbnailVariableCreator.lo UploadItem.lo UploadItemIO.lo UploadItemIterator.lo UploadItemList.lo UploadItemListReader.lo UploadItemManager.lo UploadItemReader.lo UploadItemVariableCreator.lo UploadItemWriter.lo UploaderConfig.lo UploaderTemplate.lo mod_uploader.lo uploader_util.lo
+lto-wrapper: warning: using serial compilation of 4 LTRANS jobs
+make[1]: Leaving directory '/work/rpm-on/BUILD/mod_uploader-3.2.0/src'
+cp -f src/mod_uploader.so ./
+cd src && /usr/bin/make -f GNUmakefile password-tool
+make[1]: Entering directory '/work/rpm-on/BUILD/mod_uploader-3.2.0/src'
+make[1]: Leaving directory '/work/rpm-on/BUILD/mod_uploader-3.2.0/src'
+perl: warning: Setting locale failed.
+perl: warning: Please check that your locale settings:
+	LANGUAGE = (unset),
+	LC_ALL = (unset),
+	LANG = "ja_JP.eucJP"
+    are supported and installed on your system.
+perl: warning: Falling back to the standard locale ("C").
+make[1]: Entering directory '/work/rpm-on/BUILD/mod_uploader-3.2.0/src'
+g++ -DLOCALE_JA -DCONV_CHAR_CODE -I../include -I /usr/include/httpd -I/usr/include/ImageMagick-6 -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/include/apr-1 -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64-v2 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -std=c++11 -Wl,-z,relro -Wl,--as-needed  -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -Wall   -lMagick++-6.Q16 -lMagickWand-6.Q16 -lMagickCore-6.Q16  -Wl,-z,now,-z,relro -o password_tool ../util/password_tool.cpp -lcrypto -lm  -lapr-1  -lpthread -lMagick++-6.Q16 -lMagickWand-6.Q16 -lMagickCore-6.Q16  
+../util/password_tool.cpp: In function 'std::vector<char> read_file(const char*)':
+../util/password_tool.cpp:20:5: warning: this 'if' clause does not guard... [-Wmisleading-indentation]
+   20 |     if(!in.read(data.data(),static_cast<std::streamsize>(data.size())))throw "Cannot read metadata";return data;
+      |     ^~
+../util/password_tool.cpp:20:101: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+   20 |     if(!in.read(data.data(),static_cast<std::streamsize>(data.size())))throw "Cannot read metadata";return data;
+      |                                                                                                     ^~~~~~
+../util/password_tool.cpp: In function 'int main(int, char**)':
+../util/password_tool.cpp:90:13: warning: this 'if' clause does not guard... [-Wmisleading-indentation]
+   90 |             if(!password.empty())OPENSSL_cleanse(&password[0],password.size());return ok?0:3;
+      |             ^~
+../util/password_tool.cpp:90:80: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+   90 |             if(!password.empty())OPENSSL_cleanse(&password[0],password.size());return ok?0:3;
+      |                                                                                ^~~~~~
+make[1]: Leaving directory '/work/rpm-on/BUILD/mod_uploader-3.2.0/src'
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Executing(%install): /bin/sh -e /var/tmp/rpm-tmp.ZzlICr
++ umask 022
++ cd /work/rpm-on/BUILD
++ '[' /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64 '!=' / ']'
++ rm -rf /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64
+++ dirname /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64
++ mkdir -p /work/rpm-on/BUILDROOT
++ mkdir /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64
++ cd mod_uploader-3.2.0
++ install -Dpm0755 src/mod_uploader.so /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/usr/lib64/httpd/modules/mod_uploader.so
++ install -Dpm0755 src/password_tool /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/usr/libexec/mod_uploader/password_tool
++ for tool in migrate_passwords storage_backup storage_recover storage_health
++ install -pm0755 util/migrate_passwords.py /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/usr/libexec/mod_uploader/
++ sed -i '1c#!/usr/bin/python3' /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/usr/libexec/mod_uploader/migrate_passwords.py
++ for tool in migrate_passwords storage_backup storage_recover storage_health
++ install -pm0755 util/storage_backup.py /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/usr/libexec/mod_uploader/
++ sed -i '1c#!/usr/bin/python3' /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/usr/libexec/mod_uploader/storage_backup.py
++ for tool in migrate_passwords storage_backup storage_recover storage_health
++ install -pm0755 util/storage_recover.py /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/usr/libexec/mod_uploader/
++ sed -i '1c#!/usr/bin/python3' /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/usr/libexec/mod_uploader/storage_recover.py
++ for tool in migrate_passwords storage_backup storage_recover storage_health
++ install -pm0755 util/storage_health.py /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/usr/libexec/mod_uploader/
++ sed -i '1c#!/usr/bin/python3' /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/usr/libexec/mod_uploader/storage_health.py
++ install -d /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/etc/httpd/conf.modules.d /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/etc/mod_uploader
++ printf 'LoadModule uploader_module modules/mod_uploader.so\n'
++ install -pm0644 packaging/rpm/mod_uploader-root.conf.sample packaging/rpm/mod_uploader.conf.sample /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/etc/mod_uploader/
++ install -d /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/usr/share/mod_uploader/tmpl/en
++ install -pm0644 tmpl/admin.htm tmpl/download.htm tmpl/error.htm tmpl/index.htm tmpl/index_swf.htm tmpl/info.htm tmpl/progress.htm tmpl/thumbnail.htm /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/usr/share/mod_uploader/tmpl/
++ install -pm0644 tmpl/en/admin.htm tmpl/en/download.htm tmpl/en/error.htm tmpl/en/index.htm tmpl/en/info.htm tmpl/en/progress.htm tmpl/en/thumbnail.htm /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/usr/share/mod_uploader/tmpl/en/
++ for dir in img css js
++ cp -a img /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/usr/share/mod_uploader/
++ for dir in img css js
++ cp -a css /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/usr/share/mod_uploader/
++ for dir in img css js
++ cp -a js /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/usr/share/mod_uploader/
++ install -d -m0700 /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/var/lib/mod_uploader
++ for dir in data file thumb temp
++ install -d -m0700 /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/var/lib/mod_uploader/data
++ for dir in data file thumb temp
++ install -d -m0700 /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/var/lib/mod_uploader/file
++ for dir in data file thumb temp
++ install -d -m0700 /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/var/lib/mod_uploader/thumb
++ for dir in data file thumb temp
++ install -d -m0700 /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/var/lib/mod_uploader/temp
++ /usr/bin/find-debuginfo -j8 --strict-build-id -m -i --build-id-seed 3.2.0-9.el9 --unique-debug-suffix -3.2.0-9.el9.x86_64 --unique-debug-src-base mod_uploader-3.2.0-9.el9.x86_64 --run-dwz --dwz-low-mem-die-limit 10000000 --dwz-max-die-limit 110000000 --remove-section .gnu.build.attributes -S debugsourcefiles.list /work/rpm-on/BUILD/mod_uploader-3.2.0
+extracting debug info from /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/usr/libexec/mod_uploader/password_tool
+extracting debug info from /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/usr/lib64/httpd/modules/mod_uploader.so
+original debug info size: 3664kB, size after compression: 2492kB
+/usr/bin/sepdebugcrcfix: Updated 2 CRC32s, 0 CRC32s did match.
+1464 blocks
++ /usr/lib/rpm/check-buildroot
++ /usr/lib/rpm/redhat/brp-ldconfig
++ /usr/lib/rpm/brp-compress
++ /usr/lib/rpm/redhat/brp-strip-lto /usr/bin/strip
++ /usr/lib/rpm/brp-strip-static-archive /usr/bin/strip
++ /usr/lib/rpm/redhat/brp-python-bytecompile '' 1 0
++ /usr/lib/rpm/brp-python-hardlink
++ /usr/lib/rpm/redhat/brp-mangle-shebangs
+Executing(%check): /bin/sh -e /var/tmp/rpm-tmp.rawoid
++ umask 022
++ cd /work/rpm-on/BUILD
++ cd mod_uploader-3.2.0
++ sh tests/run_native.sh
+safety: 80012 checks passed
+buffer: 7 checks passed
+reader: 7 checks passed (mock APR/Apache)
+origin: 16 checks passed
+security: 21 checks passed
+throttle: 20 checks passed (persistent IP budget, threads, processes, crash release, unsafe state)
+routing: 62 checks passed (base URLs, root/subpath routes, collision and invalid paths)
+http-status: 32 checks passed
+config-number: 14 checks passed
+thumbnail-limits: 2 process scenarios passed (inherited VM, stricter limit)
++ python3 tests/handler_test.py
+handler: 5 assertions passed (mock httpd; not a module build)
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Processing files: mod_uploader-3.2.0-9.el9.x86_64
+Executing(%doc): /bin/sh -e /var/tmp/rpm-tmp.8X17XU
++ umask 022
++ cd /work/rpm-on/BUILD
++ cd mod_uploader-3.2.0
++ DOCDIR=/work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/usr/share/doc/mod_uploader
++ export LC_ALL=C
++ LC_ALL=C
++ export DOCDIR
++ /usr/bin/mkdir -p /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/usr/share/doc/mod_uploader
++ cp -pr AUTHORS /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/usr/share/doc/mod_uploader
++ cp -pr MODIFICATIONS /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/usr/share/doc/mod_uploader
++ cp -pr README.md /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/usr/share/doc/mod_uploader
++ cp -pr docs/LINUX-ja.md /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/usr/share/doc/mod_uploader
++ cp -pr docs/SECURITY-MIGRATION-ja.md /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/usr/share/doc/mod_uploader
++ cp -pr docs/ROOT-DEPLOYMENT-ja.md /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/usr/share/doc/mod_uploader
++ cp -pr docs/OPERATIONS-ja.md /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/usr/share/doc/mod_uploader
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Executing(%license): /bin/sh -e /var/tmp/rpm-tmp.A8BHBR
++ umask 022
++ cd /work/rpm-on/BUILD
++ cd mod_uploader-3.2.0
++ LICENSEDIR=/work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/usr/share/licenses/mod_uploader
++ export LC_ALL=C
++ LC_ALL=C
++ export LICENSEDIR
++ /usr/bin/mkdir -p /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/usr/share/licenses/mod_uploader
++ cp -pr COPYING /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64/usr/share/licenses/mod_uploader
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Provides: config(mod_uploader) = 3.2.0-9.el9 mod_uploader = 3.2.0-9.el9 mod_uploader(x86-64) = 3.2.0-9.el9
+Requires(rpmlib): rpmlib(CompressedFileNames) <= 3.0.4-1 rpmlib(FileDigests) <= 4.6.0-1 rpmlib(PayloadFilesHavePrefix) <= 4.0-1
+Requires: /usr/bin/python3 libMagick++-6.Q16.so.9()(64bit) libMagickCore-6.Q16.so.7()(64bit) libMagickWand-6.Q16.so.7()(64bit) libapr-1.so.0()(64bit) libc.so.6()(64bit) libc.so.6(GLIBC_2.14)(64bit) libc.so.6(GLIBC_2.2.5)(64bit) libc.so.6(GLIBC_2.3.4)(64bit) libc.so.6(GLIBC_2.33)(64bit) libc.so.6(GLIBC_2.34)(64bit) libc.so.6(GLIBC_2.4)(64bit) libcrypto.so.3()(64bit) libcrypto.so.3(OPENSSL_3.0.0)(64bit) libgcc_s.so.1()(64bit) libgcc_s.so.1(GCC_3.0)(64bit) libgcc_s.so.1(GCC_3.3.1)(64bit) libm.so.6()(64bit) libstdc++.so.6()(64bit) libstdc++.so.6(CXXABI_1.3)(64bit) libstdc++.so.6(GLIBCXX_3.4)(64bit) libstdc++.so.6(GLIBCXX_3.4.11)(64bit) libstdc++.so.6(GLIBCXX_3.4.20)(64bit) libstdc++.so.6(GLIBCXX_3.4.21)(64bit) libstdc++.so.6(GLIBCXX_3.4.9)(64bit) rtld(GNU_HASH)
+Processing files: mod_uploader-debugsource-3.2.0-9.el9.x86_64
+Provides: mod_uploader-debugsource = 3.2.0-9.el9 mod_uploader-debugsource(x86-64) = 3.2.0-9.el9
+Requires(rpmlib): rpmlib(CompressedFileNames) <= 3.0.4-1 rpmlib(FileDigests) <= 4.6.0-1 rpmlib(PayloadFilesHavePrefix) <= 4.0-1
+Processing files: mod_uploader-debuginfo-3.2.0-9.el9.x86_64
+Provides: debuginfo(build-id) = 368f6733115ac474cd88b22ef7149ceed5b4b7a1 debuginfo(build-id) = e4c18e9c2588a8854e68eaabe0d90deb9cfd391b mod_uploader-debuginfo = 3.2.0-9.el9 mod_uploader-debuginfo(x86-64) = 3.2.0-9.el9
+Requires(rpmlib): rpmlib(CompressedFileNames) <= 3.0.4-1 rpmlib(FileDigests) <= 4.6.0-1 rpmlib(PayloadFilesHavePrefix) <= 4.0-1
+Recommends: mod_uploader-debugsource(x86-64) = 3.2.0-9.el9
+Checking for unpackaged file(s): /usr/lib/rpm/check-files /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64
+Wrote: /work/rpm-on/SRPMS/mod_uploader-3.2.0-9.el9.src.rpm
+Wrote: /work/rpm-on/RPMS/x86_64/mod_uploader-3.2.0-9.el9.x86_64.rpm
+Wrote: /work/rpm-on/RPMS/x86_64/mod_uploader-debugsource-3.2.0-9.el9.x86_64.rpm
+Wrote: /work/rpm-on/RPMS/x86_64/mod_uploader-debuginfo-3.2.0-9.el9.x86_64.rpm
+Executing(%clean): /bin/sh -e /var/tmp/rpm-tmp.ISZaog
++ umask 022
++ cd /work/rpm-on/BUILD
++ cd mod_uploader-3.2.0
++ /usr/bin/rm -rf /work/rpm-on/BUILDROOT/mod_uploader-3.2.0-9.el9.x86_64
++ RPM_EC=0
+++ jobs -p
++ exit 0
+ALMA_RPM_RC=0

@@ -1,0 +1,12 @@
+cd src && gmake -f GNUmakefile
+gmake[1]: ¥Ç¥£¥ì¥¯¥È¥ê '/home/takeshi/mod-uploader-linux-20261104/mod_uploader-3.2.0/src' ¤ËÆþ¤ê¤Þ¤¹
+[0;36mCompiling [1;36mUploadItemWriter.cpp[0m
+/usr/local/bin/libtool --silent --mode=compile --tag=CXX clang++ -prefer-pic -DLOCALE_JA -DCONV_CHAR_CODE -DUPLOADER_TYPE_APACHE -DEAPI -c -isystem /usr/local/include -I../include -I /usr/local/include/apache24 -I/usr/local/include/ImageMagick-6 -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -isystem /usr/local/include/apr-1 -isystem /usr/local/include -g -O2 -MMD -Wall -Wextra -Wformat=2 -Wdisabled-optimization -Wfloat-equal -Wpointer-arith -Wcast-align -Wno-unused-parameter -fno-rtti -pipe   -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wpointer-arith -Wfloat-equal -Wstrict-aliasing -g -O2 -std=c++11 -o UploadItemWriter.o UploadItemWriter.cpp
+[1;34mGenerating [1;31mmod_uploader.so[0m
+/usr/local/bin/libtool --silent --mode=link --tag=CXX clang++ -L/usr/local/lib -Wall   -L/usr/local/lib -lMagick++-6 -lMagickWand-6 -lMagickCore-6 -lcrypto -lm  -L/usr/local/lib -lapr-1 -lcrypt  -lpthread -L/usr/local/lib -lMagick++-6 -lMagickWand-6 -lMagickCore-6 -liconv -L/usr/local/lib \
+	-export-dynamic -module -avoid-version \
+	-rpath /usr/local/libexec/apache24 \
+	-o mod_uploader.la ApacheLogger.lo ApacheRFC1867Parser.lo ApacheRFC2822Parser.lo ApacheRequestReader.lo ApacheResponseWriter.lo ApacheTemplateExecutor.lo ApacheUploadItemRss.lo Auxiliary.lo CharCodeConverter.lo DirectoryCleaner.lo DownloadFlowController.lo FileWriter.lo ImageFile.lo MessageDigest5.lo MultipartMessageParser.lo MultipartMessageParserBuffer.lo PostDataChecker.lo PostFlowController.lo PostProgressList.lo ReadWriteLocker.lo RequestReader.lo SourceInfo.lo TemplateLexer.lo TemplateParser.lo TemplateVariable.lo TemplateVariableCreator.lo TemporaryFile.lo ThumbnailIterator.lo ThumbnailList.lo ThumbnailVariableCreator.lo UploadItem.lo UploadItemIO.lo UploadItemIterator.lo UploadItemList.lo UploadItemListReader.lo UploadItemManager.lo UploadItemReader.lo UploadItemVariableCreator.lo UploadItemWriter.lo UploaderConfig.lo UploaderTemplate.lo mod_uploader.lo uploader_util.lo
+c++: warning: argument unused during compilation: '-pthread' [-Wunused-command-line-argument]
+gmake[1]: ¥Ç¥£¥ì¥¯¥È¥ê '/home/takeshi/mod-uploader-linux-20261104/mod_uploader-3.2.0/src' ¤«¤é½Ð¤Þ¤¹
+cp -f src/mod_uploader.so ./

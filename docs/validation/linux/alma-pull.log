@@ -1,0 +1,7 @@
+Trying to pull docker.io/library/almalinux:9...
+Getting image source signatures
+Copying blob sha256:0811634de1354647621efd7099d785a77a08c13a5bd179d1a2bce360b18761b2
+Copying config sha256:4cb2de47e3ee6f44013f5dedd6a8eec5e9cd0bb73ddf27728fa607f5d3915a6c
+Writing manifest to image destination
+4cb2de47e3ee6f44013f5dedd6a8eec5e9cd0bb73ddf27728fa607f5d3915a6c
+PULL_RC=0

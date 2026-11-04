@@ -3,10 +3,11 @@
 """Load the distributed root/subpath samples with isolated paths and Japanese views."""
 import argparse, re, sys, tempfile
 from pathlib import Path
+from apache_paths import load_module
 from security_http_test import Server, setup, run
 from root_http_test import MountedClient, free_port
 
-def exercise(build, workdir, mount):
+def exercise(build, workdir, mount, samples=None):
     root=Path(tempfile.mkdtemp(prefix='root-sample-',dir=workdir))
     setup(root,build/'src/password_tool')
     source=Path(__file__).resolve().parents[1]
@@ -15,13 +16,13 @@ def exercise(build, workdir, mount):
     run(*command)
     port=free_port();server=Server(root,build,port)
     header=server.conf.read_text().split('<Location /up>')[0]
-    sample=source/'ports/www/mod_uploader/files'/('mod_uploader'+('-root' if not mount else '')+'.conf.in')
+    sample=(samples/('mod_uploader'+('-root' if not mount else '')+'.conf.sample') if samples else source/'ports/www/mod_uploader/files'/('mod_uploader'+('-root' if not mount else '')+'.conf.in'))
     text=sample.read_text().replace('%%DATADIR%%',str(build)).replace('%%PREFIX%%','/usr/local').replace('%%APACHEMODDIR%%','libexec/apache24')
     text=re.sub(r'^LoadModule .*\n','',text,flags=re.M)
-    text=text.replace('/var/db/mod_uploader',str(root))
+    text=text.replace('/var/db/mod_uploader',str(root)).replace('/var/lib/mod_uploader',str(root)).replace('/usr/share/mod_uploader',str(build))
     origin='http://127.0.0.1:'+str(port)
     text=re.sub(r'UploaderBaseUrl "[^"]+"','UploaderBaseUrl "'+origin+mount+'/"',text)
-    server.conf.write_text(header+'LoadModule alias_module /usr/local/libexec/apache24/mod_alias.so\n<VirtualHost 127.0.0.1:'+str(port)+'>\n'+text+'\n</VirtualHost>\n')
+    server.conf.write_text(header+load_module('alias')+'<VirtualHost 127.0.0.1:'+str(port)+'>\n'+text+'\n</VirtualHost>\n')
     checks=0
     def check(condition,description):
         nonlocal checks
@@ -45,8 +46,9 @@ def exercise(build, workdir, mount):
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--build-root',type=Path,required=True);parser.add_argument('--workdir',type=Path,required=True)
+    parser.add_argument('--samples-dir',type=Path)
     args=parser.parse_args()
-    total=sum(exercise(args.build_root.resolve(),args.workdir,mount) for mount in ['', '/up'])
+    total=sum(exercise(args.build_root.resolve(),args.workdir,mount,args.samples_dir) for mount in ['', '/up'])
     print('root-samples: '+str(total)+' checks passed across 2 distributed configuration samples')
 
 if __name__=='__main__':main()

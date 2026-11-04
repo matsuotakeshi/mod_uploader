@@ -1,0 +1,31 @@
+NAME="Rocky Linux"
+VERSION="10.2 (Red Quartz)"
+RELEASE_TYPE="stable"
+ID="rocky"
+ID_LIKE="rhel centos fedora"
+VERSION_ID="10.2"
+PLATFORM_ID="platform:el10"
+PRETTY_NAME="Rocky Linux 10.2 (Red Quartz)"
+ANSI_COLOR="0;32"
+LOGO="fedora-logo-icon"
+CPE_NAME="cpe:/o:rocky:rocky:10::baseos"
+HOME_URL="https://rockylinux.org/"
+VENDOR_NAME="RESF"
+VENDOR_URL="https://resf.org/"
+BUG_REPORT_URL="https://bugs.rockylinux.org/"
+SUPPORT_END="2035-05-31"
+ROCKY_SUPPORT_PRODUCT="Rocky-Linux-10"
+ROCKY_SUPPORT_PRODUCT_VERSION="10.2"
+REDHAT_SUPPORT_PRODUCT="Rocky Linux"
+REDHAT_SUPPORT_PRODUCT_VERSION="10.2"
+Linux 6.12.0-211.67.1.el10_2.x86_64
+httpd-2.4.63-13.el10_2.8.x86_64
+apr-1.7.5-3.el10.x86_64
+apr-util-1.6.3-23.el10_2.1.x86_64
+openssl-libs-3.5.8-2.el10_2.x86_64
+gcc-c++-14.3.1-4.4.el10.x86_64
+ImageMagick-c++-devel-7.1.2.34-1.el10_2.x86_64
+selinux-policy-targeted-42.1.18-4.el10_2.4.noarch
+gcc (GCC) 14.3.1 20251022 (Red Hat 14.3.1-4)
+Enforcing
+httpd_setrlimit --> off

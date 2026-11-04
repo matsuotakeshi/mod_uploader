@@ -1,0 +1,2 @@
+hardening-http: 41 checks passed (real proxy, authenticated admin, shared IP/worker limits, concurrent requests, restart)
+Disposable test directory retained: /var/tmp/mod-uploader-linux-20261104/test-on/hardening-http-g1sqwadp

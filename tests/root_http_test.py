@@ -3,6 +3,7 @@
 """Isolated real VirtualHosts; exercise both mounts with the unchanged security client."""
 import argparse, base64, os, re, socket, ssl, struct, tempfile, zlib
 from pathlib import Path
+from apache_paths import load_module
 from urllib.parse import urlsplit
 from security_http_test import Server, Client, setup, run
 
@@ -34,7 +35,7 @@ def make_server(root, build, mount, trailing, tls):
     for old,new in [('/up/admin',mount+'/admin'),('/up/mail',mount+'/mail'),('/up',mount or '/')]:
         text=text.replace('<Location '+old+'>','<Location '+new+'>')
     text=text.replace('Require valid-user','<RequireAll>\nRequire ip 127.0.0.1\nRequire valid-user\n</RequireAll>')
-    text+='LoadModule alias_module /usr/local/libexec/apache24/mod_alias.so\n'
+    text+=load_module('alias')
     assets=mount.rsplit('/',1)[0] if mount else ''
     for name,folder,mime in [('img','img','image/png'),('css','css','text/css'),('js','js','application/javascript'),('swf','swf','application/x-shockwave-flash')]:
         prefix=assets+'/up_'+name
@@ -51,7 +52,7 @@ def make_server(root, build, mount, trailing, tls):
     if tls:
         run('openssl','req','-x509','-newkey','rsa:2048','-nodes','-keyout',root/'server.key','-out',root/'server.crt','-days','1','-subj','/CN=127.0.0.1','-addext','subjectAltName=IP:127.0.0.1')
         os.chmod(root/'server.key',0o600)
-        text+='LoadModule ssl_module /usr/local/libexec/apache24/mod_ssl.so\nSSLEngine on\nSSLCertificateFile "'+str(root/'server.crt')+'"\nSSLCertificateKeyFile "'+str(root/'server.key')+'"\n'
+        text+=load_module('ssl')+'SSLEngine on\nSSLCertificateFile "'+str(root/'server.crt')+'"\nSSLCertificateKeyFile "'+str(root/'server.key')+'"\n'
         context=ssl.create_default_context(cafile=str(root/'server.crt'))
     # Put routing and authorization in an actual VirtualHost. Process-level directives stay outside.
     outside=[];inside=[]

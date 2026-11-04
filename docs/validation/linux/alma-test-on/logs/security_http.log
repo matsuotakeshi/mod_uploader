@@ -1,0 +1,2 @@
+http-security: 42 checks passed (real loopback Apache, migration, passwords, CSRF, restart)
+Disposable test data retained for review: /work/test-on/http-security-l8w6jw6d

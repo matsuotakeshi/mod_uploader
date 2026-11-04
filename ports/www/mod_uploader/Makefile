@@ -1,6 +1,6 @@
 PORTNAME=	mod_uploader
 PORTVERSION=	3.2.0
-PORTREVISION=	8
+PORTREVISION=	9
 CATEGORIES=	www
 PKGNAMEPREFIX=	${APACHE_PKGNAMEPREFIX}
 
@@ -40,7 +40,7 @@ THUMBNAIL_BUILD_DEPENDS=	ImageMagick7-nox11>=7.1.2.34:graphics/ImageMagick7@nox1
 THUMBNAIL_RUN_DEPENDS=	ImageMagick7-nox11>=7.1.2.34:graphics/ImageMagick7@nox11
 THUMBNAIL_CONFIGURE_ON=	--enable-thumbnail --with-mconf=${LOCALBASE}/bin/Magick++-config
 # Magick++-config overrides PKG_CONFIG_LIBDIR with lib/pkgconfig.
-THUMBNAIL_MAKE_ENV=	PKG_CONFIG_PATH=${LOCALBASE}/libdata/pkgconfig:${LOCALBASE}/lib/pkgconfig
+THUMBNAIL_CONFIGURE_ENV=	PKG_CONFIG_PATH=${LOCALBASE}/libdata/pkgconfig:${LOCALBASE}/lib/pkgconfig
 
 pre-patch:
 	${PERL} -pi -e 's/\r\n/\n/g' \
@@ -107,7 +107,8 @@ pre-patch:
 		${WRKSRC}/tmpl/index.htm.in \
 		${WRKSRC}/tmpl/index_swf.htm.in \
 		${WRKSRC}/tmpl/info.htm.in \
-		${WRKSRC}/tmpl/thumbnail.htm.in
+		${WRKSRC}/tmpl/thumbnail.htm.in \
+		${WRKSRC}/util/mod_uploader.spec.in
 
 post-patch:
 	${REINPLACE_CMD} -e '1s|.*|#!${PYTHON_CMD}|' ${WRKSRC}/util/*.py

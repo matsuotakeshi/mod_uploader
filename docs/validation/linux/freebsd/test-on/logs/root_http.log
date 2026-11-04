@@ -1,0 +1,8 @@
+mount='/' trailing=True tls=False thumbnail=True: 134 checks passed; /home/takeshi/mod-uploader-linux-20261104/test-on/root-http-iciz15qh
+mount='/' trailing=False tls=False thumbnail=True: 134 checks passed; /home/takeshi/mod-uploader-linux-20261104/test-on/root-http-o36mqem9
+mount='/up' trailing=False tls=False thumbnail=True: 136 checks passed; /home/takeshi/mod-uploader-linux-20261104/test-on/root-http-_uwhiezs
+mount='/up' trailing=True tls=False thumbnail=True: 136 checks passed; /home/takeshi/mod-uploader-linux-20261104/test-on/root-http-hnpwgtiw
+mount='/board/up' trailing=True tls=False thumbnail=True: 136 checks passed; /home/takeshi/mod-uploader-linux-20261104/test-on/root-http-qvz0ivlq
+mount='/' trailing=True tls=True thumbnail=True: 134 checks passed; /home/takeshi/mod-uploader-linux-20261104/test-on/root-http-iq9sn8uv
+mount='/up' trailing=True tls=True thumbnail=True: 136 checks passed; /home/takeshi/mod-uploader-linux-20261104/test-on/root-http-1khnwd4g
+root-http: 946 checks passed across 7 VirtualHost configurations

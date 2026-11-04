@@ -1,0 +1,31 @@
+BASELINE_BUILD_RC=0
+    * Enviorment            :   Linux
+        - apxs              :   /usr/bin/apxs
+        - apachectl         :   /usr/sbin/apachectl
+        - apr-config        :   /usr/bin/apr-1-config
+
+    * Compiler              :   g++
+        - march             :   
+        - mcpu              :   
+
+    * Libtool               :   /usr/bin/libtool
+
+    * Thumbnail             :   off
+
+    * Debug                 :   off
+
+../util/password_tool.cpp: In function 'std::vector<char> read_file(const char*)':
+../util/password_tool.cpp:20:5: ·Ù¹ð: this 'if' clause does not guard... [-Wmisleading-indentation]
+   20 |     if(!in.read(data.data(),static_cast<std::streamsize>(data.size())))throw "Cannot read metadata";return data;
+      |     ^~
+../util/password_tool.cpp:20:101: È÷¹Í: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+   20 |     if(!in.read(data.data(),static_cast<std::streamsize>(data.size())))throw "Cannot read metadata";return data;
+      |                                                                                                     ^~~~~~
+../util/password_tool.cpp: In function 'int main(int, char**)':
+../util/password_tool.cpp:90:13: ·Ù¹ð: this 'if' clause does not guard... [-Wmisleading-indentation]
+   90 |             if(!password.empty())OPENSSL_cleanse(&password[0],password.size());return ok?0:3;
+      |             ^~
+../util/password_tool.cpp:90:80: È÷¹Í: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+   90 |             if(!password.empty())OPENSSL_cleanse(&password[0],password.size());return ok?0:3;
+      |                                                                                ^~~~~~
+make[1]: ¥Ç¥£¥ì¥¯¥È¥ê '/var/tmp/mod-uploader-linux-20261104/baseline/src' ¤«¤é½Ð¤Þ¤¹

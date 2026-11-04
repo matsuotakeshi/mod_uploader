@@ -1,0 +1,35 @@
+Dependencies resolved.
+================================================================================
+ Package             Architecture  Version            Repository           Size
+================================================================================
+Reinstalling:
+ mod_uploader        x86_64        3.2.0-9.el9        @commandline        228 k
+
+Transaction Summary
+================================================================================
+
+Total size: 228 k
+Installed size: 595 k
+Downloading Packages:
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                        1/1 
+  Reinstalling     : mod_uploader-3.2.0-9.el9.x86_64                        1/2 
+  Cleanup          : mod_uploader-3.2.0-9.el9.x86_64                        2/2 
+  Running scriptlet: mod_uploader-3.2.0-9.el9.x86_64                        2/2 
+  Verifying        : mod_uploader-3.2.0-9.el9.x86_64                        1/2 
+  Verifying        : mod_uploader-3.2.0-9.el9.x86_64                        2/2 
+
+Reinstalled:
+  mod_uploader-3.2.0-9.el9.x86_64                                               
+
+Complete!
+mod_uploader-3.2.0-9.el9.x86_64
+root-http: 939 checks passed across 7 VirtualHost configurations
+operations-http: 73 checks passed; thumbnail=True; fixtures retained: /work/test-rpm/operations-http-i62ki486
+root-samples: 20 checks passed across 2 distributed configuration samples
+Installed RPM tests passed; logs: /work/test-rpm/installed-rpm-NdSdl8/logs
+FINAL_ALMA_RPM_RC=0
